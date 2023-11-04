@@ -39,6 +39,9 @@ public class MemberEntity {
     @Column(name = "member_type")
     private String type; // DEV, STAFF, STUDENT
 
+    @Column(name = "member_refresh_token")
+    private String refreshToken; // 리프레시 토큰
+
     @Column(name = "member_dormitory")
     private Integer dormitoryNum; // 기숙사 번호
 }
