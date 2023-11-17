@@ -1,16 +1,13 @@
 package com.project.clickit.member.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Table(name = "member")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class MemberEntity {
     @Id
@@ -44,4 +41,9 @@ public class MemberEntity {
 
     @Column(name = "member_dormitory")
     private Integer dormitoryNum; // 기숙사 번호
+
+    public MemberEntity(String password, String refreshToken) {
+        this.password = password;
+        this.refreshToken = refreshToken;
+    }
 }

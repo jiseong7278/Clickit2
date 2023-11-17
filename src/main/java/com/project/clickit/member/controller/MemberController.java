@@ -3,6 +3,7 @@ package com.project.clickit.member.controller;
 import com.project.clickit.member.domain.entity.MemberEntity;
 import com.project.clickit.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,11 @@ public class MemberController {
     @PostMapping("/createList")
     public ResponseEntity createList(@RequestBody List<MemberEntity> memberEntityList) {
         return memberService.createList(memberEntityList);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestHeader HttpHeaders httpHeaders, @RequestBody MemberEntity memberEntity) {
+        return memberService.login(httpHeaders, memberEntity);
     }
 
     @GetMapping("/test")
