@@ -32,14 +32,13 @@ public class MemberController {
         return memberService.createList(memberEntityList);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestHeader HttpHeaders httpHeaders, @RequestBody MemberEntity memberEntity) {
-        return memberService.login(httpHeaders, memberEntity);
+    @GetMapping("/login")
+    public void login(@RequestHeader HttpHeaders httpHeaders){
+
     }
 
-    @GetMapping("/test")
-    @ResponseBody
-    public String test() {
-        return "test";
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestHeader HttpHeaders httpHeaders, @RequestBody MemberEntity memberEntity) {
+        return memberService.loginPost(httpHeaders, memberEntity);
     }
 }

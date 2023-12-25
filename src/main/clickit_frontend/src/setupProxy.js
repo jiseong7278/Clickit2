@@ -16,7 +16,7 @@ module.exports = function(app) {
     //     })
     // );
     app.use(
-        ['/dormitory', '/member'],
+        ['/login', '/member'],
         createProxyMiddleware({
             target: 'http://localhost:8080',
             changeOrigin: true,

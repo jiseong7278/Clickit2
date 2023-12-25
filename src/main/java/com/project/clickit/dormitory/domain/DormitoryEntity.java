@@ -1,10 +1,13 @@
 package com.project.clickit.dormitory.domain;
 
+import com.project.clickit.member.domain.entity.MemberEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,4 +22,7 @@ public class DormitoryEntity {
 
     @Column(name = "dormitory_name")
     private String dormitoryName;
+
+    @OneToMany(mappedBy = "dormitoryEntity")
+    private List<MemberEntity> memberEntity;
 }

@@ -1,10 +1,13 @@
 package com.project.clickit.member.domain.entity;
 
+import com.project.clickit.dormitory.domain.DormitoryEntity;
+import com.project.clickit.member.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @Table(name = "member")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +16,7 @@ public class MemberEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_num")
-    private Integer memberNum;
+    private Long memberNum;
 
     @Column(name = "member_id")
     private String id; // 로그인 아이디
@@ -34,16 +37,25 @@ public class MemberEntity {
     private String studentNum; // 학번
 
     @Column(name = "member_type")
-    private String type; // DEV, STAFF, STUDENT
+    private String type; // ADMIN, STAFF, STUDENT
 
     @Column(name = "member_refresh_token")
     private String refreshToken; // 리프레시 토큰
 
-    @Column(name = "member_dormitory")
-    private Integer dormitoryNum; // 기숙사 번호
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dormitory_num")
+    private DormitoryEntity dormitoryEntity; // 기숙사 번호
 
     public MemberEntity(String password, String refreshToken) {
         this.password = password;
         this.refreshToken = refreshToken;
+    }
+
+    public MemberDTO toDTO(){
+        return MemberDTO.builder()
+                .memberNum(this.memberNum)
+                .id(this.id)
+                .password(this.password)
+                .build();
     }
 }

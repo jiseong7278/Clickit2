@@ -1,13 +1,12 @@
 package com.project.clickit.member.service;
 
 import com.project.clickit.member.domain.repository.MemberRepository;
-import com.project.clickit.jwt.JwtService;
+import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.member.domain.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,7 @@ public class MemberService {
     final MemberRepository memberRepository;
 
     @Autowired
-    final JwtService jwtService;
+    final JwtProvider jwtProvider;
     @Transactional
     public ResponseEntity getAll() {
         try {
@@ -52,7 +51,7 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseEntity login(HttpHeaders httpHeaders, MemberEntity memberEntity) {
+    public ResponseEntity loginPost(HttpHeaders httpHeaders, MemberEntity memberEntity) {
         String responseBody = null;
         HttpHeaders headers = new HttpHeaders();
 
@@ -74,9 +73,9 @@ public class MemberService {
         }
 
         // refresh token 검증 (내용 및 만료 여부)
-        if(jwtService.validateToken(httpHeaders.get("Authorization").get(0), false)) {
+        /*if(jwtProvider.validateToken(httpHeaders.get("Authorization").get(0), false)) {
             // 재발급
-            createdRefreshToken = jwtService.createToken(dbMemberEntity.getMemberNum(), dbMemberEntity.getName(), dbMemberEntity.getType(), false);
+            createdRefreshToken = jwtProvider.createToken(dbMemberEntity.getMemberNum(), dbMemberEntity.getName(), dbMemberEntity.getType(), false);
             headers.add("Authorization", "Bearer " + createdRefreshToken);
 
             // db에 refresh token 저장
@@ -86,18 +85,29 @@ public class MemberService {
                 return errorResponse(e.getMessage());
             }
         }
-        createdAccessToken = jwtService.createToken(dbMemberEntity.getMemberNum(), dbMemberEntity.getName(), dbMemberEntity.getType(), true);
-        headers.add("Authorization", "Bearer " + createdAccessToken);
+        createdAccessToken = jwtProvider.createToken(dbMemberEntity.getMemberNum(), dbMemberEntity.getName(), dbMemberEntity.getType(), true);
+        headers.add("Authorization", "Bearer " + createdAccessToken);*/
 
         // 로그인 성공
         // 밑에 코드는 수정
         return ResponseEntity.ok().headers(headers).body("로그인 성공");
     }
 
+    public ResponseEntity loginPost(MemberEntity memberEntity){
+        // 아이디와 비밀번호가 null인지 확인
+        if(memberEntity.getId() == null || memberEntity.getPassword() == null) return errorResponse("아이디와 비밀번호를 입력해주세요.");
+
+        MemberEntity dbMemberEntity = memberRepository.findByMemberId(memberEntity.getId());
+
+        // 일치하는 아이디가 존재하지 않거나 비밀번호가 일치하지 않으면 에러 메시지 반환
+        if(dbMemberEntity == null || !dbMemberEntity.getPassword().equals(memberEntity.getPassword())) return errorResponse("아이디 또는 비밀번호가 일치하지 않습니다.");
+
+        return ResponseEntity.ok().body("로그인 성공");
+    }
+
     @Transactional
-    public String findPasswordByMemberId(String memberId) {
-        String password = memberRepository.findPasswordByMemberId(memberId);
-        return password;
+    public String getPasswordFromDB(String memberId) {
+        return memberRepository.findPasswordByMemberId(memberId);
     }
 
     private ResponseEntity errorResponse(String message) {
