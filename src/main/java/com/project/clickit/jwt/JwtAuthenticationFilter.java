@@ -1,4 +1,4 @@
-package com.project.clickit.filters;
+package com.project.clickit.jwt;
 
 import com.project.clickit.jwt.JwtProvider;
 import jakarta.servlet.FilterChain;

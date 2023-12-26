@@ -1,4 +1,4 @@
-package com.project.clickit.member.domain.entity;
+package com.project.clickit.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

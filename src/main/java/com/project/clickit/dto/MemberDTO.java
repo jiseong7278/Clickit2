@@ -1,6 +1,6 @@
-package com.project.clickit.member.dto;
+package com.project.clickit.dto;
 
-import com.project.clickit.member.domain.entity.MemberEntity;
+import com.project.clickit.entity.MemberEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

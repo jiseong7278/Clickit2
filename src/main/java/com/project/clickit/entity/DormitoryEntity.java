@@ -1,6 +1,5 @@
-package com.project.clickit.dormitory.domain;
+package com.project.clickit.entity;
 
-import com.project.clickit.member.domain.entity.MemberEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

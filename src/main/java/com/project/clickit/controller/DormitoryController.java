@@ -1,4 +1,4 @@
-package com.project.clickit.dormitory.controller;
+package com.project.clickit.controller;
 
 import com.project.clickit.dormitory.service.DormitoryService;
 import lombok.RequiredArgsConstructor;

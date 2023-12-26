@@ -1,7 +1,6 @@
-package com.project.clickit.member.domain.entity;
+package com.project.clickit.entity;
 
-import com.project.clickit.dormitory.domain.DormitoryEntity;
-import com.project.clickit.member.dto.MemberDTO;
+import com.project.clickit.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

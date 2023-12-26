@@ -1,7 +1,7 @@
-package com.project.clickit.member.controller;
+package com.project.clickit.controller;
 
-import com.project.clickit.member.domain.entity.MemberEntity;
-import com.project.clickit.member.service.MemberService;
+import com.project.clickit.entity.MemberEntity;
+import com.project.clickit.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

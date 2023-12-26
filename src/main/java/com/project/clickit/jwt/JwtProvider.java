@@ -88,27 +88,57 @@ public class JwtProvider{
                 .compact();
     }
 
+    /**
+     * <b>Get Authentication (Username Password Authentication Token including userDetails and users authorities)</b>
+     * @param token String
+     * @return Authentication
+     */
     public Authentication getAuthentication(String token){
         UserDetails userDetails = userDetailsService.loadUserByUsername(getMemberName(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
+    /**
+     * <b>Get member name from token</b>
+     * @param token String
+     * @return String
+     */
     public String getMemberName(String token){
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("memberName", String.class);
     }
 
+    /**
+     * <b>Get issuer from token</b>
+     * @param token String
+     * @return String
+     */
     public String getIssuer(String token){
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getIssuer();
     }
 
+    /**
+     * <b>Get subject from token</b>
+     * @param token String
+     * @return String
+     */
     public String getSubject(String token){
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * <b>Get roles from token</b>
+     * @param token String
+     * @return List<String>
+     */
     public List<String> getRoles(String token){
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("roles", List.class);
     }
 
+    /**
+     * <b>Validate token</b><br>throw exceptions when token is invalid<br>invalid token: expired, invalid issuer, invalid signature, invalid token, unsupported token
+     * @param token String
+     * @return boolean
+     */
     public boolean validateToken(String token){
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
@@ -127,6 +157,11 @@ public class JwtProvider{
         }
     }
 
+    /**
+     * <b>Resolve token from request header</b>
+     * @param req HttpServletRequest
+     * @return String
+     */
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader(TOKEN_HEADER);
         if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {

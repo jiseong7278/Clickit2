@@ -1,8 +1,8 @@
-package com.project.clickit.member.service;
+package com.project.clickit.service;
 
-import com.project.clickit.member.domain.repository.MemberRepository;
+import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.jwt.JwtProvider;
-import com.project.clickit.member.domain.entity.MemberEntity;
+import com.project.clickit.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

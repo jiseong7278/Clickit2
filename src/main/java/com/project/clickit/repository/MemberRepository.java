@@ -1,6 +1,6 @@
-package com.project.clickit.member.domain.repository;
+package com.project.clickit.repository;
 
-import com.project.clickit.member.domain.entity.MemberEntity;
+import com.project.clickit.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +25,10 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     // find by member name
     @Query("SELECT new MemberEntity(m.memberNum, m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.name = :memberName")
     MemberEntity findByMemberName(@Param("memberName") String memberName);
+
+    // exist check by id
+    Boolean existsById(String id);
+
+    // find by id
+    MemberEntity findById(String id);
 }

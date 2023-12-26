@@ -1,7 +1,7 @@
 package com.project.clickit;
 
 import com.project.clickit.jwt.JwtProvider;
-import com.project.clickit.member.service.MemberService;
+import com.project.clickit.service.MemberService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
