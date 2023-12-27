@@ -55,6 +55,13 @@ public class MemberEntity {
                 .memberNum(this.memberNum)
                 .id(this.id)
                 .password(this.password)
+                .name(this.name)
+                .email(this.email)
+                .phone(this.phone)
+                .studentNum(this.studentNum)
+                .type(this.type)
+                .refreshToken(this.refreshToken)
+                .dormitoryEntity(this.dormitoryEntity)
                 .build();
     }
 }
