@@ -3,12 +3,17 @@ package com.project.clickit.controller;
 
 import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
+import com.project.clickit.dto.TokenDTO;
+import com.project.clickit.exceptions.login.ConcurrentlySignUpException;
+import com.project.clickit.exceptions.login.DuplicatedIdException;
 import com.project.clickit.service.LoginService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/login")
 public class LoginController {
@@ -22,14 +27,14 @@ public class LoginController {
     @GetMapping("/duplicateCheck")
     public ResponseEntity duplicateCheck(@RequestParam("id") String id){
         if(loginService.duplicateCheck(id))
-            return new ResponseEntity("이미 가입된 아이디입니다.", HttpStatus.BAD_REQUEST) ;
+            return ResponseEntity.badRequest().body("이미 가입된 아이디입니다.") ;
         else
-            return new ResponseEntity("사용 가능한 아이디입니다.", HttpStatus.OK) ;
+            return ResponseEntity.ok().body("사용 가능한 아이디입니다.");
     }
 
     @PostMapping("/signUp")
     public ResponseEntity signUp(@RequestBody MemberDTO memberDTO){
-        return new ResponseEntity(loginService.signUp(memberDTO), HttpStatus.OK);
+        return ResponseEntity.ok().body(loginService.signUp(memberDTO));
     }
 
     @PostMapping("/signIn")

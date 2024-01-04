@@ -23,7 +23,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     void updateRefreshToken(@Param("refreshToken") String refreshToken, @Param("memberId") String memberId);
 
     // find by member name
-    @Query("SELECT new MemberEntity(m.memberNum, m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.name = :memberName")
+    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken) FROM MemberEntity m where m.name = :memberName")
     MemberEntity findByMemberName(@Param("memberName") String memberName);
 
     // exist check by id

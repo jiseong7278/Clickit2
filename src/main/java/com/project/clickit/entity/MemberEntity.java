@@ -13,10 +13,6 @@ import lombok.*;
 @Entity
 public class MemberEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_num")
-    private Long memberNum;
-
     @Column(name = "member_id")
     private String id; // 로그인 아이디
 
@@ -41,10 +37,6 @@ public class MemberEntity {
     @Column(name = "member_refresh_token")
     private String refreshToken; // 리프레시 토큰
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dormitory_num")
-    private DormitoryEntity dormitoryEntity; // 기숙사 번호
-
     public MemberEntity(String password, String refreshToken) {
         this.password = password;
         this.refreshToken = refreshToken;
@@ -52,7 +44,6 @@ public class MemberEntity {
 
     public MemberDTO toDTO(){
         return MemberDTO.builder()
-                .memberNum(this.memberNum)
                 .id(this.id)
                 .password(this.password)
                 .name(this.name)
@@ -61,7 +52,6 @@ public class MemberEntity {
                 .studentNum(this.studentNum)
                 .type(this.type)
                 .refreshToken(this.refreshToken)
-                .dormitoryEntity(this.dormitoryEntity)
                 .build();
     }
 }

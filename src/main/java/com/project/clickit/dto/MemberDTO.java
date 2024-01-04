@@ -1,6 +1,5 @@
 package com.project.clickit.dto;
 
-import com.project.clickit.entity.DormitoryEntity;
 import com.project.clickit.entity.MemberEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MemberDTO {
-    private Long memberNum;
     private String id;
     private String password;
     private String name;
@@ -18,11 +16,9 @@ public class MemberDTO {
     private String studentNum;
     private String type;
     private String refreshToken;
-    private DormitoryEntity dormitoryEntity;
 
-    public MemberDTO(Long memberNum, String id, String password,
+    public MemberDTO(String id, String password,
                      String name, String email, String phone, String studentNum){
-        this.memberNum = memberNum;
         this.id = id;
         this.password = password;
         this.name = name;
@@ -32,10 +28,9 @@ public class MemberDTO {
     }
 
     @Builder
-    public MemberDTO(Long memberNum, String id, String password,
+    public MemberDTO(String id, String password,
                      String name, String email, String phone, String studentNum,
-                     String type, String refreshToken, DormitoryEntity dormitoryEntity) {
-        this.memberNum = memberNum;
+                     String type, String refreshToken) {
         this.id = id;
         this.password = password;
         this.name = name;
@@ -44,12 +39,10 @@ public class MemberDTO {
         this.studentNum = studentNum;
         this.type = type;
         this.refreshToken = refreshToken;
-        this.dormitoryEntity = dormitoryEntity;
     }
 
     public MemberEntity toEntity(){
         return MemberEntity.builder()
-                .memberNum(this.memberNum)
                 .id(this.id)
                 .password(this.password)
                 .name(this.name)
@@ -58,7 +51,6 @@ public class MemberDTO {
                 .studentNum(this.studentNum)
                 .type(this.type)
                 .refreshToken(this.refreshToken)
-                .dormitoryEntity(this.dormitoryEntity)
                 .build();
     }
 }

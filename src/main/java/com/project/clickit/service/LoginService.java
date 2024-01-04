@@ -4,8 +4,14 @@ import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.entity.MemberEntity;
+import com.project.clickit.exceptions.ErrorCode;
+import com.project.clickit.exceptions.login.ConcurrentlySignUpException;
+import com.project.clickit.exceptions.login.DuplicatedIdException;
+import com.project.clickit.exceptions.login.InvalidIdException;
+import com.project.clickit.exceptions.login.InvalidPasswordException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+@Slf4j
 @Service
 public class LoginService {
     private final MemberRepository memberRepository;
@@ -39,19 +46,21 @@ public class LoginService {
         ReentrantLock lock = lockMap.computeIfAbsent(memberDTO.getId(), key -> new ReentrantLock());
 
         if(!lock.tryLock()){
-            throw new RuntimeException("잠시만 기다려 주세요.");
+            throw new ConcurrentlySignUpException(ErrorCode.CONCURRENTLY_SIGNUP);
         }
 
         try{
-            Boolean isExist = duplicateCheck(memberDTO.getId());
-
-            if (isExist) {
-                throw new RuntimeException("이미 가입된 아이디입니다.");
+            if (duplicateCheck(memberDTO.getId())) {
+                throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
             }else{
                 MemberEntity memberEntity = MemberEntity.builder()
                         .id(memberDTO.getId())
                         .password(memberDTO.getPassword())
                         .name(memberDTO.getName())
+                        .email(memberDTO.getEmail())
+                        .phone(memberDTO.getPhone())
+                        .studentNum(memberDTO.getStudentNum())
+                        .type("STUDENT")
                         .build();
 
                 String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList("STUDENT"));
@@ -62,7 +71,6 @@ public class LoginService {
                 memberRepository.save(memberEntity);
 
                 return TokenDTO.builder()
-                        .memberNum(memberEntity.getMemberNum())
                         .id(memberEntity.getId())
                         .password(memberEntity.getPassword())
                         .accessToken(accessToken)
@@ -90,17 +98,16 @@ public class LoginService {
                 memberRepository.save(memberEntity);
 
                 return TokenDTO.builder()
-                        .memberNum(memberEntity.getMemberNum())
                         .id(memberEntity.getId())
                         .password(memberEntity.getPassword())
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
             }else{
-                throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+                throw new InvalidPasswordException(ErrorCode.INVALID_PASSWORD);
             }
         }else{
-            throw new RuntimeException("존재하지 않는 아이디입니다.");
+            throw new InvalidIdException(ErrorCode.INVALID_ID);
         }
     }
 }
