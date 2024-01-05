@@ -19,26 +19,17 @@ public class MemberController {
     @GetMapping("/getAll")
     @ResponseBody
     public ResponseEntity getAll() {
-        return memberService.getAll();
+        return ResponseEntity.ok(memberService.getAll());
     }
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody MemberEntity memberEntity) {
-        return memberService.create(memberEntity);
+        return ResponseEntity.ok(memberService.create(memberEntity));
     }
 
     @PostMapping("/createList")
     public ResponseEntity createList(@RequestBody List<MemberEntity> memberEntityList) {
-        return memberService.createList(memberEntityList);
-    }
-
-    @GetMapping("/login")
-    public void login(@RequestHeader HttpHeaders httpHeaders){
-
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestHeader HttpHeaders httpHeaders, @RequestBody MemberEntity memberEntity) {
-        return memberService.loginPost(httpHeaders, memberEntity);
+        memberService.createList(memberEntityList);
+        return ResponseEntity.ok().build();
     }
 }
