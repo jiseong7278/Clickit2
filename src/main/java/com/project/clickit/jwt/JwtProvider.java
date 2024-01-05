@@ -1,5 +1,7 @@
 package com.project.clickit.jwt;
 
+import com.project.clickit.exceptions.ErrorCode;
+import com.project.clickit.exceptions.jwt.*;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -142,18 +144,18 @@ public class JwtProvider{
     public boolean validateToken(String token){
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            if(!claims.getBody().getIssuer().equals(issuer)) throw new JwtException("유효하지 않은 토큰입니다.");
+            if(!claims.getBody().getIssuer().equals(issuer)) throw new InvalidIssuerException(ErrorCode.INVALID_ISSUER);
             return true;
         }catch (SignatureException e){
-            throw new JwtException("유효하지 않은 토큰입니다.");
+            throw new InvalidSignatureException(ErrorCode.INVALID_SIGNATURE_TOKEN);
         }catch(ExpiredJwtException e){
-            throw new JwtException("토큰이 만료되었습니다.");
+            throw new ExpiredTokenException(ErrorCode.EXPIRED_TOKEN);
         }catch(UnsupportedJwtException e){
-            throw new JwtException("지원되지 않는 토큰입니다.");
+            throw new UnsupportedTokenException(ErrorCode.UNSUPPORTED_TOKEN);
         }catch(IllegalArgumentException e){
-            throw new JwtException("토큰이 잘못되었습니다.");
+            throw new IllegalTokenException(ErrorCode.ILLEGAL_TOKEN);
         }catch(Exception e){
-            throw new JwtException("토큰 검증 실패");
+            throw new UnexpectedTokenException(ErrorCode.UNEXPECTED_TOKEN_ERROR);
         }
     }
 

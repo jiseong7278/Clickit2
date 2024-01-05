@@ -1,5 +1,6 @@
 package com.project.clickit.exceptions;
 
+import com.project.clickit.exceptions.jwt.*;
 import com.project.clickit.exceptions.login.ConcurrentlySignUpException;
 import com.project.clickit.exceptions.login.DuplicatedIdException;
 import com.project.clickit.exceptions.login.InvalidIdException;
@@ -11,6 +12,62 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
+    // jwt
+    /**
+     * 유효하지 않은 발급자일 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(InvalidIssuerException.class)
+    public ResponseEntity handleInvalidIssuerException(){
+        return ResponseEntity.status(ErrorCode.INVALID_ISSUER.getHttpStatus()).body(ErrorCode.INVALID_ISSUER.getMessage());
+    }
+
+    /**
+     * 유효하지 않은 시그니처일 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(InvalidSignatureException.class)
+    public ResponseEntity handleInvalidSignatureException(){
+        return ResponseEntity.status(ErrorCode.INVALID_SIGNATURE_TOKEN.getHttpStatus()).body(ErrorCode.INVALID_SIGNATURE_TOKEN.getMessage());
+    }
+
+    /**
+     * 토큰이 만료되었을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(ExpiredTokenException.class)
+    public ResponseEntity handleExpiredTokenException(){
+        return ResponseEntity.status(ErrorCode.EXPIRED_TOKEN.getHttpStatus()).body(ErrorCode.EXPIRED_TOKEN.getMessage());
+    }
+
+    /**
+     * 지원하지 않는 토큰일 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(UnsupportedTokenException.class)
+    public ResponseEntity handleUnsupportedTokenException(){
+        return ResponseEntity.status(ErrorCode.UNSUPPORTED_TOKEN.getHttpStatus()).body(ErrorCode.UNSUPPORTED_TOKEN.getMessage());
+    }
+
+    /**
+     * 토큰이 잘못되었을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(IllegalTokenException.class)
+    public ResponseEntity handleIllegalTokenException(){
+        return ResponseEntity.status(ErrorCode.ILLEGAL_TOKEN.getHttpStatus()).body(ErrorCode.ILLEGAL_TOKEN.getMessage());
+    }
+
+    /**
+     * 예상치 못한 토큰 예외 발생 시
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(UnexpectedTokenException.class)
+    public ResponseEntity handleUnexpectedTokenException(){
+        return ResponseEntity.status(ErrorCode.UNEXPECTED_TOKEN_ERROR.getHttpStatus()).body(ErrorCode.UNEXPECTED_TOKEN_ERROR.getMessage());
+    }
+
+    // login
     /**
      * 동시에 회원가입을 시도할 경우 발생하는 예외
      * @return 409 Conflict
