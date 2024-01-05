@@ -83,7 +83,7 @@ public class LoginService {
     }
 
     @Transactional
-    public TokenDTO login(LoginDTO loginDTO){
+    public TokenDTO signIn(LoginDTO loginDTO){
         this.loginDTO = loginDTO;
         Boolean isExist = duplicateCheck(loginDTO.getId());
         if(isExist){

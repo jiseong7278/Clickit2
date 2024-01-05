@@ -3,9 +3,6 @@ package com.project.clickit.controller;
 
 import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
-import com.project.clickit.dto.TokenDTO;
-import com.project.clickit.exceptions.login.ConcurrentlySignUpException;
-import com.project.clickit.exceptions.login.DuplicatedIdException;
 import com.project.clickit.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,6 @@ public class LoginController {
 
     @PostMapping("/signIn")
     public ResponseEntity signIn(@RequestBody LoginDTO loginDTO){
-        return new ResponseEntity(loginService.login(loginDTO), HttpStatus.OK);
+        return new ResponseEntity(loginService.signIn(loginDTO), HttpStatus.OK);
     }
 }

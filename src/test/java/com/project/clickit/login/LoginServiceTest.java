@@ -156,7 +156,7 @@ public class LoginServiceTest {
         given(jwtProvider.createRefreshToken(any(String.class), any())).willReturn("refresh_token");
 
         // when
-        TokenDTO tokenDTO = loginService.login(loginDTO);
+        TokenDTO tokenDTO = loginService.signIn(loginDTO);
 
         // then
         assertThat(tokenDTO).isNotNull();
@@ -171,7 +171,7 @@ public class LoginServiceTest {
         given(memberRepository.existsById(loginDTO.getId())).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> loginService.login(loginDTO))
+        assertThatThrownBy(() -> loginService.signIn(loginDTO))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("아이디가 존재하지 않습니다.");
 

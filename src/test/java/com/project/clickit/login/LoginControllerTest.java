@@ -8,7 +8,6 @@ import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.login.DuplicatedIdException;
 import com.project.clickit.service.LoginService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -171,7 +169,7 @@ public class LoginControllerTest {
         log.info("con: {}", con);
 
         // given
-        given(loginService.login(loginDTO)).willThrow(RuntimeException.class);
+        given(loginService.signIn(loginDTO)).willThrow(RuntimeException.class);
 
         log.info("로그인 시도");
         // when and then
@@ -193,7 +191,7 @@ public class LoginControllerTest {
         log.info("con: {}", con);
 
         // given
-        given(loginService.login(loginDTO)).willReturn(new TokenDTO());
+        given(loginService.signIn(loginDTO)).willReturn(new TokenDTO());
 
         log.info("로그인 시도");
         // when and then
