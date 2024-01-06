@@ -1,5 +1,6 @@
 package com.project.clickit.dto;
 
+import com.project.clickit.entity.DormitoryEntity;
 import com.project.clickit.entity.MemberEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class MemberDTO {
     private String studentNum;
     private String type;
     private String refreshToken;
+    private String dormitoryId;
 
     public MemberDTO(String id, String password,
                      String name, String email, String phone, String studentNum){
@@ -30,7 +32,7 @@ public class MemberDTO {
     @Builder
     public MemberDTO(String id, String password,
                      String name, String email, String phone, String studentNum,
-                     String type, String refreshToken) {
+                     String type, String refreshToken, String dormitoryId){
         this.id = id;
         this.password = password;
         this.name = name;
@@ -39,6 +41,7 @@ public class MemberDTO {
         this.studentNum = studentNum;
         this.type = type;
         this.refreshToken = refreshToken;
+        this.dormitoryId = dormitoryId;
     }
 
     public MemberEntity toEntity(){
@@ -51,6 +54,9 @@ public class MemberDTO {
                 .studentNum(this.studentNum)
                 .type(this.type)
                 .refreshToken(this.refreshToken)
+                .dormitoryEntity(DormitoryEntity.builder()
+                        .id(this.dormitoryId)
+                        .build())
                 .build();
     }
 }

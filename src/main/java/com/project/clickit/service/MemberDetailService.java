@@ -20,10 +20,10 @@ public class MemberDetailService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        MemberEntity memberEntity = memberRepository.findByMemberName(username);
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+        MemberEntity memberEntity = memberRepository.findByMemberId(id);
         if(memberEntity == null) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException(id);
         }
         return new CustomMemberDetails(memberEntity);
     }

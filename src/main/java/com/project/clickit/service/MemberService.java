@@ -1,5 +1,6 @@
 package com.project.clickit.service;
 
+import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.entity.MemberEntity;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,8 +28,12 @@ public class MemberService {
     }
 
     @Transactional
-    public List<MemberEntity> getAll() {
-        return memberRepository.getAll();
+    public List<MemberDTO> getAll() {
+        List<MemberDTO> memberDTOList = new ArrayList<>();
+        for (MemberEntity memberEntity : memberRepository.findAll()) {
+            memberDTOList.add(memberEntity.toDTO());
+        }
+        return memberDTOList;
     }
 
     @Transactional
@@ -38,6 +44,11 @@ public class MemberService {
     @Transactional
     public void createList(List<MemberEntity> memberEntityList) {
         memberRepository.saveAll(memberEntityList);
+    }
+
+    @Transactional
+    public MemberDTO findByMemberId(String id) {
+        return memberRepository.findByMemberId(id).toDTO();
     }
 
 }

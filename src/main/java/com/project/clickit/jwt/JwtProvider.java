@@ -5,6 +5,7 @@ import com.project.clickit.exceptions.jwt.*;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Component
 public class JwtProvider{
 
@@ -45,16 +47,16 @@ public class JwtProvider{
 
     /**
      * <b>Create access token</b>
-     * @param memberName String
+     * @param memberId String
      * @param roles List<String>
      * @return String
      */
-    public String createAccessToken(String memberName, List<String> roles){
+    public String createAccessToken(String memberId, List<String> roles){
 
         Claims claims = Jwts.claims().setIssuer(issuer);
         claims.setSubject(TOKEN_SUBJECT_ACCESS);
         claims.put("roles", roles);
-        claims.put("memberName", memberName);
+        claims.put("memberId", memberId);
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + Duration.ofHours(2).toMillis());
@@ -69,16 +71,16 @@ public class JwtProvider{
 
     /**
      * <b>Create refresh token</b>
-     * @param memberName String
+     * @param memberId String
      * @param roles List<String>
      * @return String
      */
-    public String createRefreshToken(String memberName, List<String> roles){
+    public String createRefreshToken(String memberId, List<String> roles){
 
         Claims claims = Jwts.claims().setIssuer(issuer);
         claims.setSubject(TOKEN_SUBJECT_REFRESH);
         claims.put("roles", roles);
-        claims.put("memberName", memberName);
+        claims.put("memberId", memberId);
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + Duration.ofHours(24).toMillis());
@@ -96,7 +98,7 @@ public class JwtProvider{
      * @return Authentication
      */
     public Authentication getAuthentication(String token){
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getMemberName(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(getMemberId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -105,8 +107,8 @@ public class JwtProvider{
      * @param token String
      * @return String
      */
-    public String getMemberName(String token){
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("memberName", String.class);
+    public String getMemberId(String token){
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("memberId", String.class);
     }
 
     /**

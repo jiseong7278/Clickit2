@@ -32,4 +32,9 @@ public class MemberController {
         memberService.createList(memberEntityList);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/findByMemberId")
+    public ResponseEntity findByMemberId(@RequestParam("id") String id) {
+        return ResponseEntity.ok().body(memberService.findByMemberId(id));
+    }
 }

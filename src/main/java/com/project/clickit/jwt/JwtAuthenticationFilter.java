@@ -7,6 +7,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
+@Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;
@@ -32,6 +34,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         String token = jwtProvider.resolveToken((HttpServletRequest) request);
 
+        log.info("token: " + token);
+
         try{
             String path = httpRequest.getServletPath();
             logger.info("path: " + path);
@@ -43,6 +47,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             }
             chain.doFilter(request, response);
         }catch (Exception e) {
+            log.info("doFilter Exception: " + e.getMessage());
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setCharacterEncoding("UTF-8");
             httpResponse.setStatus(HttpStatus.BAD_REQUEST.value());

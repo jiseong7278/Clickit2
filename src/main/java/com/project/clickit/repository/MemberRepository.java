@@ -12,8 +12,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query(value = "SELECT * FROM clickit.member", nativeQuery = true)
     List<MemberEntity> getAll();
 
-    @Query("SELECT new MemberEntity(m.password, m.refreshToken) FROM MemberEntity m where m.id = :memberId")
-    MemberEntity findByMemberId(@Param("memberId") String memberId);
+    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.id = :id")
+    MemberEntity findByMemberId(@Param("id") String id);
 
     @Query(value = "SELECT m.member_password FROM clickit.member as m WHERE m.member_id = :memberId", nativeQuery = true)
     String findPasswordByMemberId(@Param("memberId") String memberId);
@@ -23,8 +23,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     void updateRefreshToken(@Param("refreshToken") String refreshToken, @Param("memberId") String memberId);
 
     // find by member name
-    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken) FROM MemberEntity m where m.name = :memberName")
-    MemberEntity findByMemberName(@Param("memberName") String memberName);
+    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.id = :memberId")
+    MemberEntity findByMemberName(@Param("memberId") String memberId);
 
     // exist check by id
     Boolean existsById(String id);
