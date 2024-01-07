@@ -1,5 +1,8 @@
 package com.project.clickit.exceptions;
 
+import com.project.clickit.exceptions.common.DuplicatedIdException;
+import com.project.clickit.exceptions.common.InvalidIdException;
+import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
 import com.project.clickit.exceptions.jwt.*;
 import com.project.clickit.exceptions.login.*;
 import org.springframework.http.ResponseEntity;
@@ -118,5 +121,19 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity handleMemberNotFoundException(){
         return ResponseEntity.status(ErrorCode.MEMBER_NOT_FOUND.getHttpStatus()).body(ErrorCode.MEMBER_NOT_FOUND.getMessage());
+    }
+
+
+    // member
+
+
+    // dormitory
+    /**
+     * 기숙사가 존재하지 않을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(DormitoryNotFoundException.class)
+    public ResponseEntity handleDormitoryNotFoundException(){
+        return ResponseEntity.status(ErrorCode.DORMITORY_NOT_FOUND.getHttpStatus()).body(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
     }
 }

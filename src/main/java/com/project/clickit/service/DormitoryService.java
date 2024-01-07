@@ -2,6 +2,8 @@ package com.project.clickit.service;
 
 import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.entity.DormitoryEntity;
+import com.project.clickit.exceptions.common.DuplicatedIdException;
+import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
 import com.project.clickit.repository.DormitoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +23,15 @@ public class DormitoryService {
     }
 
     @Transactional
-    public Boolean duplicateCheck(String id) {
+    public Boolean isExist(String id) {
         return dormitoryRepository.existsById(id);
     }
 
     @Transactional
     public void createDormitory(DormitoryDTO dormitoryDTO) {
+        if(isExist(dormitoryDTO.getId())){
+            throw new DuplicatedIdException();
+        }
         dormitoryRepository.save(dormitoryDTO.toEntity());
     }
 
@@ -42,11 +47,17 @@ public class DormitoryService {
 
     @Transactional
     public void updateDormitoryName(String id, String name) {
+        if(!isExist(id)){
+            throw new DormitoryNotFoundException();
+        }
         dormitoryRepository.updateDormitoryName(id, name);
     }
 
     @Transactional
     public void deleteById(String id) {
+        if(!isExist(id)){
+            throw new DormitoryNotFoundException();
+        }
         dormitoryRepository.deleteById(id);
     }
 

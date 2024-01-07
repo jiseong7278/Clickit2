@@ -5,8 +5,7 @@ import com.project.clickit.controller.LoginController;
 import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
-import com.project.clickit.exceptions.ErrorCode;
-import com.project.clickit.exceptions.login.DuplicatedIdException;
+import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +40,7 @@ public class LoginControllerTest {
     @MockBean
     private LoginService loginService;
 
-    private LocalDateTime localDateTime = LocalDateTime.now();
+    private final LocalDateTime localDateTime = LocalDateTime.now();
 
     private LoginDTO loginDTO;
     private LoginDTO loginDTO2;
@@ -158,6 +157,7 @@ public class LoginControllerTest {
                         .content("{\"id\":\""+memberDTO2.getId()+"\", \"password\":\""+memberDTO2.getPassword()+"\", \"name\":\""+memberDTO2.getName()+"\", \"email\":\""+memberDTO2.getEmail()+"\", \"phone\":\""+memberDTO2.getPhone()+"\", \"studentNum\":\""+memberDTO2.getStudentNum()+"\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        log.info("회원가입 결과: {}", result.andReturn().getResponse().getContentAsString());
     }
 
     @Test
@@ -201,5 +201,6 @@ public class LoginControllerTest {
                         .content("{\"id\":\""+loginDTO.getId()+"\", \"password\":\""+loginDTO.getPassword()+"\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        log.info("로그인 결과: {}", result.andReturn().getResponse().getContentAsString());
     }
 }

@@ -1,4 +1,4 @@
-package com.project.clickit.exceptions.login;
+package com.project.clickit.exceptions.common;
 
 import com.project.clickit.exceptions.ErrorCode;
 import lombok.AllArgsConstructor;
