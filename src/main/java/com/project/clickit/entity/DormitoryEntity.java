@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @Table(name = "dormitory")
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @Entity
 public class DormitoryEntity {
     @Id
@@ -23,21 +23,16 @@ public class DormitoryEntity {
     @Column(name = "dormitory_name")
     private String name;
 
-    @OneToMany(mappedBy = "dormitoryEntity", cascade = CascadeType.PERSIST)
-    private List<MemberEntity> memberEntity;
+    @Builder
+    public DormitoryEntity(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public DormitoryDTO toDTO() {
-
-        List<MemberDTO> memberDTOList = new ArrayList<>();
-
-        for (MemberEntity memberEntity : this.memberEntity) {
-            memberDTOList.add(memberEntity.toDTO());
-        }
-
         return DormitoryDTO.builder()
                 .id(this.id)
                 .name(this.name)
-                .memberDTO(memberDTOList)
                 .build();
     }
 }

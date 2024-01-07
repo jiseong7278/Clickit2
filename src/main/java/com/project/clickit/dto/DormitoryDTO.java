@@ -14,27 +14,17 @@ import java.util.List;
 public class DormitoryDTO {
     private String id;
     private String name;
-    private List<MemberDTO> memberDTO;
 
     @Builder
-    public DormitoryDTO(String id, String name, List<MemberDTO> memberDTO) {
+    public DormitoryDTO(String id, String name) {
         this.id = id;
         this.name = name;
-        this.memberDTO = memberDTO;
     }
 
     public DormitoryEntity toEntity() {
-
-        List<MemberEntity> memberEntityList = new ArrayList<>();
-
-        for (MemberDTO memberDTO : this.memberDTO) {
-            memberEntityList.add(memberDTO.toEntity());
-        }
-
         return DormitoryEntity.builder()
                 .id(this.id)
                 .name(this.name)
-                .memberEntity(memberEntityList)
                 .build();
     }
 }
