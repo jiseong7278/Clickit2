@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     // jwt
+    TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않습니다."),
     INVALID_ISSUER(HttpStatus.BAD_REQUEST, "유효하지 않은 발급자입니다."),
     INVALID_SIGNATURE_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 서명입니다."),
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),

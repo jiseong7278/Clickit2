@@ -144,20 +144,21 @@ public class JwtProvider{
      * @return boolean
      */
     public boolean validateToken(String token){
+        if(token == null || token.equals("")) throw new TokenNotFoundException();
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            if(!claims.getBody().getIssuer().equals(issuer)) throw new InvalidIssuerException(ErrorCode.INVALID_ISSUER);
+            if(!claims.getBody().getIssuer().equals(issuer)) throw new InvalidIssuerException();
             return true;
         }catch (SignatureException e){
-            throw new InvalidSignatureException(ErrorCode.INVALID_SIGNATURE_TOKEN);
+            throw new InvalidSignatureException();
         }catch(ExpiredJwtException e){
-            throw new ExpiredTokenException(ErrorCode.EXPIRED_TOKEN);
+            throw new ExpiredTokenException();
         }catch(UnsupportedJwtException e){
-            throw new UnsupportedTokenException(ErrorCode.UNSUPPORTED_TOKEN);
+            throw new UnsupportedTokenException();
         }catch(IllegalArgumentException e){
-            throw new IllegalTokenException(ErrorCode.ILLEGAL_TOKEN);
+            throw new IllegalTokenException();
         }catch(Exception e){
-            throw new UnexpectedTokenException(ErrorCode.UNEXPECTED_TOKEN_ERROR);
+            throw new UnexpectedTokenException();
         }
     }
 

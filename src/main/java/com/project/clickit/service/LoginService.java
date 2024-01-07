@@ -46,12 +46,12 @@ public class LoginService {
         ReentrantLock lock = lockMap.computeIfAbsent(memberDTO.getId(), key -> new ReentrantLock());
 
         if(!lock.tryLock()){
-            throw new ConcurrentlySignUpException(ErrorCode.CONCURRENTLY_SIGNUP);
+            throw new ConcurrentlySignUpException();
         }
 
         try{
             if (duplicateCheck(memberDTO.getId())) {
-                throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
+                throw new DuplicatedIdException();
             }else{
                 MemberEntity memberEntity = MemberEntity.builder()
                         .id(memberDTO.getId())
@@ -104,10 +104,10 @@ public class LoginService {
                         .refreshToken(refreshToken)
                         .build();
             }else{
-                throw new InvalidPasswordException(ErrorCode.INVALID_PASSWORD);
+                throw new InvalidPasswordException();
             }
         }else{
-            throw new InvalidIdException(ErrorCode.INVALID_ID);
+            throw new InvalidIdException();
         }
     }
 }

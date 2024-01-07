@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public class ExpiredTokenException extends RuntimeException{
-    private final HttpStatus httpStatus = ErrorCode.EXPIRED_TOKEN.getHttpStatus();
-    private final String message = ErrorCode.EXPIRED_TOKEN.getMessage();
+public class TokenNotFoundException extends RuntimeException{
+    private final HttpStatus httpStatus = ErrorCode.TOKEN_NOT_FOUND.getHttpStatus();
+    private final String message = ErrorCode.TOKEN_NOT_FOUND.getMessage();
 }

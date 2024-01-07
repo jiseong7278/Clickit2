@@ -129,7 +129,7 @@ public class LoginControllerTest {
 
         // given
 //        given(loginService.signUp(memberDTO)).willReturn(null);
-        given(loginService.signUp(memberDTO)).willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID));
+        given(loginService.signUp(memberDTO)).willThrow(new DuplicatedIdException());
 
         log.info("회원가입 시도");
         // when and then

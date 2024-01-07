@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public class InvalidPasswordException extends RuntimeException{
-    private final HttpStatus httpStatus = ErrorCode.INVALID_PASSWORD.getHttpStatus();
-    private final String message = ErrorCode.INVALID_PASSWORD.getMessage();
+public class MemberNotFoundException extends RuntimeException{
+    private final HttpStatus httpStatus = ErrorCode.MEMBER_NOT_FOUND.getHttpStatus();
+    private final String message = ErrorCode.MEMBER_NOT_FOUND.getMessage();
 }

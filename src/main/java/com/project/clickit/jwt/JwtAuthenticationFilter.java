@@ -34,13 +34,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         String token = jwtProvider.resolveToken((HttpServletRequest) request);
 
-        log.info("token: " + token);
-
         try{
             String path = httpRequest.getServletPath();
             logger.info("path: " + path);
             if(!PatternMatchUtils.simpleMatch(whiteList, path)){
-                if(token != null && jwtProvider.validateToken(token)){
+                if(jwtProvider.validateToken(token)){
                     Authentication auth = jwtProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
@@ -51,7 +49,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setCharacterEncoding("UTF-8");
             httpResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-            httpResponse.getWriter().write(e.getMessage());
+            httpResponse.getWriter().write("인증 과정에서 오류가 발생하였습니다.\n원인:"+e.getMessage()+"\n다시 로그인해주세요.\n증상이 반복될 경우 관리자에게 문의해주세요.");
         }
     }
 }

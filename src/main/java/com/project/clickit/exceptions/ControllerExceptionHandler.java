@@ -1,10 +1,7 @@
 package com.project.clickit.exceptions;
 
 import com.project.clickit.exceptions.jwt.*;
-import com.project.clickit.exceptions.login.ConcurrentlySignUpException;
-import com.project.clickit.exceptions.login.DuplicatedIdException;
-import com.project.clickit.exceptions.login.InvalidIdException;
-import com.project.clickit.exceptions.login.InvalidPasswordException;
+import com.project.clickit.exceptions.login.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +10,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ControllerExceptionHandler {
 
     // jwt
+
+    /**
+     * 토큰이 존재하지 않을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity handleTokenNotFoundException(){
+        return ResponseEntity.status(ErrorCode.TOKEN_NOT_FOUND.getHttpStatus()).body(ErrorCode.TOKEN_NOT_FOUND.getMessage());
+    }
+
     /**
      * 유효하지 않은 발급자일 경우 발생하는 예외
      * @return 400 Bad Request
@@ -102,5 +109,14 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity handleInvalidPasswordException(){
         return ResponseEntity.status(ErrorCode.INVALID_PASSWORD.getHttpStatus()).body(ErrorCode.INVALID_PASSWORD.getMessage());
+    }
+
+    /**
+     * 회원이 존재하지 않을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity handleMemberNotFoundException(){
+        return ResponseEntity.status(ErrorCode.MEMBER_NOT_FOUND.getHttpStatus()).body(ErrorCode.MEMBER_NOT_FOUND.getMessage());
     }
 }
