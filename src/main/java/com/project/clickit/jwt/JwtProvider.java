@@ -1,6 +1,5 @@
 package com.project.clickit.jwt;
 
-import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.jwt.*;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;

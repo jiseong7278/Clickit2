@@ -4,7 +4,6 @@ import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.entity.MemberEntity;
-import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.login.ConcurrentlySignUpException;
 import com.project.clickit.exceptions.login.DuplicatedIdException;
 import com.project.clickit.exceptions.login.InvalidIdException;

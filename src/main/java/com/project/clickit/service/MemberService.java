@@ -4,11 +4,7 @@ import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.entity.MemberEntity;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,16 +25,12 @@ public class MemberService {
 
     @Transactional
     public List<MemberDTO> getAll() {
-        List<MemberDTO> memberDTOList = new ArrayList<>();
-        for (MemberEntity memberEntity : memberRepository.findAll()) {
-            memberDTOList.add(memberEntity.toDTO());
-        }
-        return memberDTOList;
+        return toDTOList(memberRepository.findAll());
     }
 
     @Transactional
-    public MemberEntity create(MemberEntity memberEntity) {
-        return memberRepository.save(memberEntity);
+    public MemberDTO create(MemberEntity memberEntity) {
+        return memberRepository.save(memberEntity).toDTO();
     }
 
     @Transactional
@@ -51,4 +43,11 @@ public class MemberService {
         return memberRepository.findByMemberId(id).toDTO();
     }
 
+    public List<MemberDTO> toDTOList(List<MemberEntity> memberEntityList) {
+        List<MemberDTO> memberDTOList = new ArrayList<>();
+        for (MemberEntity memberEntity : memberEntityList) {
+            memberDTOList.add(memberEntity.toDTO());
+        }
+        return memberDTOList;
+    }
 }

@@ -19,12 +19,12 @@ public class MemberController {
     @GetMapping("/getAll")
     @ResponseBody
     public ResponseEntity getAll() {
-        return ResponseEntity.ok(memberService.getAll());
+        return ResponseEntity.ok().body(memberService.getAll());
     }
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody MemberEntity memberEntity) {
-        return ResponseEntity.ok(memberService.create(memberEntity));
+        return ResponseEntity.ok().body(memberService.create(memberEntity));
     }
 
     @PostMapping("/createList")
