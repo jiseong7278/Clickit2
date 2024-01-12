@@ -15,6 +15,10 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.id = :id")
     MemberEntity findByMemberId(@Param("id") String id);
 
+    @Modifying
+    @Query("UPDATE MemberEntity m SET m.password = :password, m.name = :name, m.email = :email, m.phone = :phone, m.studentNum = :studentNum, m.type = :type WHERE m.id = :id")
+    void updateMember(@Param("id") String id, @Param("password") String password, @Param("name") String name, @Param("email") String email, @Param("phone") String phone, @Param("studentNum") String studentNum, @Param("type") String type);
+
     @Query(value = "SELECT m.member_password FROM clickit.member as m WHERE m.member_id = :memberId", nativeQuery = true)
     String findPasswordByMemberId(@Param("memberId") String memberId);
 
@@ -31,4 +35,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
     // find by id
     MemberEntity findById(String id);
+
+    void deleteById(String id);
 }

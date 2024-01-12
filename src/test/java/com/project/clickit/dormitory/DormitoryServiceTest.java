@@ -83,7 +83,7 @@ public class DormitoryServiceTest {
 
     @Nested
     @DisplayName("기숙사 생성 기능 테스트")
-    class dormitoryCreateTest{
+    class DormitoryCreateTest{
         @Test
         @DisplayName("기숙사 생성 테스트")
         void createDormitoryTest() {
@@ -122,7 +122,7 @@ public class DormitoryServiceTest {
 
     @Nested
     @DisplayName("기숙사 조회 기능 테스트")
-    class dormitoryReadTest{
+    class DormitoryReadTest{
         @Test
         @DisplayName("기숙사 전체 조회 테스트")
         void getAllTest(){
@@ -154,7 +154,7 @@ public class DormitoryServiceTest {
 
     @Nested
     @DisplayName("기숙사 수정 기능 테스트")
-    class dormitoryUpdateTest{
+    class DormitoryUpdateTest{
         @Test
         @DisplayName("기숙사 이름 수정 테스트")
         void updateDormitoryNameTest(){
@@ -195,7 +195,7 @@ public class DormitoryServiceTest {
 
     @Nested
     @DisplayName("기숙사 삭제 기능 테스트")
-    class dormitoryDeleteTest{
+    class DormitoryDeleteTest{
         @Test
         @DisplayName("기숙사 삭제 테스트")
         void deleteByIdTest(){

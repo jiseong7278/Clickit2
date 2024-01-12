@@ -11,8 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/login")
+@RequestMapping(value = "/login", produces="application/json;charset=UTF-8")
 public class LoginController {
     private final LoginService loginService;
 
