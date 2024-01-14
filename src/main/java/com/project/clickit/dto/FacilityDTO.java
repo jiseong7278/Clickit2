@@ -15,28 +15,35 @@ public class FacilityDTO {
     private Integer open;
     private Integer close;
     private String img;
-    private String dormitoryId;
+    private String terms;
+    private Integer extensionLimit;
+    private DormitoryDTO dormitoryDTO;
 
     public FacilityDTO(String id, String name, String info, Integer open,
-                       Integer close, String img) {
+                       Integer close, String img, String terms, Integer extensionLimit) {
         this.id = id;
         this.name = name;
         this.info = info;
         this.open = open;
         this.close = close;
         this.img = img;
+        this.terms = terms;
+        this.extensionLimit = extensionLimit;
     }
 
     @Builder
     public FacilityDTO(String id, String name, String info, Integer open,
-                       Integer close, String img, String dormitoryId) {
+                       Integer close, String img, String terms,
+                       Integer extensionLimit, DormitoryDTO dormitoryDTO) {
         this.id = id;
         this.name = name;
         this.info = info;
         this.open = open;
         this.close = close;
         this.img = img;
-        this.dormitoryId = dormitoryId;
+        this.terms = terms;
+        this.extensionLimit = extensionLimit;
+        this.dormitoryDTO = dormitoryDTO;
     }
 
     public FacilityEntity toEntity() {
@@ -47,9 +54,12 @@ public class FacilityDTO {
                 .open(this.open)
                 .close(this.close)
                 .img(this.img)
-                .dormitoryEntity(DormitoryEntity.builder()
-                        .id(this.dormitoryId)
-                        .build())
+                .terms(this.terms)
+                .extensionLimit(this.extensionLimit)
+                .dormitoryEntity(this.dormitoryDTO.toEntity())
+//                .dormitoryEntity(DormitoryEntity.builder()
+//                        .id(this.dormitoryId)
+//                        .build())
                 .build();
     }
 }

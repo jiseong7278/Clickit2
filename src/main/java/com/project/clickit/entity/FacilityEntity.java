@@ -31,18 +31,26 @@ public class FacilityEntity {
     @Column(name = "facility_img")
     private String img;
 
+    @Column(name = "facility_terms")
+    private String terms;
+
+    @Column(name = "facility_extension_limit")
+    private Integer extensionLimit;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_dormitory")
     private DormitoryEntity dormitoryEntity;
 
     public FacilityEntity(String id, String name, String info, Integer open,
-                          Integer close, String img) {
+                          Integer close, String img, String terms, Integer extensionLimit) {
         this.id = id;
         this.name = name;
         this.info = info;
         this.open = open;
         this.close = close;
         this.img = img;
+        this.terms = terms;
+        this.extensionLimit = extensionLimit;
     }
 
     public FacilityDTO toDTO() {
@@ -53,7 +61,9 @@ public class FacilityEntity {
                 .open(this.open)
                 .close(this.close)
                 .img(this.img)
-                .dormitoryId(this.dormitoryEntity.getId())
+                .terms(this.terms)
+                .extensionLimit(this.extensionLimit)
+                .dormitoryDTO(this.dormitoryEntity.toDTO())
                 .build();
     }
 }

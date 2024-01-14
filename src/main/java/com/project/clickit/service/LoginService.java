@@ -84,8 +84,7 @@ public class LoginService {
     @Transactional
     public TokenDTO signIn(LoginDTO loginDTO){
         this.loginDTO = loginDTO;
-        Boolean isExist = duplicateCheck(loginDTO.getId());
-        if(isExist){
+        if(duplicateCheck(loginDTO.getId())){
             MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
 
             if(memberEntity.getPassword().equals(loginDTO.getPassword())){

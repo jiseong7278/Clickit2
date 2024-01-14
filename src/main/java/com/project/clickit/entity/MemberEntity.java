@@ -56,7 +56,7 @@ public class MemberEntity {
                 .studentNum(this.studentNum)
                 .type(this.type)
                 .refreshToken(this.refreshToken)
-                .dormitoryId(this.dormitoryEntity.getId())
+                .dormitoryDTO(this.dormitoryEntity.toDTO())
                 .build();
     }
 }
