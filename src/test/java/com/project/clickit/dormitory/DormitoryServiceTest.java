@@ -147,7 +147,7 @@ public class DormitoryServiceTest {
             when(dormitoryRepository.findByDormitoryId(dormitoryDTO.getId())).thenReturn(dormitoryEntity);
 
             // then
-            assertThat(dormitoryService.getById(dormitoryDTO.getId())).isNotNull();
+            assertThat(dormitoryService.findById(dormitoryDTO.getId())).isNotNull();
             log.info("테스트 종료");
         }
     }

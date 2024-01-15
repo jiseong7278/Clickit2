@@ -138,7 +138,7 @@ public class JwtProvider{
     }
 
     /**
-     * <b>Validate token</b><br>throw exceptions when token is invalid<br>invalid token: expired, invalid issuer, invalid signature, invalid token, unsupported token
+     * <b>토큰 유효성 검사</b><br>throw exceptions when token is invalid<br>invalid token: expired, invalid issuer, invalid signature, invalid token, unsupported token
      * @param token String
      * @return boolean
      */
@@ -162,7 +162,7 @@ public class JwtProvider{
     }
 
     /**
-     * <b>Resolve token from request header</b>
+     * <b>헤더로부터 토큰 추출</b>
      * @param req HttpServletRequest
      * @return String
      */

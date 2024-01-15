@@ -41,7 +41,7 @@ public class DormitoryService {
     }
 
     @Transactional
-    public DormitoryDTO getById(String id) {
+    public DormitoryDTO findById(String id) {
         return dormitoryRepository.findByDormitoryId(id).toDTO();
     }
 
