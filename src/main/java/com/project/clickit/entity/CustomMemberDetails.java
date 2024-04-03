@@ -26,7 +26,7 @@ public class CustomMemberDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return memberEntity.getName();
+        return memberEntity.getId();
     }
 
     @Override

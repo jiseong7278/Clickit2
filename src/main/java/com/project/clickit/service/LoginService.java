@@ -12,6 +12,7 @@ import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +42,7 @@ public class LoginService {
     }
 
     @Transactional
-    public TokenDTO signUp(MemberDTO memberDTO){
+    public TokenDTO signUp(MemberDTO memberDTO, String role){ // 매개변수에 Type 추가 and accessToken, refreshToken에서 Collections.singletonList에 Type(매개변수)로 변경
         ReentrantLock lock = lockMap.computeIfAbsent(memberDTO.getId(), key -> new ReentrantLock());
 
         if(!lock.tryLock()){
@@ -62,8 +63,8 @@ public class LoginService {
                         .type("STUDENT")
                         .build();
 
-                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList("STUDENT"));
-                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList("STUDENT"));
+                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(role));
+                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(role));
 
                 memberEntity.setRefreshToken(refreshToken);
 
@@ -88,8 +89,8 @@ public class LoginService {
             MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
 
             if(memberEntity.getPassword().equals(loginDTO.getPassword())){
-                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList("STUDENT"));
-                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList("STUDENT"));
+                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
+                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
 
                 memberEntity.setRefreshToken(refreshToken);
 
@@ -106,6 +107,13 @@ public class LoginService {
             }
         }else{
             throw new InvalidIdException();
+        }
+    }
+
+    public void logout(String token){
+        String resolvedToken = jwtProvider.resolveToken(token);
+        if (jwtProvider.validateToken(resolvedToken)){
+            SecurityContextHolder.clearContext();
         }
     }
 }

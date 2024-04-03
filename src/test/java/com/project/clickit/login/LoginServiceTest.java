@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,6 +35,9 @@ public class LoginServiceTest {
 
     @InjectMocks
     private LoginService loginService;
+
+    @Value("${roles.student}")
+    private String TYPE_STUDENT;
 
     private LoginDTO loginDTO;
 
@@ -106,7 +110,7 @@ public class LoginServiceTest {
         given(jwtProvider.createAccessToken(any(String.class), any())).willReturn("access_token");
 
         // when
-        TokenDTO tokenDTO = loginService.signUp(memberDTO);
+        TokenDTO tokenDTO = loginService.signUp(memberDTO, TYPE_STUDENT);
 
         // then
         assertThat(tokenDTO).isNotNull();
@@ -130,7 +134,7 @@ public class LoginServiceTest {
         when(memberRepository.existsById(duplicatedMemberDTO.getId())).thenReturn(true);
 
         // when
-        assertThatThrownBy(() -> loginService.signUp(duplicatedMemberDTO))
+        assertThatThrownBy(() -> loginService.signUp(duplicatedMemberDTO, TYPE_STUDENT))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("이미 가입된 아이디입니다.");
 

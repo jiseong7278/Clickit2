@@ -174,4 +174,16 @@ public class JwtProvider{
         return null;
     }
 
+    /**
+     * <b>토큰 추출</b>
+     * @param token String
+     * @return String
+     */
+    public String resolveToken(String token) {
+        if (token != null && token.startsWith(TOKEN_PREFIX)) {
+            return token.substring(7);
+        }
+        return null;
+    }
+
 }

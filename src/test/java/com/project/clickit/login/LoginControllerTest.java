@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,6 +40,9 @@ public class LoginControllerTest {
 
     @MockBean
     private LoginService loginService;
+
+    @Value("${roles.student}")
+    private String TYPE_STUDENT;
 
     private final LocalDateTime localDateTime = LocalDateTime.now();
 
@@ -128,7 +132,7 @@ public class LoginControllerTest {
 
         // given
 //        given(loginService.signUp(memberDTO)).willReturn(null);
-        given(loginService.signUp(memberDTO)).willThrow(new DuplicatedIdException());
+        given(loginService.signUp(memberDTO, TYPE_STUDENT)).willThrow(new DuplicatedIdException());
 
         log.info("회원가입 시도");
         // when and then
@@ -147,7 +151,7 @@ public class LoginControllerTest {
         log.info("회원가입 테스트");
 
         // given
-        given(loginService.signUp(memberDTO2)).willReturn(new TokenDTO());
+        given(loginService.signUp(memberDTO2, TYPE_STUDENT)).willReturn(new TokenDTO());
 
         log.info("회원가입 시도");
         // when and then
