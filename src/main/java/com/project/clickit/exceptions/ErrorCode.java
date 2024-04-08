@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+
+    // access denied
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+
     // common
     DUPLICATED_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다."),
     INVALID_ID(HttpStatus.BAD_REQUEST, "올바르지 않은 아이디입니다."),

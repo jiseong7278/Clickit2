@@ -24,7 +24,7 @@ public class FacilityService {
     /**
      * 해당 id의 시설이 존재하는지 확인
      * @param id String
-     * @return boolean
+     * @return return true if existed, else return false
      */
     @Transactional
     public Boolean isExist(String id) {
@@ -63,9 +63,28 @@ public class FacilityService {
     }
 
     /**
+     * 시설 이름으로 조회
+     * @param name String
+     * @return FacilityDTO
+     */
+    @Transactional
+    public FacilityDTO findByName(String name) {
+        return facilityRepository.findByFacilityName(name).toDTO();
+    }
+
+    /**
+     * 기숙사 id로 시설 조회
+     * @param dormitoryId String
+     * @return List FacilityDTO
+     */
+    @Transactional
+    public List<FacilityDTO> findByDormitoryId(String dormitoryId) {
+        return toDTOList(facilityRepository.findByDormitoryId(dormitoryId));
+    }
+
+    /**
      * 시설 정보 수정
      * @param facilityDTO FacilityDTO
-     * @return void
      */
     @Transactional
     public void updateFacility(FacilityDTO facilityDTO) {
@@ -80,7 +99,6 @@ public class FacilityService {
     /**
      * 시설 삭제
      * @param id String
-     * @return void
      */
     @Transactional
     public void deleteById(String id) {

@@ -2,11 +2,14 @@ package com.project.clickit.dto;
 
 import com.project.clickit.entity.MemberEntity;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class LoginDTO {
 
@@ -15,12 +18,6 @@ public class LoginDTO {
 
     @NotBlank
     private String password;
-
-    @Builder
-    public LoginDTO(String id, String password){
-        this.id = id;
-        this.password = password;
-    }
 
     public MemberEntity toEntity(){
         return MemberEntity.builder()

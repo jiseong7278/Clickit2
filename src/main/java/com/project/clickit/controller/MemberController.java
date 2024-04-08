@@ -13,29 +13,41 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
-@RequestMapping(value = "/member", produces="application/json;charset=UTF-8")
+@RequestMapping(value = "${requestMapping.member}", produces="application/json;charset=UTF-8")
 public class MemberController {
     final MemberService memberService;
 
-    @GetMapping("/getAll")
+    @GetMapping("${member.getAll}")
     @ResponseBody
     public ResponseEntity getAll() {
         return ResponseEntity.ok().body(memberService.getAll());
     }
 
-    @PostMapping("/create")
+    @PostMapping("${member.create}")
     public ResponseEntity create(@RequestBody MemberDTO memberDTO) {
         return ResponseEntity.ok().body(memberService.create(memberDTO));
     }
 
-    @PostMapping("/createList")
+    @PostMapping("${member.createList}")
     public ResponseEntity createList(@RequestBody List<MemberDTO> MemberDTOList) {
         memberService.createList(MemberDTOList);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/findByMemberId")
+    @GetMapping("${member.findByMemberId}")
     public ResponseEntity findByMemberId(@RequestParam("id") String id) {
         return ResponseEntity.ok().body(memberService.findByMemberId(id));
+    }
+
+    @PutMapping("${member.update}")
+    public ResponseEntity updateMember(@RequestBody MemberDTO memberDTO) {
+        memberService.updateMember(memberDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("${member.delete}")
+    public ResponseEntity deleteMember(@RequestParam("id") String id) {
+        memberService.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping(value = "/login", produces="application/json;charset=UTF-8")
+@RequestMapping(value = "${requestMapping.login}", produces="application/json;charset=UTF-8")
 public class LoginController {
     private final LoginService loginService;
 
@@ -31,7 +31,7 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @GetMapping("/duplicateCheck")
+    @GetMapping("${login.duplicateCheck}")
     public ResponseEntity duplicateCheck(@RequestParam("id") String id){
         if(loginService.duplicateCheck(id))
             return ResponseEntity.badRequest().body("이미 가입된 아이디입니다.") ;
@@ -39,17 +39,17 @@ public class LoginController {
             return ResponseEntity.ok().body("사용 가능한 아이디입니다.");
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("${login.signUp}")
     public ResponseEntity signUp(@RequestBody MemberDTO memberDTO){
         return ResponseEntity.ok().body(loginService.signUp(memberDTO, TYPE_STUDENT));
     }
 
-    @PostMapping("/signIn")
+    @PostMapping("${login.signIn}")
     public ResponseEntity signIn(@RequestBody LoginDTO loginDTO){
         return ResponseEntity.ok().body(loginService.signIn(loginDTO));
     }
 
-    @PostMapping("/logout")
+    @PostMapping("${login.logout}")
     public ResponseEntity logout(@RequestHeader("Authorization") String token){
         loginService.logout(token);
         return ResponseEntity.ok().body("로그아웃 되었습니다.");

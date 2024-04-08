@@ -5,12 +5,16 @@ import com.project.clickit.exceptions.common.InvalidIdException;
 import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
 import com.project.clickit.exceptions.jwt.*;
 import com.project.clickit.exceptions.login.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
-public class ControllerExceptionHandler {
+@Slf4j
+@RestControllerAdvice
+public class ControllerExceptionHandler extends RuntimeException{
 
     // jwt
 
@@ -20,6 +24,8 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(TokenNotFoundException.class)
     public ResponseEntity handleTokenNotFoundException(){
+        log.error("*", ErrorCode.TOKEN_NOT_FOUND.getMessage());
+        log.error(ErrorCode.TOKEN_NOT_FOUND.getMessage());
         return ResponseEntity.status(ErrorCode.TOKEN_NOT_FOUND.getHttpStatus()).body(ErrorCode.TOKEN_NOT_FOUND.getMessage());
     }
 
@@ -135,5 +141,10 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(DormitoryNotFoundException.class)
     public ResponseEntity handleDormitoryNotFoundException(){
         return ResponseEntity.status(ErrorCode.DORMITORY_NOT_FOUND.getHttpStatus()).body(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity handleAccessDeniedException(){
+        return ResponseEntity.status(ErrorCode.ACCESS_DENIED.getHttpStatus()).body(ErrorCode.ACCESS_DENIED.getMessage());
     }
 }

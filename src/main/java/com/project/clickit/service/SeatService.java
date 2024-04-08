@@ -45,6 +45,20 @@ public class SeatService {
     }
 
     /**
+     * <b>좌석 List 생성</b>
+     * @param seatDTOList List<SeatDTO>
+     */
+    @Transactional
+    public void createList(List<SeatDTO> seatDTOList) {
+        for(SeatDTO seatDTO : seatDTOList){
+            if(isExist(seatDTO.getId())){
+                throw new DuplicatedIdException();
+            }
+        }
+        seatRepository.saveAll(toEntityList(seatDTOList));
+    }
+
+    /**
      * <b>좌석 전체 조회</b>
      * @return List<SeatDTO>
      */
@@ -78,28 +92,30 @@ public class SeatService {
 
     /**
      * <b>좌석 시설 수정</b>
-     * @param seatDTO SeatDTO
+     * @param seatId String
+     * @param facilityId String
      * @return void
      */
     @Transactional
-    public void updateSeatFacility(SeatDTO seatDTO) {
-        if(!isExist(seatDTO.getId())){
+    public void updateSeatFacility(String seatId, String facilityId) {
+        if(!isExist(seatId)){
             throw new DuplicatedIdException();
         }
-        seatRepository.updateSeatFacility(seatDTO.getId(), seatDTO.getFacilityId());
+        seatRepository.updateSeatFacility(seatId, facilityId);
     }
 
     /**
-     * <b>좌석 비어있는지 수정</b>
-     * @param seatDTO SeatDTO
+     * <b>좌석 비어있는지 여부를 수정</b>
+     * @param seatId String
+     * @param isEmpty Boolean
      * @return void
      */
     @Transactional
-    public void updateSeatIsEmpty(SeatDTO seatDTO) {
-        if(!isExist(seatDTO.getId())){
+    public void updateSeatIsEmpty(String seatId, Boolean isEmpty) {
+        if(!isExist(seatId)){
             throw new DuplicatedIdException();
         }
-        seatRepository.updateSeatIsEmpty(seatDTO.getId(), seatDTO.getIsEmpty());
+        seatRepository.updateSeatIsEmpty(seatId, isEmpty);
     }
 
     /**
@@ -117,7 +133,7 @@ public class SeatService {
 
     /**
      * <b>SeatEntity List를 SeatDTO List로 변환</b>
-     * @param seatEntities
+     * @param seatEntities List
      * @return List<SeatDTO>
      */
     public List<SeatDTO> toDTOList(List<SeatEntity> seatEntities) {
@@ -126,5 +142,18 @@ public class SeatService {
             seatDTOList.add(seatEntity.toDTO());
         }
         return seatDTOList;
+    }
+
+    /**
+     * <b>SeatDTO List를 SeatEntity List로 변환</b>
+     * @param seatDTOList List
+     * @return List<SeatEntity>
+     */
+    public List<SeatEntity> toEntityList(List<SeatDTO> seatDTOList) {
+        List<SeatEntity> seatEntityList = new ArrayList<>();
+        for (SeatDTO seatDTO : seatDTOList) {
+            seatEntityList.add(seatDTO.toEntity());
+        }
+        return seatEntityList;
     }
 }

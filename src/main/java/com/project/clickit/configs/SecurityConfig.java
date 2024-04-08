@@ -1,7 +1,7 @@
 package com.project.clickit.configs;
 
-import com.project.clickit.filters.StaffAuthFilter;
-import com.project.clickit.jwt.JwtAuthenticationFilter;
+import com.project.clickit.exceptions.security.CustomAccessDeniedHandler;
+import com.project.clickit.filters.JwtAuthenticationFilter;
 import com.project.clickit.jwt.JwtProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -24,10 +25,22 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig implements WebMvcConfigurer {
 
+    @Value("${roles.dev}")
+    private String TYPE_DEV;
+
     @Value("${roles.staff}")
     private String TYPE_STAFF;
 
+    @Value("${roles.student}")
+    private String TYPE_STUDENT;
+
     private final JwtProvider jwtProvider;
+
+    private final String[] dev_only = {""};
+
+    private final String[] staff_allowed =
+            {"member/create", "member/update", "member/delete",
+            "dormitory/create", "dormitory/update", "dormitory/delete"};
 
     @Autowired
     public SecurityConfig(JwtProvider jwtProvider) {
@@ -36,12 +49,13 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.csrf((csrf) -> csrf.disable());
+        http.csrf(CsrfConfigurer::disable);
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
                                 .requestMatchers("/swagger-ui.html#/**").permitAll()
                                 .requestMatchers("/login/**").permitAll()
                                 .requestMatchers("/member/**").authenticated()
+                                .requestMatchers("/dormitory/getAll").hasAnyRole(TYPE_DEV, TYPE_STAFF)
                                 .anyRequest().authenticated())
                 .sessionManagement((sessionManager) -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors((cors)-> cors.configurationSource(
@@ -53,19 +67,11 @@ public class SecurityConfig implements WebMvcConfigurer {
                             corsConfiguration.addExposedHeader("Authorization");
                             return corsConfiguration;
                         }));
-//                .securityMatcher("/member/**").addFilter(new AuthorizationFilter(jwtProvider)) // 예시
-//                .securityMatcher("/login/**").addFilterAt(new AuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class) // 예시
 
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
-
-//                .addFilterAt(new AuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
-//        http.securityMatcher("/login/**").addFilter(new AuthorizationFilter(jwtProvider)); // 예시
-//        http.securityMatcher("/login/**", "/member/**").addFilter(new AuthorizationFilter(jwtProvider)); // 예시
-
-        log.info("SecurityConfig: filterChain");
         http.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
-        http.securityMatcher("/dormitory/getAll").addFilterAfter(new StaffAuthFilter(TYPE_STAFF), JwtAuthenticationFilter.class);
+        http.exceptionHandling(handler -> handler.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
     }
+
 }

@@ -1,10 +1,10 @@
 package com.project.clickit.service;
 
-import com.project.clickit.entity.CustomMemberDetails;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.exceptions.login.MemberNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +26,10 @@ public class MemberDetailService implements UserDetailsService {
         if(memberEntity == null) {
             throw new MemberNotFoundException();
         }
-        return new CustomMemberDetails(memberEntity);
+        return User.builder()
+                .username(memberEntity.getId())
+                .password(memberEntity.getPassword())
+                .roles(memberEntity.getType())
+                .build();
     }
 }
