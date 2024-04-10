@@ -28,7 +28,6 @@ public class LoginService {
     private final JwtProvider jwtProvider;
 
     private final Map<String, ReentrantLock> lockMap = new ConcurrentHashMap<>();
-    private LoginDTO loginDTO;
 
     @Autowired
     public LoginService(MemberRepository memberRepository, JwtProvider jwtProvider) {
@@ -36,11 +35,22 @@ public class LoginService {
         this.jwtProvider = jwtProvider;
     }
 
+    /**
+     * <b>해당 id의 회원이 존재하는지 확인</b><br>(존재한다면 true, 존재하지 않는다면 false)
+     * @param id String
+     * @return Boolean
+     */
     @Transactional
     public Boolean duplicateCheck(String id) {
         return memberRepository.existsById(id);
     }
 
+    /**
+     * <b>회원가입</b>
+     * @param memberDTO MemberDTO
+     * @param role String
+     * @return TokenDTO
+     */
     @Transactional
     public TokenDTO signUp(MemberDTO memberDTO, String role){ // 매개변수에 Type 추가 and accessToken, refreshToken에서 Collections.singletonList에 Type(매개변수)로 변경
         ReentrantLock lock = lockMap.computeIfAbsent(memberDTO.getId(), key -> new ReentrantLock());
@@ -82,11 +92,15 @@ public class LoginService {
         }
     }
 
+    /**
+     * <b>로그인</b>
+     * @param loginDTO LoginDTO
+     * @return TokenDTO
+     */
     @Transactional
     public TokenDTO signIn(LoginDTO loginDTO){
-        this.loginDTO = loginDTO;
         if(duplicateCheck(loginDTO.getId())){
-            MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
+            MemberEntity memberEntity = memberRepository.findByMemberId(loginDTO.getId());
 
             if(memberEntity.getPassword().equals(loginDTO.getPassword())){
                 String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
@@ -110,6 +124,10 @@ public class LoginService {
         }
     }
 
+    /**
+     * <b>로그아웃</b>
+     * @param token String
+     */
     public void logout(String token){
         String resolvedToken = jwtProvider.resolveToken(token);
         if (jwtProvider.validateToken(resolvedToken)){

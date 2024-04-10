@@ -29,13 +29,10 @@ public class SeatEntity {
     @JoinColumn(name = "facility_seat")
     private FacilityEntity facilityEntity;
 
-    public SeatEntity(String id, String name, Integer time, Boolean isEmpty) {
-        this.id = id;
-        this.name = name;
-        this.time = time;
-        this.isEmpty = isEmpty;
-    }
-
+    /**
+     * <b>SeatDTO로 변환</b>
+     * @return SeatDTO
+     */
     public SeatDTO toDTO() {
         return SeatDTO.builder()
                 .id(this.id)

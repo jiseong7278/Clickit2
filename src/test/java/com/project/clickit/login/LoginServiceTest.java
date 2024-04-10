@@ -154,7 +154,7 @@ public class LoginServiceTest {
                 .password(loginDTO.getPassword())
                 .build();
 
-        given(memberRepository.findById(loginDTO.getId())).willReturn(memberEntity);
+        given(memberRepository.findByMemberId(loginDTO.getId())).willReturn(memberEntity);
 
         given(jwtProvider.createAccessToken(any(String.class), any())).willReturn("access_token");
         given(jwtProvider.createRefreshToken(any(String.class), any())).willReturn("refresh_token");

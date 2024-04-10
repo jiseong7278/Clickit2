@@ -3,6 +3,9 @@ package com.project.clickit.controller;
 import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.service.DormitoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +36,9 @@ public class DormitoryController {
     }
 
     @GetMapping("${dormitory.getAll}")
-    public ResponseEntity<Object> getAll(){
-        return ResponseEntity.ok().body(dormitoryService.getAll());
+    public ResponseEntity<Object> getAll(@PageableDefault(direction = Sort.Direction.DESC,
+            sort = "name", size=10, page=0) Pageable pageable){
+        return ResponseEntity.ok().body(dormitoryService.getAll(pageable));
     }
 
     @GetMapping("${dormitory.findById}")
@@ -43,8 +47,9 @@ public class DormitoryController {
     }
 
     @GetMapping("${dormitory.findByName}")
-    public ResponseEntity<Object> findByName(@RequestParam("name") String name){
-        return ResponseEntity.ok().body(dormitoryService.findByName(name));
+    public ResponseEntity<Object> findByName(@RequestParam("name") String name, @PageableDefault(direction = Sort.Direction.DESC,
+            sort = "name", size=10, page=0) Pageable pageable){
+        return ResponseEntity.ok().body(dormitoryService.findByName(name, pageable));
     }
 
     @PutMapping("${dormitory.update}")

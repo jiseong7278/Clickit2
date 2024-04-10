@@ -1,19 +1,15 @@
 package com.project.clickit.entity;
 
 import com.project.clickit.dto.DormitoryDTO;
-import com.project.clickit.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Setter
 @Getter
 @Builder
 @Table(name = "dormitory")
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 @Entity
 public class DormitoryEntity {
     @Id
@@ -23,12 +19,10 @@ public class DormitoryEntity {
     @Column(name = "dormitory_name")
     private String name;
 
-    @Builder
-    public DormitoryEntity(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
+    /**
+     * <b>DormitoryDTO로 변환</b>
+     * @return DormitoryDTO
+     */
     public DormitoryDTO toDTO() {
         return DormitoryDTO.builder()
                 .id(this.id)

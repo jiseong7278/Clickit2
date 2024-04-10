@@ -47,7 +47,7 @@ public class JwtProvider{
     /**
      * <b>Create access token</b>
      * @param memberId String
-     * @param roles List<String>
+     * @param roles List&lt;String&gt;
      * @return String
      */
     public String createAccessToken(String memberId, List<String> roles){
@@ -71,7 +71,7 @@ public class JwtProvider{
     /**
      * <b>Create refresh token</b>
      * @param memberId String
-     * @param roles List<String>
+     * @param roles List&lt;String&gt;
      * @return String
      */
     public String createRefreshToken(String memberId, List<String> roles){
@@ -128,11 +128,7 @@ public class JwtProvider{
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    /**
-     * <b>Get roles from token</b>
-     * @param token String
-     * @return List<String>
-     */
+
     public List<String> getRoles(String token){
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("roles", List.class);
     }
@@ -143,7 +139,7 @@ public class JwtProvider{
      * @return boolean
      */
     public boolean validateToken(String token){
-        if(token == null || token.equals("")) throw new TokenNotFoundException();
+        if(token == null || token.isEmpty()) throw new TokenNotFoundException();
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             if(!claims.getBody().getIssuer().equals(issuer)) throw new InvalidIssuerException();

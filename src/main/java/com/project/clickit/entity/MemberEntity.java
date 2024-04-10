@@ -46,6 +46,10 @@ public class MemberEntity {
         this.refreshToken = refreshToken;
     }
 
+    /**
+     * <b>MemberDTO로 변환</b>
+     * @return MemberDTO
+     */
     public MemberDTO toDTO(){
         return MemberDTO.builder()
                 .id(this.id)

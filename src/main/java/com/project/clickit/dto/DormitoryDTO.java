@@ -14,7 +14,10 @@ public class DormitoryDTO {
     private String id;
     private String name;
 
-
+    /**
+     * <b>DormitoryEntity로 변환</b>
+     * @return DormitoryEntity
+     */
     public DormitoryEntity toEntity() {
         return DormitoryEntity.builder()
                 .id(this.id)

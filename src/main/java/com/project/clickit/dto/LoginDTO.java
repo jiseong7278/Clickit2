@@ -19,6 +19,10 @@ public class LoginDTO {
     @NotBlank
     private String password;
 
+    /**
+     * <b>MemberEntity로 변환</b>
+     * @return MemberEntity
+     */
     public MemberEntity toEntity(){
         return MemberEntity.builder()
                 .id(this.id)

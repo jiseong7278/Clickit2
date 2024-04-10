@@ -35,13 +35,10 @@ public class NoticeEntity {
     @JoinColumn(name = "notice_writer")
     private MemberEntity memberEntity;
 
-    public NoticeEntity(String title, String content, LocalDateTime date, String img) {
-        this.title = title;
-        this.content = content;
-        this.date = date;
-        this.img = img;
-    }
-
+    /**
+     * <b>NoticeDTO로 변환</b>
+     * @return NoticeDTO
+     */
     public NoticeDTO toDTO() {
         return NoticeDTO.builder()
                 .num(this.num)

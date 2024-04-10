@@ -32,7 +32,10 @@ public enum ErrorCode {
     // member
 
     // dormitory
-    DORMITORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "기숙사가 존재하지 않습니다.");
+    DORMITORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "기숙사가 존재하지 않습니다."),
+
+    // notice
+    NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, "공지사항이 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

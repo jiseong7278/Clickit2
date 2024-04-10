@@ -15,8 +15,8 @@ import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -162,7 +162,7 @@ public class MemberServiceTest {
 
             // when
             log.info("when - memberService.getAll()");
-            List<MemberDTO> result = memberService.getAll();
+            Page<MemberDTO> result = memberService.getAll(Pageable.ofSize(10));
 
             // then
             log.info("then - 회원 전체 조회 결과 확인");
@@ -194,20 +194,13 @@ public class MemberServiceTest {
 
             // when
             log.info("when - memberService.findByMemberId(id)");
-            memberService.updateMember(memberDTO);
+            memberService.update(memberDTO);
 
             // then
             log.info("then - 회원 수정 확인");
-            then(memberRepository).should().updateMember(
-                    memberDTO.getId(),
-                    memberDTO.getPassword(),
-                    memberDTO.getName(),
-                    memberDTO.getEmail(),
-                    memberDTO.getPhone(),
-                    memberDTO.getStudentNum(),
-                    memberDTO.getType());
+            then(memberRepository).should().save(memberDTO.toEntity());
 
-            assertThatCode(() -> memberService.updateMember(memberDTO)).doesNotThrowAnyException();
+            assertThatCode(() -> memberService.update(memberDTO)).doesNotThrowAnyException();
             log.info("테스트 종료");
         }
 
@@ -232,7 +225,7 @@ public class MemberServiceTest {
 
             // when
             log.info("when - memberService.updateMember(memberDTO) throws MemberNotFoundException");
-            Throwable exception = catchThrowable(() -> memberService.updateMember(memberDTO));
+            Throwable exception = catchThrowable(() -> memberService.update(memberDTO));
 
             // then
             log.info("then - 회원 수정 결과 확인 및 예외 발생 확인");

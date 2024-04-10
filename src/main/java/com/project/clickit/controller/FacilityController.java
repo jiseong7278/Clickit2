@@ -3,6 +3,9 @@ package com.project.clickit.controller;
 import com.project.clickit.dto.FacilityDTO;
 import com.project.clickit.service.FacilityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +35,9 @@ public class FacilityController {
     }
 
     @GetMapping("${facility.getAll}")
-    public ResponseEntity<Object> getAll(){
-        return ResponseEntity.ok().body(facilityService.getAll());
+    public ResponseEntity<Object> getAll(@PageableDefault(direction = Sort.Direction.ASC,
+    sort = "name", size=10, page=0) Pageable pageable){
+        return ResponseEntity.ok().body(facilityService.getAll(pageable));
     }
 
     @GetMapping("${facility.findById}")
@@ -47,8 +51,9 @@ public class FacilityController {
     }
 
     @GetMapping("${facility.findByDormitoryId}")
-    public ResponseEntity<Object> findByDormitoryId(@RequestParam("dormitoryId") String dormitoryId){
-        return ResponseEntity.ok().body(facilityService.findByDormitoryId(dormitoryId));
+    public ResponseEntity<Object> findByDormitoryId(@RequestParam("dormitoryId") String dormitoryId,
+                                                    @PageableDefault(direction = Sort.Direction.ASC, sort = "name", size=10, page=0) Pageable pageable){
+        return ResponseEntity.ok().body(facilityService.findByDormitoryId(dormitoryId, pageable));
     }
 
     @PutMapping("${facility.update}")

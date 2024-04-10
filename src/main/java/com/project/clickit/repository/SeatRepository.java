@@ -1,20 +1,24 @@
 package com.project.clickit.repository;
 
 import com.project.clickit.entity.SeatEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 
 public interface SeatRepository extends JpaRepository<SeatEntity, String> {
+
+    @NonNull
+    Page<SeatEntity> findAll(@NonNull Pageable pageable);
 
     @Query("SELECT new SeatEntity(s.id, s.name, s.time, s.isEmpty, s.facilityEntity) FROM SeatEntity s where s.id = :id")
     SeatEntity findBySeatId(String id);
 
-    @Modifying
-    @Query("UPDATE SeatEntity s SET s.name = :name, s.time = :time, s.isEmpty = :isEmpty WHERE s.id = :id")
-    void updateSeat(@Param("id") String id, @Param("name") String name,
-                    @Param("time") Integer time, @Param("isEmpty") Boolean isEmpty);
+    @Query("SELECT new SeatEntity(s.id, s.name, s.time, s.isEmpty, s.facilityEntity) FROM SeatEntity s where s.facilityEntity.id = :facilityId")
+    Page<SeatEntity> findByFacilityId(@Param("facilityId") String facilityId, Pageable pageable);
 
     @Modifying
     @Query("UPDATE SeatEntity s SET s.facilityEntity.id = :facilityId WHERE s.id = :id")

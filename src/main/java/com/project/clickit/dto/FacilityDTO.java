@@ -21,19 +21,10 @@ public class FacilityDTO {
     private Integer extensionLimit;
     private DormitoryDTO dormitoryDTO;
 
-    public FacilityDTO(String id, String name, String info, Integer open,
-                       Integer close, String img, String terms, Integer extensionLimit) {
-        this.id = id;
-        this.name = name;
-        this.info = info;
-        this.open = open;
-        this.close = close;
-        this.img = img;
-        this.terms = terms;
-        this.extensionLimit = extensionLimit;
-    }
-
-
+    /**
+     * <b>FacilityEntity로 변환</b>
+     * @return FacilityEntity
+     */
     public FacilityEntity toEntity() {
         return FacilityEntity.builder()
                 .id(this.id)

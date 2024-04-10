@@ -5,6 +5,8 @@ import com.project.clickit.entity.SeatEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.repository.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +26,7 @@ public class SeatService {
     /**
      * <b>해당 id의 좌석이 존재하는지 확인</b>
      * @param id String
-     * @return boolean
+     * @return Boolean
      */
     @Transactional
     public Boolean isExist(String id) {
@@ -46,7 +48,7 @@ public class SeatService {
 
     /**
      * <b>좌석 List 생성</b>
-     * @param seatDTOList List<SeatDTO>
+     * @param seatDTOList List&lt;SeatDTO&gt;
      */
     @Transactional
     public void createList(List<SeatDTO> seatDTOList) {
@@ -60,11 +62,12 @@ public class SeatService {
 
     /**
      * <b>좌석 전체 조회</b>
-     * @return List<SeatDTO>
+     * @param pageable Pageable
+     * @return Page&lt;SeatDTO&gt;
      */
     @Transactional
-    public List<SeatDTO> getAll() {
-        return toDTOList(seatRepository.findAll());
+    public Page<SeatDTO> getAll(Pageable pageable){
+        return toDTOPage(seatRepository.findAll(pageable));
     }
 
     /**
@@ -78,23 +81,32 @@ public class SeatService {
     }
 
     /**
+     * <b>시설물 id로 조회</b>
+     * @param facilityId String
+     * @param pageable Pageable
+     * @return Page&lt;SeatDTO&gt;
+     */
+    @Transactional
+    public Page<SeatDTO> findByFacilityId(String facilityId, Pageable pageable){
+        return toDTOPage(seatRepository.findByFacilityId(facilityId, pageable));
+    }
+
+    /**
      * <b>좌석 정보 수정</b>
      * @param seatDTO SeatDTO
-     * @return void
      */
     @Transactional
     public void updateSeat(SeatDTO seatDTO) {
         if(!isExist(seatDTO.getId())){
             throw new DuplicatedIdException();
         }
-        seatRepository.updateSeat(seatDTO.getId(), seatDTO.getName(), seatDTO.getTime(), seatDTO.getIsEmpty());
+        seatRepository.save(seatDTO.toEntity());
     }
 
     /**
      * <b>좌석 시설 수정</b>
      * @param seatId String
      * @param facilityId String
-     * @return void
      */
     @Transactional
     public void updateSeatFacility(String seatId, String facilityId) {
@@ -108,7 +120,6 @@ public class SeatService {
      * <b>좌석 비어있는지 여부를 수정</b>
      * @param seatId String
      * @param isEmpty Boolean
-     * @return void
      */
     @Transactional
     public void updateSeatIsEmpty(String seatId, Boolean isEmpty) {
@@ -118,10 +129,10 @@ public class SeatService {
         seatRepository.updateSeatIsEmpty(seatId, isEmpty);
     }
 
+
     /**
      * <b>좌석 삭제</b>
      * @param id String
-     * @return void
      */
     @Transactional
     public void deleteById(String id) {
@@ -132,22 +143,9 @@ public class SeatService {
     }
 
     /**
-     * <b>SeatEntity List를 SeatDTO List로 변환</b>
-     * @param seatEntities List
-     * @return List<SeatDTO>
-     */
-    public List<SeatDTO> toDTOList(List<SeatEntity> seatEntities) {
-        List<SeatDTO> seatDTOList = new ArrayList<>();
-        for (SeatEntity seatEntity : seatEntities) {
-            seatDTOList.add(seatEntity.toDTO());
-        }
-        return seatDTOList;
-    }
-
-    /**
-     * <b>SeatDTO List를 SeatEntity List로 변환</b>
+     * <b>List&lt;SeatDTO&gt;를 List&lt;SeatEntity&gt;로 변환</b>
      * @param seatDTOList List
-     * @return List<SeatEntity>
+     * @return List&lt;SeatEntity&gt;
      */
     public List<SeatEntity> toEntityList(List<SeatDTO> seatDTOList) {
         List<SeatEntity> seatEntityList = new ArrayList<>();
@@ -155,5 +153,14 @@ public class SeatService {
             seatEntityList.add(seatDTO.toEntity());
         }
         return seatEntityList;
+    }
+
+    /**
+     * <b>Page&lt;SeatEntity&gt;를 Page&lt;SeatDTO&gt;로 변환</b>
+     * @param seatEntityPage Page
+     * @return Page&lt;SeatDTO&gt;
+     */
+    public Page<SeatDTO> toDTOPage(Page<SeatEntity> seatEntityPage) {
+        return seatEntityPage.map(SeatEntity::toDTO);
     }
 }

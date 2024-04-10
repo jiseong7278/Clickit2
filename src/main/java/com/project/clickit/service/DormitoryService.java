@@ -7,11 +7,10 @@ import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
 import com.project.clickit.repository.DormitoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class DormitoryService {
@@ -27,9 +26,9 @@ public class DormitoryService {
     }
 
     /**
-     * 해당 id의 기숙사가 존재하는지 확인
+     * <b>해당 id의 기숙사가 존재하는지 확인</b> <br>(존재한다면 true, 존재하지 않는다면 false)
      * @param id String
-     * @return return true if existed, else return false
+     * @return Boolean
      */
     @Transactional
     public Boolean isExist(String id) {
@@ -37,7 +36,7 @@ public class DormitoryService {
     }
 
     /**
-     * 기숙사 생성
+     * <b>기숙사 생성</b>
      * @param dormitoryDTO DormitoryDTO
      */
     @Transactional
@@ -49,16 +48,16 @@ public class DormitoryService {
     }
 
     /**
-     * 기숙사 전체 조회
-     * @return List<DormitoryDTO>
+     * <b>기숙사 전체 조회</b>
+     * @return Page&lt;DormitoryDTO&gt;
      */
     @Transactional
-    public List<DormitoryDTO> getAll() {
-        return toDTOList(dormitoryRepository.findAll());
+    public Page<DormitoryDTO> getAll(Pageable pageable) {
+        return toDTOPage(dormitoryRepository.findAll(pageable));
     }
 
     /**
-     * 기숙사 id로 조회
+     * <b>기숙사 id로 조회</b>
      * @param id String
      * @return DormitoryDTO
      */
@@ -68,17 +67,17 @@ public class DormitoryService {
     }
 
     /**
-     * 기숙사 이름으로 조회
+     * <b>기숙사 이름으로 조회</b>
      * @param name String
-     * @return DormitoryDTO
+     * @return Page&lt;DormitoryDTO&gt;
      */
     @Transactional
-    public DormitoryDTO findByName(String name) {
-        return dormitoryRepository.findByDormitoryName(name).toDTO();
+    public Page<DormitoryDTO> findByName(String name, Pageable pageable) {
+        return toDTOPage(dormitoryRepository.findByDormitoryName(name, pageable));
     }
 
     /**
-     * 기숙사 이름 수정
+     * <b>기숙사 이름 변경</b>
      * @param id String
      * @param name String
      */
@@ -91,7 +90,7 @@ public class DormitoryService {
     }
 
     /**
-     * 기숙사 삭제
+     * <b>기숙사 삭제</b>
      * @param id String
      */
     @Transactional
@@ -102,11 +101,12 @@ public class DormitoryService {
         dormitoryRepository.deleteById(id);
     }
 
-    public List<DormitoryDTO> toDTOList(List<DormitoryEntity> dormitoryEntityList) {
-        List<DormitoryDTO> dormitoryDTOList = new ArrayList<>();
-        for (DormitoryEntity dormitoryEntity : dormitoryEntityList) {
-            dormitoryDTOList.add(dormitoryEntity.toDTO());
-        }
-        return dormitoryDTOList;
+    /**
+     * <b>Page&lt;DormitoryEntity&gt;를 Page&lt;DormitoryDTO&gt;로 변환</b>
+     * @param dormitoryEntityPage Page&lt;DormitoryEntity&gt;
+     * @return Page&lt;DormitoryDTO&gt;
+     */
+    private Page<DormitoryDTO> toDTOPage(Page<DormitoryEntity> dormitoryEntityPage) {
+        return dormitoryEntityPage.map(DormitoryEntity::toDTO);
     }
 }

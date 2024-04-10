@@ -1,6 +1,7 @@
 package com.project.clickit.dto;
 
 import com.project.clickit.entity.NoticeEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class NoticeDTO {
     private Integer num;
     private String title;
@@ -17,16 +20,10 @@ public class NoticeDTO {
     private String img;
     private String memberId;
 
-    @Builder
-    public NoticeDTO(Integer num, String title, String content, LocalDateTime date, String img, String memberId) {
-        this.num = num;
-        this.title = title;
-        this.content = content;
-        this.date = date;
-        this.img = img;
-        this.memberId = memberId;
-    }
-
+    /**
+     * <b>NoticeEntity로 변환</b>
+     * @return NoticeEntity
+     */
     public NoticeEntity toEntity() {
         return NoticeEntity.builder()
                 .num(this.num)

@@ -1,22 +1,17 @@
 package com.project.clickit.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class TokenDTO {
     private String id;
     private String password;
     private String accessToken;
     private String refreshToken;
-
-    @Builder
-    public TokenDTO(String id, String password, String accessToken, String refreshToken){
-        this.id = id;
-        this.password = password;
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-    }
 }

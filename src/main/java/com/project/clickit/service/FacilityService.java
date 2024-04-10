@@ -5,11 +5,10 @@ import com.project.clickit.entity.FacilityEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.repository.FacilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class FacilityService {
@@ -22,9 +21,9 @@ public class FacilityService {
     }
 
     /**
-     * 해당 id의 시설이 존재하는지 확인
+     * <b>해당 id의 시설이 존재하는지 확인</b> <br>(존재한다면 true, 존재하지 않는다면 false)
      * @param id String
-     * @return return true if existed, else return false
+     * @return Boolean
      */
     @Transactional
     public Boolean isExist(String id) {
@@ -32,7 +31,7 @@ public class FacilityService {
     }
 
     /**
-     * 시설 생성
+     * <b>시설 생성</b>
      * @param facilityDTO FacilityDTO
      */
     @Transactional
@@ -44,16 +43,16 @@ public class FacilityService {
     }
 
     /**
-     * 시설 전체 조회
-     * @return List<FacilityDTO>
+     * <b>시설 List 생성</b>
+     * @return Page&lt;FacilityDTO&gt;
      */
     @Transactional
-    public List<FacilityDTO> getAll() {
-        return toDTOList(facilityRepository.findAll());
+    public Page<FacilityDTO> getAll(Pageable pageable) {
+        return toDTOPage(facilityRepository.findAll(pageable));
     }
 
     /**
-     * 시설 id로 조회
+     * <b>시설 id로 조회</b>
      * @param id String
      * @return FacilityDTO
      */
@@ -63,7 +62,7 @@ public class FacilityService {
     }
 
     /**
-     * 시설 이름으로 조회
+     * <b>시설 이름으로 조회</b>
      * @param name String
      * @return FacilityDTO
      */
@@ -73,17 +72,17 @@ public class FacilityService {
     }
 
     /**
-     * 기숙사 id로 시설 조회
+     * <b>기숙사 id로 시설 조회</b>
      * @param dormitoryId String
-     * @return List FacilityDTO
+     * @return Page&lt;FacilityDTO&gt;
      */
     @Transactional
-    public List<FacilityDTO> findByDormitoryId(String dormitoryId) {
-        return toDTOList(facilityRepository.findByDormitoryId(dormitoryId));
+    public Page<FacilityDTO> findByDormitoryId(String dormitoryId, Pageable pageable) {
+        return toDTOPage(facilityRepository.findByDormitoryId(dormitoryId, pageable));
     }
 
     /**
-     * 시설 정보 수정
+     * <b>시설 수정</b>
      * @param facilityDTO FacilityDTO
      */
     @Transactional
@@ -91,13 +90,23 @@ public class FacilityService {
         if(!isExist(facilityDTO.getId())){
             throw new DuplicatedIdException();
         }
-        facilityRepository.updateFacility(facilityDTO.getId(), facilityDTO.getName(),
-                facilityDTO.getInfo(), facilityDTO.getOpen(), facilityDTO.getClose(),
-                facilityDTO.getImg(), facilityDTO.getTerms(), facilityDTO.getExtensionLimit());
+        facilityRepository.save(facilityDTO.toEntity());
     }
 
     /**
-     * 시설 삭제
+     * <b>시설 id 변경</b>
+     * @param id String
+     */
+    @Transactional
+    public void updateFacilityId(String id, String newId) {
+        if(!isExist(id)){
+            throw new DuplicatedIdException();
+        }
+        facilityRepository.updateFacilityId(id, newId);
+    }
+
+    /**
+     * <b>시설 이름 변경</b>
      * @param id String
      */
     @Transactional
@@ -109,15 +118,11 @@ public class FacilityService {
     }
 
     /**
-     * Entity List를 DTO List로 변환
-     * @param facilityEntityList List
-     * @return List<FacilityDTO>
+     * <b>Page&lt;FacilityEntity&gt;를 Page&lt;FacilityDTO&gt;로 변환</b>
+     * @param facilityEntityPage Page
+     * @return Page&lt;FacilityDTO&gt;
      */
-    public List<FacilityDTO> toDTOList(List<FacilityEntity> facilityEntityList){
-        List<FacilityDTO> facilityDTOList = new ArrayList<>();
-        for (FacilityEntity facilityEntity : facilityEntityList) {
-            facilityDTOList.add(facilityEntity.toDTO());
-        }
-        return facilityDTOList;
+    public Page<FacilityDTO> toDTOPage(Page<FacilityEntity> facilityEntityPage) {
+        return facilityEntityPage.map(FacilityEntity::toDTO);
     }
 }

@@ -3,6 +3,7 @@ package com.project.clickit.dto;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.entity.ReservationEntity;
 import com.project.clickit.entity.SeatEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,27 +11,19 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ReservationDTO {
     private Integer num;
     private String seatId;
     private String memberId;
     private LocalDateTime timestamp;
 
-    public ReservationDTO(Integer num, String seatId, String memberId) {
-        this.num = num;
-        this.seatId = seatId;
-        this.memberId = memberId;
-    }
-
-    @Builder
-    public ReservationDTO(Integer num, String seatId, String memberId, LocalDateTime timestamp) {
-        this.num = num;
-        this.seatId = seatId;
-        this.memberId = memberId;
-        this.timestamp = timestamp;
-    }
-
+    /**
+     * <b>ReservationEntity로 변환</b>
+     * @return ReservationEntity
+     */
     public ReservationEntity toEntity() {
         return ReservationEntity.builder()
                 .num(this.num)

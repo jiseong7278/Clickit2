@@ -30,12 +30,10 @@ public class ReservationEntity {
     @Column(name = "reservation_timestamp")
     private LocalDateTime timestamp;
 
-    public ReservationEntity(SeatEntity seatEntity, MemberEntity memberEntity, LocalDateTime timestamp) {
-        this.seatEntity = seatEntity;
-        this.memberEntity = memberEntity;
-        this.timestamp = timestamp;
-    }
-
+    /**
+     * <b>ReservationDTO로 변환</b>
+     * @return ReservationDTO
+     */
     public ReservationDTO toDTO() {
         return ReservationDTO.builder()
                 .num(this.num)
