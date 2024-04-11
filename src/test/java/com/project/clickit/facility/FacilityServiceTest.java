@@ -65,7 +65,6 @@ public class FacilityServiceTest {
                 .close(21)
                 .img("test_facility_img")
                 .terms("test_facility_terms")
-                .extensionLimit(3)
                 .dormitoryDTO(dormitoryDTO)
                 .build();
 
@@ -77,7 +76,6 @@ public class FacilityServiceTest {
                 .close(21)
                 .img("test_facility_img")
                 .terms("test_facility_terms")
-                .extensionLimit(3)
                 .dormitoryDTO(duplicateDormitoryDTO)
                 .build();
 
@@ -91,7 +89,6 @@ public class FacilityServiceTest {
                 .close(21)
                 .img("test_facility_img")
                 .terms("test_facility_terms")
-                .extensionLimit(3)
                 .dormitoryEntity(dormitoryEntity)
                 .build();
     }
@@ -283,7 +280,6 @@ public class FacilityServiceTest {
                     .close(18)
                     .img("update_test_img")
                     .terms("update_test_terms")
-                    .extensionLimit(2)
                     .build();
 
             given(facilityRepository.existsById(updateFacility.getId())).willReturn(true);

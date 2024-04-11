@@ -34,9 +34,6 @@ public class FacilityEntity {
     @Column(name = "facility_terms")
     private String terms;
 
-    @Column(name = "facility_extension_limit")
-    private Integer extensionLimit;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_dormitory")
     private DormitoryEntity dormitoryEntity;
@@ -54,7 +51,6 @@ public class FacilityEntity {
                 .close(this.close)
                 .img(this.img)
                 .terms(this.terms)
-                .extensionLimit(this.extensionLimit)
                 .dormitoryDTO(this.dormitoryEntity.toDTO())
                 .build();
     }

@@ -18,7 +18,6 @@ public class FacilityDTO {
     private Integer close;
     private String img;
     private String terms;
-    private Integer extensionLimit;
     private DormitoryDTO dormitoryDTO;
 
     /**
@@ -34,7 +33,6 @@ public class FacilityDTO {
                 .close(this.close)
                 .img(this.img)
                 .terms(this.terms)
-                .extensionLimit(this.extensionLimit)
                 .dormitoryEntity(this.dormitoryDTO.toEntity())
                 .build();
     }
