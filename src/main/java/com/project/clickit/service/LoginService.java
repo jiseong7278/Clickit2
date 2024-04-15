@@ -25,6 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class LoginService {
     private final MemberRepository memberRepository;
+
     private final JwtProvider jwtProvider;
 
     private final Map<String, ReentrantLock> lockMap = new ConcurrentHashMap<>();

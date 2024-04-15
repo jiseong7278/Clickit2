@@ -16,6 +16,7 @@ public class FacilityDTO {
     private String info;
     private Integer open;
     private Integer close;
+    private Integer capacity;
     private String img;
     private String terms;
     private DormitoryDTO dormitoryDTO;
@@ -31,6 +32,7 @@ public class FacilityDTO {
                 .info(this.info)
                 .open(this.open)
                 .close(this.close)
+                .capacity(this.capacity)
                 .img(this.img)
                 .terms(this.terms)
                 .dormitoryEntity(this.dormitoryDTO.toEntity())

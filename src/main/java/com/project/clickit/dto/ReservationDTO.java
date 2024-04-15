@@ -19,6 +19,7 @@ public class ReservationDTO {
     private String seatId;
     private String memberId;
     private LocalDateTime timestamp;
+    private String status;
 
     /**
      * <b>ReservationEntity로 변환</b>
@@ -34,6 +35,7 @@ public class ReservationDTO {
                         .id(this.memberId)
                         .build())
                 .timestamp(this.timestamp)
+                .status(this.status)
                 .build();
     }
 }

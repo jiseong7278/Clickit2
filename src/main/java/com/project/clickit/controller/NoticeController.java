@@ -34,7 +34,7 @@ public class NoticeController {
 
     @GetMapping("${notice.findByNoticeNum}")
     public ResponseEntity<NoticeDTO> findByNoticeNum(@RequestParam("num") Integer num){
-        return ResponseEntity.ok().body(noticeService.findNoticeById(num));
+        return ResponseEntity.ok().body(noticeService.findByNoticeNum(num));
     }
 
     @GetMapping("${notice.findByWriterId}")

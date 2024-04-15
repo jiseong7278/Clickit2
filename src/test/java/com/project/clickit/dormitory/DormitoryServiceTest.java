@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -133,7 +134,7 @@ public class DormitoryServiceTest {
             when(dormitoryRepository.findAll()).thenReturn(List.of(dormitoryEntity));
 
             // then
-            assertThat(dormitoryService.getAll()).isNotNull();
+            assertThat(dormitoryService.getAll(Pageable.unpaged())).isNotNull();
             log.info("테스트 종료");
         }
 

@@ -30,6 +30,9 @@ public class ReservationEntity {
     @Column(name = "reservation_timestamp")
     private LocalDateTime timestamp;
 
+    @Column(name = "reservation_status")
+    private String status;
+
     /**
      * <b>ReservationDTO로 변환</b>
      * @return ReservationDTO
@@ -40,6 +43,7 @@ public class ReservationEntity {
                 .seatId(this.seatEntity.getId())
                 .memberId(this.memberEntity.getId())
                 .timestamp(this.timestamp)
+                .status(this.status)
                 .build();
     }
 }

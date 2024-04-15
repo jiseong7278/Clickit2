@@ -5,10 +5,11 @@ import com.project.clickit.exceptions.common.InvalidIdException;
 import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
 import com.project.clickit.exceptions.jwt.*;
 import com.project.clickit.exceptions.login.*;
+import com.project.clickit.exceptions.reservation.DuplicatedReservationException;
+import com.project.clickit.exceptions.reservation.ReservationNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -141,6 +142,25 @@ public class ControllerExceptionHandler extends RuntimeException{
     @ExceptionHandler(DormitoryNotFoundException.class)
     public ResponseEntity handleDormitoryNotFoundException(){
         return ResponseEntity.status(ErrorCode.DORMITORY_NOT_FOUND.getHttpStatus()).body(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
+    }
+
+    // reservation
+    /**
+     * 이미 예약된 좌석일 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(DuplicatedReservationException.class)
+    public ResponseEntity handleDuplicatedReservationException(){
+        return ResponseEntity.status(ErrorCode.DUPLICATED_RESERVATION.getHttpStatus()).body(ErrorCode.DUPLICATED_RESERVATION.getMessage());
+    }
+
+    /**
+     * 예약이 존재하지 않을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity handleReservationNotFoundException(){
+        return ResponseEntity.status(ErrorCode.RESERVATION_NOT_FOUND.getHttpStatus()).body(ErrorCode.RESERVATION_NOT_FOUND.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)

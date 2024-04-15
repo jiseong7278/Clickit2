@@ -35,7 +35,11 @@ public enum ErrorCode {
     DORMITORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "기숙사가 존재하지 않습니다."),
 
     // notice
-    NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, "공지사항이 존재하지 않습니다.");
+    NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, "공지사항이 존재하지 않습니다."),
+
+    // reservation
+    DUPLICATED_RESERVATION(HttpStatus.BAD_REQUEST, "이미 예약된 좌석입니다."),
+    RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "예약이 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

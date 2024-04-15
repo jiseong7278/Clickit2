@@ -28,6 +28,9 @@ public class FacilityEntity {
     @Column(name = "facility_close")
     private Integer close;
 
+    @Column(name = "facility_capacity")
+    private Integer capacity;
+
     @Column(name = "facility_img")
     private String img;
 
@@ -49,6 +52,7 @@ public class FacilityEntity {
                 .info(this.info)
                 .open(this.open)
                 .close(this.close)
+                .capacity(this.capacity)
                 .img(this.img)
                 .terms(this.terms)
                 .dormitoryDTO(this.dormitoryEntity.toDTO())
