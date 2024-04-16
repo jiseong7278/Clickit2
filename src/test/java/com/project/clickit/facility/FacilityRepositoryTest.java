@@ -135,5 +135,34 @@ public class FacilityRepositoryTest {
 
             // then
         }
+
+        @Test
+        @Order(2)
+        @DisplayName("updateFacilityId test")
+        void updateFacilityIdTest(){
+            log.info("updateFacilityId test");
+            // given
+
+            // when
+
+            // then
+        }
+    }
+
+    @Nested
+    @DisplayName("Delete")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class Delete{
+        @Test
+        @Order(1)
+        @DisplayName("deleteById test")
+        void deleteByIdTest(){
+            log.info("deleteById test");
+            // given
+
+            // when
+
+            // then
+        }
     }
 }
