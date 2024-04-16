@@ -120,7 +120,7 @@ public class MemberServiceTest {
                     .build();
 
             given(memberRepository.existsById(id)).willReturn(true);
-            when(memberRepository.findByMemberId(id)).thenReturn(memberDTO.toEntity());
+            when(memberRepository.findById(id)).thenReturn(memberDTO.toEntity());
 
             // when
             log.info("when - memberService.findByMemberId(id)");

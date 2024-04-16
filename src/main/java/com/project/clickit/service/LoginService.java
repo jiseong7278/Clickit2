@@ -101,7 +101,7 @@ public class LoginService {
     @Transactional
     public TokenDTO signIn(LoginDTO loginDTO){
         if(duplicateCheck(loginDTO.getId())){
-            MemberEntity memberEntity = memberRepository.findByMemberId(loginDTO.getId());
+            MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
 
             if(memberEntity.getPassword().equals(loginDTO.getPassword())){
                 String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));

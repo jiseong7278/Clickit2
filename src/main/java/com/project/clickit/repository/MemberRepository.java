@@ -16,8 +16,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @NonNull
     Page<MemberEntity> findAll(@NonNull Pageable pageable);
 
-    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.id = :id")
-    MemberEntity findByMemberId(@Param("id") String id);
+    @NonNull
+    MemberEntity findById(@NonNull String id);
 
     // find by member name
     @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.id like %:memberId%")

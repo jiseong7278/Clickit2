@@ -67,6 +67,16 @@ public class MemberService {
 
     // ========== Read ========== //
     /**
+     * <b>모든 회원 조회</b>
+     * @param pageable Pageable
+     * @return Page&lt;MemberDTO&gt;
+     */
+    @Transactional
+    public Page<MemberDTO> getAll(Pageable pageable) {
+        return toDTOPage(memberRepository.findAll(pageable));
+    }
+
+    /**
      * <b>id로 회원 조회</b>
      * @param id String
      * @return MemberDTO
@@ -76,17 +86,7 @@ public class MemberService {
         if (!isExist(id)) {
             throw new MemberNotFoundException();
         }
-        return memberRepository.findByMemberId(id).toDTO();
-    }
-
-    /**
-     * <b>모든 회원 조회</b>
-     * @param pageable Pageable
-     * @return Page&lt;MemberDTO&gt;
-     */
-    @Transactional
-    public Page<MemberDTO> getAll(Pageable pageable) {
-        return toDTOPage(memberRepository.findAll(pageable));
+        return memberRepository.findById(id).toDTO();
     }
 
     /**

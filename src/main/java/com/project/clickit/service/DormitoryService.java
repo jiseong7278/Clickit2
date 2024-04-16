@@ -35,6 +35,8 @@ public class DormitoryService {
         return dormitoryRepository.existsById(id);
     }
 
+
+    // ========== Create ========== //
     /**
      * <b>기숙사 생성</b>
      * @param dormitoryDTO DormitoryDTO
@@ -47,6 +49,8 @@ public class DormitoryService {
         dormitoryRepository.save(dormitoryDTO.toEntity());
     }
 
+
+    // ========== Read ========== //
     /**
      * <b>기숙사 전체 조회</b>
      * @return Page&lt;DormitoryDTO&gt;
@@ -76,6 +80,8 @@ public class DormitoryService {
         return toDTOPage(dormitoryRepository.findByDormitoryName(name, pageable));
     }
 
+
+    // ========== Update ========== //
     /**
      * <b>기숙사 이름 변경</b>
      * @param id String
@@ -89,6 +95,8 @@ public class DormitoryService {
         dormitoryRepository.updateDormitoryName(id, name);
     }
 
+
+    // ========== Delete ========== //
     /**
      * <b>기숙사 삭제</b>
      * @param id String

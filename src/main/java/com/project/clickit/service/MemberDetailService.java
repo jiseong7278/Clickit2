@@ -22,7 +22,7 @@ public class MemberDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        MemberEntity memberEntity = memberRepository.findByMemberId(id);
+        MemberEntity memberEntity = memberRepository.findById(id);
         if(memberEntity == null) {
             throw new MemberNotFoundException();
         }

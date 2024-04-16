@@ -51,6 +51,17 @@ public class MemberEntity {
      * @return MemberDTO
      */
     public MemberDTO toDTO(){
+        if(this.dormitoryEntity == null)
+            return MemberDTO.builder()
+                    .id(this.id)
+                    .password(this.password)
+                    .name(this.name)
+                    .email(this.email)
+                    .phone(this.phone)
+                    .studentNum(this.studentNum)
+                    .type(this.type)
+                    .refreshToken(this.refreshToken)
+                    .build();
         return MemberDTO.builder()
                 .id(this.id)
                 .password(this.password)
