@@ -67,6 +67,7 @@ public class DormitoryService {
      */
     @Transactional
     public DormitoryDTO findById(String id) {
+        if (!isExist(id)) throw new DormitoryNotFoundException();
         return dormitoryRepository.findByDormitoryId(id).toDTO();
     }
 
@@ -84,15 +85,14 @@ public class DormitoryService {
     // ========== Update ========== //
     /**
      * <b>기숙사 이름 변경</b>
-     * @param id String
-     * @param name String
+     * @param dormitoryDTO DormitoryDTO
      */
     @Transactional
-    public void updateDormitoryName(String id, String name) {
-        if(!isExist(id)){
+    public void updateDormitory(DormitoryDTO dormitoryDTO) {
+        if(!isExist(dormitoryDTO.getId())){
             throw new DormitoryNotFoundException();
         }
-        dormitoryRepository.updateDormitoryName(id, name);
+        dormitoryRepository.save(dormitoryDTO.toEntity());
     }
 
 

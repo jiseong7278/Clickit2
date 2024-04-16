@@ -21,8 +21,4 @@ public interface DormitoryRepository extends JpaRepository<DormitoryEntity, Stri
 
     @Query("SELECT new DormitoryEntity(d.id, d.name) FROM DormitoryEntity d where d.name like %:name%")
     Page<DormitoryEntity> findByDormitoryName(@Param("name")String name, Pageable pageable);
-
-    @Modifying
-    @Query("UPDATE DormitoryEntity d SET d.name = :name WHERE d.id = :id")
-    void updateDormitoryName(@Param("id") String id, @Param("name") String name);
 }

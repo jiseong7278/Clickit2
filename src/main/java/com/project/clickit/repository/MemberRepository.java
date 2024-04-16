@@ -16,7 +16,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @NonNull
     Page<MemberEntity> findAll(@NonNull Pageable pageable);
 
-    @NonNull
     MemberEntity findById(@NonNull String id);
 
     // find by member name

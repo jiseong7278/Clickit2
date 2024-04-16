@@ -37,7 +37,7 @@ public class MemberEntity {
     @Column(name = "member_refresh_token")
     private String refreshToken; // 리프레시 토큰
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_dormitory")
     private DormitoryEntity dormitoryEntity;
 

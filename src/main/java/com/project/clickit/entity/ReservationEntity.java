@@ -19,11 +19,11 @@ public class ReservationEntity {
     @Column(name = "reservation_num")
     private Integer num;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_seat")
     private SeatEntity seatEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_member")
     private MemberEntity memberEntity;
 

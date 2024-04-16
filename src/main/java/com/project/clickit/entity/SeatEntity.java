@@ -25,7 +25,7 @@ public class SeatEntity {
     @Column(name = "seat_empty")
     private Boolean isEmpty;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "facility_seat")
     private FacilityEntity facilityEntity;
 

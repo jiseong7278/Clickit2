@@ -53,8 +53,8 @@ public class DormitoryController {
     }
 
     @PutMapping("${dormitory.update}")
-    public ResponseEntity<Object> updateDormitoryName(@RequestParam("id") String id, @RequestParam("name") String name){
-        dormitoryService.updateDormitoryName(id, name);
+    public ResponseEntity<Object> updateDormitoryName(@RequestBody DormitoryDTO dormitoryDTO){
+        dormitoryService.updateDormitory(dormitoryDTO);
         return ResponseEntity.ok().build();
     }
 }
