@@ -26,6 +26,17 @@ public class MemberDTO {
      * @return MemberEntity
      */
     public MemberEntity toEntity(){
+        if (this.dormitoryDTO == null)
+            return MemberEntity.builder()
+                    .id(this.id)
+                    .password(this.password)
+                    .name(this.name)
+                    .email(this.email)
+                    .phone(this.phone)
+                    .studentNum(this.studentNum)
+                    .type(this.type)
+                    .refreshToken(this.refreshToken)
+                    .build();
         return MemberEntity.builder()
                 .id(this.id)
                 .password(this.password)
@@ -36,9 +47,6 @@ public class MemberDTO {
                 .type(this.type)
                 .refreshToken(this.refreshToken)
                 .dormitoryEntity(this.dormitoryDTO.toEntity())
-//                .dormitoryEntity(DormitoryEntity.builder()
-//                        .id(this.dormitoryId)
-//                        .build())
                 .build();
     }
 }
