@@ -30,6 +30,8 @@ public class FacilityService {
         return facilityRepository.existsById(id);
     }
 
+
+    // ========== Create ========== //
     /**
      * <b>시설 생성</b>
      * @param facilityDTO FacilityDTO
@@ -42,8 +44,10 @@ public class FacilityService {
         facilityRepository.save(facilityDTO.toEntity());
     }
 
+
+    // ========== Read ========== //
     /**
-     * <b>시설 List 생성</b>
+     * <b>시설 전체 조회</b>
      * @return Page&lt;FacilityDTO&gt;
      */
     @Transactional
@@ -81,6 +85,8 @@ public class FacilityService {
         return toDTOPage(facilityRepository.findByDormitoryId(dormitoryId, pageable));
     }
 
+
+    // ========== Update ========== //
     /**
      * <b>시설 수정</b>
      * @param facilityDTO FacilityDTO
@@ -105,6 +111,8 @@ public class FacilityService {
         facilityRepository.updateFacilityId(id, newId);
     }
 
+
+    // ========== Delete ========== //
     /**
      * <b>시설 이름 변경</b>
      * @param id String
