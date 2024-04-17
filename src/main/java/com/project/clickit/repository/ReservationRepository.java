@@ -32,6 +32,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @Query("SELECT r FROM ReservationEntity r WHERE r.memberEntity.id = :memberId AND DATE(r.timestamp) = DATE(NOW())")
     Page<ReservationEntity> findByMemberEntityIdAndToday(@Param("memberId") String memberId, Pageable pageable);
 
+    @Modifying
     @Query("DELETE FROM ReservationEntity r WHERE r.num = :num")
     void deleteByNum(@Param("num") Integer num);
 }
