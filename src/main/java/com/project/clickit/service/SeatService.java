@@ -34,6 +34,8 @@ public class SeatService {
     }
 
 
+
+    // ========== Create ========== //
     /**
      * <b>좌석 생성</b>
      * @param seatDTO SeatDTO
@@ -60,6 +62,8 @@ public class SeatService {
         seatRepository.saveAll(toEntityList(seatDTOList));
     }
 
+
+    // ========== Read ========== //
     /**
      * <b>좌석 전체 조회</b>
      * @param pageable Pageable
@@ -91,6 +95,8 @@ public class SeatService {
         return toDTOPage(seatRepository.findByFacilityId(facilityId, pageable));
     }
 
+
+    // ========== Update ========== //
     /**
      * <b>좌석 정보 수정</b>
      * @param seatDTO SeatDTO
@@ -130,6 +136,7 @@ public class SeatService {
     }
 
 
+    // ========== Delete ========== //
     /**
      * <b>좌석 삭제</b>
      * @param id String

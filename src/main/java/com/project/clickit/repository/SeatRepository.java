@@ -17,7 +17,7 @@ public interface SeatRepository extends JpaRepository<SeatEntity, String> {
     Page<SeatEntity> findAll(@NonNull Pageable pageable);
 
     @Query("SELECT new SeatEntity(s.id, s.name, s.time, s.isEmpty, s.facilityEntity) FROM SeatEntity s where s.id = :id")
-    SeatEntity findBySeatId(String id);
+    SeatEntity findBySeatId(@Param("id") String id);
 
     @Query("SELECT new SeatEntity(s.id, s.name, s.time, s.isEmpty, s.facilityEntity) FROM SeatEntity s where s.facilityEntity.id = :facilityId")
     Page<SeatEntity> findByFacilityId(@Param("facilityId") String facilityId, Pageable pageable);
