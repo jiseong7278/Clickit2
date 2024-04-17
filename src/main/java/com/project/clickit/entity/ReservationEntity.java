@@ -19,12 +19,12 @@ public class ReservationEntity {
     @Column(name = "reservation_num")
     private Integer num;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "reservation_seat")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "reservation_seat", insertable = false, updatable = false)
     private SeatEntity seatEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "reservation_member")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "reservation_member", insertable = false, updatable = false)
     private MemberEntity memberEntity;
 
     @Column(name = "reservation_timestamp")

@@ -22,6 +22,8 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
+
+    // ========== Create ========== //
     @Transactional
     public void create(ReservationDTO reservationDTO){
         Page<ReservationEntity> reservationEntities = reservationRepository.findBySeatEntityIdAndToday(reservationDTO.getSeatId(), Pageable.unpaged());
@@ -31,6 +33,8 @@ public class ReservationService {
         reservationRepository.save(reservationDTO.toEntity());
     }
 
+
+    // ========== Read ========== //
     @Transactional
     public Page<ReservationDTO> findAll(Pageable pageable){
         return toDTOPage(reservationRepository.findAll(pageable));
@@ -69,6 +73,8 @@ public class ReservationService {
                 pageable));
     }
 
+
+    // ========== Update ========== //
     @Transactional
     public void update(ReservationDTO reservationDTO){
         reservationRepository.save(reservationDTO.toEntity());
@@ -89,6 +95,8 @@ public class ReservationService {
         reservationRepository.updateReservationStatus(num, status);
     }
 
+
+    // ========== Delete ========== //
     @Transactional
     public void delete(Integer num){
         if (reservationRepository.findByNum(num) == null) throw new ReservationNotFoundException();

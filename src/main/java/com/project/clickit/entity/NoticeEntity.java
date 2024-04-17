@@ -31,8 +31,8 @@ public class NoticeEntity {
     @Column(name = "notice_img")
     private String img;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "notice_writer")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "notice_writer", insertable = false, updatable = false)
     private MemberEntity memberEntity;
 
     /**

@@ -37,8 +37,8 @@ public class FacilityEntity {
     @Column(name = "facility_terms")
     private String terms;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "facility_dormitory")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "facility_dormitory", insertable = false, updatable = false)
     private DormitoryEntity dormitoryEntity;
 
     /**
