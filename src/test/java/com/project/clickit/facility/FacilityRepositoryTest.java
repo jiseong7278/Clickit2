@@ -397,14 +397,20 @@ public class FacilityRepositoryTest {
 
             FacilityEntity result = facilityRepository.findByFacilityId(id);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ facilityRepository.deleteById(id)" +
-                    "\n\t  ┗ FacilityEntity result = facilityRepository.findByFacilityId(id)\n");
+            log.info("""
+
+                    \twhen
+                    \t  ┗ facilityRepository.deleteById(id)
+                    \t  ┗ FacilityEntity result = facilityRepository.findByFacilityId(id)
+                    """);
             // then
             assertThat(result).isNull();
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(result).isNull()\n");
+            log.info("""
+
+                    \tthen
+                    \t  ┗ assertThat(result).isNull()
+                    """);
         }
     }
 }
