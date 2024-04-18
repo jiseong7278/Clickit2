@@ -16,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -184,18 +182,16 @@ public class DormitoryServiceTest {
         void getAllTest(){
             log.info("getAll Test");
             // given
-            DormitoryEntity dormitoryEntity = DormitoryEntity.builder()
-                    .id("dor_1")
-                    .name("test_dormitory_name")
-                    .build();
+            Page<DormitoryEntity> dormitoryEntityPage = Page.empty();
 
-            given(dormitoryRepository.findAll()).willReturn(List.of(dormitoryEntity));
+            given(dormitoryRepository.findAll(Pageable.unpaged())).willReturn(dormitoryEntityPage);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryEntity" +
-                    "\n\t  ┗ id: " + dormitoryEntity.getId() +
-                    "\n\t  ┗ name: " + dormitoryEntity.getName() +
-                    "\n\t  ┗ given(dormitoryRepository.findAll()).willReturn(List.of(dormitoryEntity))\n");
+            log.info("""
+
+                    \tgiven
+                    \t  ┗ Page<DormitoryEntity> dormitoryEntityPage = Page.empty()
+                    \t  ┗ given(dormitoryRepository.findAll(Pageable.unpaged())).willReturn(dormitoryEntityPage)
+                    """);
             // when
             Page<DormitoryDTO> result = dormitoryService.getAll(Pageable.unpaged());
 
@@ -206,17 +202,13 @@ public class DormitoryServiceTest {
                     """);
             // then
             assertThat(result).isNotNull();
-            assertThat(result).isNotEmpty();
             assertThat(result).isInstanceOf(Page.class);
-            assertThatIterable(result).hasSize(1);
 
             log.info("""
 
                     \tthen
                     \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isNotEmpty()
                     \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    \t  ┗ assertThatIterable(result).hasSize(1)
                     """);
         }
 

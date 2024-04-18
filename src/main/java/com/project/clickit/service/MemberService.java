@@ -32,7 +32,7 @@ public class MemberService {
      * @param id String
      * @return Boolean
      */
-    private Boolean isExist(String id) {
+    public Boolean isExist(String id) {
         return memberRepository.existsById(id);
     }
 
