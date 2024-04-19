@@ -784,77 +784,518 @@ public class MemberServiceTest {
     }
 
     @Nested
-    @DisplayName("회원 수정 테스트")
+    @DisplayName("Update Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class UpdateTest{
         @Test
-        @DisplayName("회원 수정 테스트")
-        void updateMemberTest() {
-            log.info("회원 수정 테스트");
+        @Order(1)
+        @DisplayName("update Test")
+        void updateTest() {
+            log.info("Update Test");
             // given
+            DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
+                    .id("test_case_id")
+                    .name("test_case_name")
+                    .build();
 
+            MemberDTO memberDTO = MemberDTO.builder()
+                    .id("test_case_id")
+                    .password("test_case_password")
+                    .name("test_case")
+                    .email("test")
+                    .phone("010-1234-5678")
+                    .studentNum("20151111")
+                    .type("CLICKIT_STUDENT")
+                    .dormitoryDTO(dormitoryDTO)
+                    .build();
+
+            given(memberRepository.existsById(memberDTO.getId())).willReturn(true);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ MemberDTO
+                    \t  ┃  ┣ id: {}
+                    \t  ┃  ┣ password: {}
+                    \t  ┃  ┣ name: {}
+                    \t  ┃  ┣ email: {}
+                    \t  ┃  ┣ phone: {}
+                    \t  ┃  ┣ studentNum: {}
+                    \t  ┃  ┣ type: {}
+                    \t  ┃  ┗ dormitoryDTO
+                    \t  ┃     ┣ id: {}
+                    \t  ┃     ┗ name: {}
+                    \t  ┗ given(memberRepository.existsById(memberDTO.getId())).willReturn(true)
+                    """,
+                    memberDTO.getId(), memberDTO.getPassword(), memberDTO.getName(),
+                    memberDTO.getEmail(), memberDTO.getPhone(), memberDTO.getStudentNum(),
+                    memberDTO.getType(), dormitoryDTO.getId(), dormitoryDTO.getName());
             // when
+            memberService.update(memberDTO);
 
+            log.info("""
+
+                    \twhen
+                    \t  ┗ memberService.update(memberDTO)
+                    """);
             // then
+            assertAll(
+                    () -> then(memberRepository).should().save(any(MemberEntity.class)),
+                    () -> verify(memberRepository, times(1)).save(any(MemberEntity.class)),
+                    () -> assertThatCode(() -> memberService.update(memberDTO)).doesNotThrowAnyException()
+            );
 
+            log.info("""
+
+                    \tthen
+                    \t  ┣ then(memberRepository).should().save(any(MemberEntity.class))
+                    \t  ┣ verify(memberRepository, times(1)).save(any(MemberEntity.class))
+                    \t  ┗ assertThatCode(() -> memberService.update(memberDTO)).doesNotThrowAnyException()
+                    """);
         }
 
         @Test
-        @DisplayName("회원 수정 테스트: 존재하지 않는 아이디")
+        @Order(2)
+        @DisplayName("update Test(존재하지 않는 아이디)")
         void updateMemberTestWithNotExistedId() {
-            log.info("회원 수정 테스트: 존재하지 않는 아이디");
+            log.info("update Test(존재하지 않는 아이디)");
             // given
+            DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
+                    .id("test_case_id")
+                    .name("test_case_name")
+                    .build();
 
+            MemberDTO memberDTO = MemberDTO.builder()
+                    .id("never_used_id")
+                    .password("test_case_password")
+                    .name("test_case")
+                    .email("test")
+                    .phone("010-1234-5678")
+                    .studentNum("20151111")
+                    .type("CLICKIT_STUDENT")
+                    .dormitoryDTO(dormitoryDTO)
+                    .build();
+
+            given(memberRepository.existsById(memberDTO.getId())).willReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ MemberDTO
+                    \t  ┃  ┣ id: {}
+                    \t  ┃  ┣ password: {}
+                    \t  ┃  ┣ name: {}
+                    \t  ┃  ┣ email: {}
+                    \t  ┃  ┣ phone: {}
+                    \t  ┃  ┣ studentNum: {}
+                    \t  ┃  ┣ type: {}
+                    \t  ┃  ┗ dormitoryDTO
+                    \t  ┃     ┣ id: {}
+                    \t  ┃     ┗ name: {}
+                    \t  ┗ given(memberRepository.existsById(memberDTO.getId())).willReturn(false)
+                    """,
+                    memberDTO.getId(), memberDTO.getPassword(), memberDTO.getName(),
+                    memberDTO.getEmail(), memberDTO.getPhone(), memberDTO.getStudentNum(),
+                    memberDTO.getType(), dormitoryDTO.getId(), dormitoryDTO.getName());
             // when
+            Throwable exception = catchThrowable(() -> memberService.update(memberDTO));
 
+            log.info("""
+
+                    \twhen
+                    \t  ┗ Throwable exception = catchThrowable(() -> memberService.update(memberDTO))
+                    """);
             // then
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> then(memberRepository).should(never()).save(any(MemberEntity.class))
+            );
 
+            log.info("""
+
+                    \tthen
+                    \t  ┣ assertThat(exception).isInstanceOf(MemberNotFoundException.class)
+                    \t  ┗ then(memberRepository).should(never()).save(any(MemberEntity.class)
+                    """);
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("updateMemberForStaff Test")
+        void updateMemberForStaffTest() {
+            log.info("updateMemberForStaff Test");
+            // given
+            DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
+                    .id("test_case_id")
+                    .name("test_case_name")
+                    .build();
+
+            MemberDTO memberDTO = MemberDTO.builder()
+                    .id("test_member_id")
+                    .password("test_member_password")
+                    .name("test_case")
+                    .email("test")
+                    .phone("010-1234-5678")
+                    .studentNum("20151111")
+                    .type("CLICKIT_STUDENT")
+                    .dormitoryDTO(dormitoryDTO)
+                    .build();
+
+            given(memberRepository.existsById(memberDTO.getId())).willReturn(true);
+
+            log.info("""
+                           
+                            \tgiven
+                            \t  ┣ MemberDTO
+                            \t  ┃  ┣ id: {}
+                            \t  ┃  ┣ password: {}
+                            \t  ┃  ┣ name: {}
+                            \t  ┃  ┣ email: {}
+                            \t  ┃  ┣ phone: {}
+                            \t  ┃  ┣ studentNum: {}
+                            \t  ┃  ┣ type: {}
+                            \t  ┃  ┗ dormitoryDTO
+                            \t  ┃     ┣ id: {}
+                            \t  ┃     ┗ name: {}
+                            \t  ┗ given(memberRepository.existsById(memberDTO.getId())).willReturn(true)
+                           \s""",
+                    memberDTO.getId(), memberDTO.getPassword(), memberDTO.getName(),
+                    memberDTO.getEmail(), memberDTO.getPhone(), memberDTO.getStudentNum(),
+                    memberDTO.getType(), dormitoryDTO.getId(), dormitoryDTO.getName());
+            // when
+            memberService.updateMemberForStaff(memberDTO);
+
+            log.info("""
+
+                    \twhen
+                    \t  ┗ memberService.updateMemberForStaff(memberDTO)
+                    """);
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().updateMemberForStaff(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString()),
+                    () -> verify(memberRepository, times(1)).updateMemberForStaff(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString()),
+                    () -> assertThatCode(() -> memberService.updateMemberForStaff(memberDTO)).doesNotThrowAnyException()
+            );
+
+            log.info("""
+
+                    \tthen
+                    \t  ┣ then(memberRepository).should().updateMemberForStaff(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
+                    \t  ┣ verify(memberRepository, times(1)).updateMemberForStaff(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
+                    \t  ┗ assertThatCode(() -> memberService.updateMemberForStaff(memberDTO)).doesNotThrowAnyException()
+                    """);
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("updateMemberForStaff Test(존재하지 않는 아이디)")
+        void updateMemberForStaffTestWithNotExistedId() {
+            log.info("updateMemberForStaff Test(존재하지 않는 아이디)");
+            // given
+            DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
+                    .id("test_case_id")
+                    .name("test_case_name")
+                    .build();
+
+            MemberDTO memberDTO = MemberDTO.builder()
+                    .id("never_used_id")
+                    .password("test_member_password")
+                    .name("test_case")
+                    .email("test")
+                    .phone("010-1234-5678")
+                    .studentNum("20151111")
+                    .type("CLICKIT_STUDENT")
+                    .dormitoryDTO(dormitoryDTO)
+                    .build();
+
+            given(memberRepository.existsById(memberDTO.getId())).willReturn(false);
+
+            log.info("""
+                            
+                            \tgiven
+                            \t  ┣ MemberDTO
+                            \t  ┃  ┣ id: {}
+                            \t  ┃  ┣ password: {}
+                            \t  ┃  ┣ name: {}
+                            \t  ┃  ┣ email: {}
+                            \t  ┃  ┣ phone: {}
+                            \t  ┃  ┣ studentNum: {}
+                            \t  ┃  ┣ type: {}
+                            \t  ┃  ┗ dormitoryDTO
+                            \t  ┃     ┣ id: {}
+                            \t  ┃     ┗ name: {}
+                            \t  ┗ given(memberRepository.existsById(memberDTO.getId())).willReturn(false)
+                            """,
+                    memberDTO.getId(), memberDTO.getPassword(), memberDTO.getName(),
+                    memberDTO.getEmail(), memberDTO.getPhone(), memberDTO.getStudentNum(),
+                    memberDTO.getType(), dormitoryDTO.getId(), dormitoryDTO.getName());
+            // when
+            Throwable exception = catchThrowable(() -> memberService.updateMemberForStaff(memberDTO));
+
+            log.info("""
+
+                    \twhen
+                    \t  ┗ Throwable exception = catchThrowable(() -> memberService.updateMemberForStaff(memberDTO))
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> then(memberRepository).should(never()).updateMemberForStaff(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
+            );
+
+            log.info("""
+
+                    \tthen
+                    \t  ┣ assertThat(exception).isInstanceOf(MemberNotFoundException.class)
+                    \t  ┗ then(memberRepository).should(never()).updateMemberForStaff(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
+                    """);
+        }
+
+        @Test
+        @Order(5)
+        @DisplayName("updatePassword Test")
+        void updatePasswordTest(){
+            log.info("updatePassword Test");
+            // given
+            String id = "test_member_id";
+            String password = "update_password";
+
+            given(memberRepository.existsById(id)).willReturn(true);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id: {}
+                    \t  ┣ password: {}
+                    \t  ┗ given(memberRepository.existsById(id)).willReturn(true)
+                    """, id, password);
+            // when
+            memberService.updatePassword(id, password);
+
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ memberService.updatePassword(id, password)
+                    """);
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().updatePassword(id, password),
+                    () -> verify(memberRepository, times(1)).updatePassword(id, password),
+                    () -> assertThatCode(() -> memberService.updatePassword(id, password)).doesNotThrowAnyException()
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ then(memberRepository).should().updatePassword(id, password)
+                    \t  ┣ verify(memberRepository, times(1)).updatePassword(id, password)
+                    \t  ┗ assertThatCode(() -> memberService.updatePassword(id, password)).doesNotThrowAnyException()
+                    """);
+        }
+
+        @Test
+        @Order(6)
+        @DisplayName("updatePassword Test(존재하지 않는 아이디)")
+        void updatePasswordTestWithNotExistedId(){
+            log.info("updatePassword Test(존재하지 않는 아이디)");
+            // given
+            String id = "never_used_id";
+            String password = "update_password";
+
+            given(memberRepository.existsById(id)).willReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id: {}
+                    \t  ┣ password: {}
+                    \t  ┗ given(memberRepository.existsById(id)).willReturn(false)
+                    """, id, password);
+            // when
+            Throwable exception = catchThrowable(() -> memberService.updatePassword(id, password));
+
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable exception = catchThrowable(() -> memberService.updatePassword(id, password))
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> then(memberRepository).should(never()).updatePassword(id, password)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(exception).isInstanceOf(MemberNotFoundException.class)
+                    \t  ┗ then(memberRepository).should(never()).updatePassword(id, password)
+                    """);
+        }
+
+        @Test
+        @Order(7)
+        @DisplayName("updateRefreshToken Test")
+        void updateRefreshTokenTest(){
+            log.info("updateRefreshToken Test");
+            // given
+            String id = "test_member_id";
+            String refreshToken = "test_refresh_token";
+
+            given(memberRepository.existsById(id)).willReturn(true);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id: {}
+                    \t  ┣ refreshToken: {}
+                    \t  ┗ given(memberRepository.existsById(id)).willReturn(true)
+                    """, id, refreshToken);
+            // when
+            memberService.updateRefreshToken(id, refreshToken);
+
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ memberService.updateRefreshToken(id, refreshToken)
+                    """);
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().updateRefreshToken(id, refreshToken),
+                    () -> verify(memberRepository, times(1)).updateRefreshToken(id, refreshToken),
+                    () -> assertThatCode(() -> memberService.updateRefreshToken(id, refreshToken)).doesNotThrowAnyException()
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ then(memberRepository).should().updateRefreshToken(id, refreshToken)
+                    \t  ┣ verify(memberRepository, times(1)).updateRefreshToken(id, refreshToken)
+                    \t  ┗ assertThatCode(() -> memberService.updateRefreshToken(id, refreshToken)).doesNotThrowAnyException()
+                    """);
+        }
+
+        @Test
+        @Order(8)
+        @DisplayName("updateRefreshToken Test(존재하지 않는 아이디)")
+        void updateRefreshTokenTestWithNotExistedId(){
+            log.info("updateRefreshToken Test(존재하지 않는 아이디)");
+            // given
+            String id = "never_used_id";
+            String refreshToken = "test_refresh_token";
+
+            given(memberRepository.existsById(id)).willReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id: {}
+                    \t  ┣ refreshToken: {}
+                    \t  ┗ given(memberRepository.existsById(id)).willReturn(false)
+                    """, id, refreshToken);
+            // when
+            Throwable exception = catchThrowable(() -> memberService.updateRefreshToken(id, refreshToken));
+
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable exception = catchThrowable(() -> memberService.updateRefreshToken(id, refreshToken))
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> then(memberRepository).should(never()).updateRefreshToken(id, refreshToken)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(exception).isInstanceOf(MemberNotFoundException.class)
+                    \t  ┗ then(memberRepository).should(never()).updateRefreshToken(id, refreshToken)
+                    """);
         }
     }
 
     @Nested
-    @DisplayName("회원 삭제 테스트")
+    @DisplayName("Delete Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class DeleteTest{
         @Test
-        @DisplayName("회원 삭제 테스트")
-        void deleteMemberTest() {
-            log.info("회원 삭제 테스트");
+        @Order(1)
+        @DisplayName("deleteById Test")
+        void deleteByIdTest() {
+            log.info("deleteById Test");
             // given
-            log.info("given - 존재하는 아이디 생성, 회원 존재 여부 확인(return true)");
             String id = "test_member_id";
 
             given(memberRepository.existsById(id)).willReturn(true);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id: {}
+                    \t  ┗ given(memberRepository.existsById(id)).willReturn(true)
+                    """, id);
             // when
-            log.info("when - memberService.deleteById(id)");
             memberService.deleteById(id);
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ memberService.deleteById(id)
+                    """);
             // then
-            log.info("then - 회원 삭제 확인");
-            then(memberRepository).should().deleteById(id);
-            assertThatCode(() -> memberService.deleteById(id)).doesNotThrowAnyException();
-            log.info("테스트 종료");
+            assertAll(
+                    () -> then(memberRepository).should().deleteById(id),
+                    () -> verify(memberRepository, times(1)).deleteById(id),
+                    () -> assertThatCode(() -> memberService.deleteById(id)).doesNotThrowAnyException()
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ then(memberRepository).should().deleteById(id)
+                    \t  ┣ verify(memberRepository, times(1)).deleteById(id)
+                    \t  ┗ assertThatCode(() -> memberService.deleteById(id)).doesNotThrowAnyException()
+                    """);
         }
 
         @Test
-        @DisplayName("회원 삭제 테스트: 존재하지 않는 아이디")
+        @Order(2)
+        @DisplayName("deleteById Test(존재하지 않는 아이디)")
         void deleteMemberTestWithNotExistedId() {
-            log.info("회원 삭제 테스트: 존재하지 않는 아이디");
+            log.info("deleteById Test(존재하지 않는 아이디)");
             // given
-            log.info("given - 존재하지 않는 아이디 생성, 회원 존재 여부 확인(return false)");
             String id = "never_used_id";
 
             given(memberRepository.existsById(id)).willReturn(false);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id: {}
+                    \t  ┗ given(memberRepository.existsById(id)).willReturn(false)
+                    """, id);
             // when
-            log.info("when - memberService.deleteById(id) throws MemberNotFoundException");
             Throwable exception = catchThrowable(() -> memberService.deleteById(id));
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable exception = catchThrowable(() -> memberService.deleteById(id))
+                    """);
             // then
-            log.info("then - 회원 삭제 결과 확인 및 예외 발생 확인");
-            log.info("예외 정보: ", exception);
-            then(memberRepository).should(never()).deleteById(id);
-            assertThat(exception).isInstanceOf(RuntimeException.class);
-            log.info("테스트 종료");
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> then(memberRepository).should(never()).deleteById(id)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(exception).isInstanceOf(MemberNotFoundException.class)
+                    \t  ┗ then(memberRepository).should(never()).deleteById(id)
+                    """);
         }
     }
 }
