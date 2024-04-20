@@ -34,11 +34,6 @@ public class MemberServiceTest {
     @InjectMocks
     private MemberService memberService;
 
-    @BeforeEach
-    void setUp(){
-
-    }
-
     @Nested
     @DisplayName("isExist Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
