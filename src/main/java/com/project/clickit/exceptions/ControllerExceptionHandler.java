@@ -2,6 +2,7 @@ package com.project.clickit.exceptions;
 
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.InvalidIdException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
 import com.project.clickit.exceptions.facility.FacilityNotFoundException;
 import com.project.clickit.exceptions.jwt.*;
@@ -17,6 +18,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ControllerExceptionHandler extends RuntimeException{
+
+    // common
+    /**
+     * 해당 객체가 존재하지 않을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<String> handleObjectNotFoundException(){
+        return ResponseEntity.status(ErrorCode.OBJECT_NOT_FOUND.getHttpStatus()).body(ErrorCode.OBJECT_NOT_FOUND.getMessage());
+    }
 
     // jwt
 

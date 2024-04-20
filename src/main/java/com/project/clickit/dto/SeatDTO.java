@@ -1,6 +1,5 @@
 package com.project.clickit.dto;
 
-import com.project.clickit.entity.FacilityEntity;
 import com.project.clickit.entity.SeatEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,21 +15,27 @@ public class SeatDTO {
     private String name;
     private Integer time;
     private Boolean isEmpty;
-    private String facilityId;
+    private FacilityDTO facilityDTO;
 
     /**
      * <b>SeatEntity로 변환</b>
      * @return SeatEntity
      */
     public SeatEntity toEntity() {
+        if (this.facilityDTO == null) {
+            return SeatEntity.builder()
+                    .id(this.id)
+                    .name(this.name)
+                    .time(this.time)
+                    .isEmpty(this.isEmpty)
+                    .build();
+        }
         return SeatEntity.builder()
                 .id(this.id)
                 .name(this.name)
                 .time(this.time)
                 .isEmpty(this.isEmpty)
-                .facilityEntity(FacilityEntity.builder()
-                        .id(this.facilityId)
-                        .build())
+                .facilityEntity(this.facilityDTO.toEntity())
                 .build();
     }
 }

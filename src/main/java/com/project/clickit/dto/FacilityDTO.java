@@ -26,6 +26,18 @@ public class FacilityDTO {
      * @return FacilityEntity
      */
     public FacilityEntity toEntity() {
+        if (this.dormitoryDTO == null) {
+            return FacilityEntity.builder()
+                    .id(this.id)
+                    .name(this.name)
+                    .info(this.info)
+                    .open(this.open)
+                    .close(this.close)
+                    .capacity(this.capacity)
+                    .img(this.img)
+                    .terms(this.terms)
+                    .build();
+        }
         return FacilityEntity.builder()
                 .id(this.id)
                 .name(this.name)

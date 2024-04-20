@@ -14,6 +14,7 @@ public enum ErrorCode {
     // common
     DUPLICATED_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다."),
     INVALID_ID(HttpStatus.BAD_REQUEST, "올바르지 않은 아이디입니다."),
+    OBJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 객체가 존재하지 않습니다."),
 
     // jwt
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않습니다."),

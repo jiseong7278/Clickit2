@@ -34,12 +34,20 @@ public class SeatEntity {
      * @return SeatDTO
      */
     public SeatDTO toDTO() {
+        if(this.facilityEntity == null) {
+            return SeatDTO.builder()
+                    .id(this.id)
+                    .name(this.name)
+                    .time(this.time)
+                    .isEmpty(this.isEmpty)
+                    .build();
+        }
         return SeatDTO.builder()
                 .id(this.id)
                 .name(this.name)
                 .time(this.time)
                 .isEmpty(this.isEmpty)
-                .facilityId(this.facilityEntity.getId())
+                .facilityDTO(this.facilityEntity.toDTO())
                 .build();
     }
 }
