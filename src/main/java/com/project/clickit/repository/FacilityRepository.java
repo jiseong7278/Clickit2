@@ -20,7 +20,7 @@ public interface FacilityRepository extends JpaRepository<FacilityEntity, String
     FacilityEntity findByFacilityId(@Param("id") String id);
 
     @Query("SELECT new FacilityEntity(f.id, f.name, f.info, f.open, f.close, f.capacity, f.img, f.terms, f.dormitoryEntity) FROM FacilityEntity f where f.name like %:name%")
-    FacilityEntity findByFacilityName(@Param("name") String name);
+    Page<FacilityEntity> findByFacilityName(@Param("name") String name, Pageable pageable);
 
     // select by dormitory
     @Query("SELECT new FacilityEntity(f.id, f.name, f.info, f.open, f.close, f.capacity, f.img, f.terms, f.dormitoryEntity) FROM FacilityEntity f where f.dormitoryEntity.id = :dormitoryId")

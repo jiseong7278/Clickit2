@@ -218,20 +218,22 @@ public class FacilityRepositoryTest {
             log.info("\n\tgiven" +
                     "\n\t  ┗ name: " + name + "\n");
             // when
-            FacilityEntity result = facilityRepository.findByFacilityName(name);
+            Page<FacilityEntity> result = facilityRepository.findByFacilityName(name, Pageable.unpaged());
 
             log.info("""
 
                     \twhen
-                    \t  ┗ FacilityEntity result = facilityRepository.findByFacilityName(name)
+                    \t  ┗ Page<FacilityEntity> result = facilityRepository.findByFacilityName(name)
                     """);
             // then
             assertThat(result).isNotNull();
+            assertThat(result).isInstanceOf(Page.class);
 
             log.info("""
 
                     \tthen
                     \t  ┗ assertThat(result).isNotNull()
+                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
                     """);
         }
 

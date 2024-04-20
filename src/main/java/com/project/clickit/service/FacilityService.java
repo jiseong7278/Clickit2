@@ -3,6 +3,7 @@ package com.project.clickit.service;
 import com.project.clickit.dto.FacilityDTO;
 import com.project.clickit.entity.FacilityEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
+import com.project.clickit.exceptions.facility.FacilityNotFoundException;
 import com.project.clickit.repository.FacilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -62,6 +63,9 @@ public class FacilityService {
      */
     @Transactional
     public FacilityDTO findById(String id) {
+        if (!isExist(id)) {
+            throw new FacilityNotFoundException();
+        }
         return facilityRepository.findByFacilityId(id).toDTO();
     }
 
@@ -71,8 +75,8 @@ public class FacilityService {
      * @return FacilityDTO
      */
     @Transactional
-    public FacilityDTO findByName(String name) {
-        return facilityRepository.findByFacilityName(name).toDTO();
+    public Page<FacilityDTO> findByName(String name, Pageable pageable) {
+        return toDTOPage(facilityRepository.findByFacilityName(name, pageable));
     }
 
     /**
@@ -94,7 +98,7 @@ public class FacilityService {
     @Transactional
     public void updateFacility(FacilityDTO facilityDTO) {
         if(!isExist(facilityDTO.getId())){
-            throw new DuplicatedIdException();
+            throw new FacilityNotFoundException();
         }
         facilityRepository.save(facilityDTO.toEntity());
     }
@@ -106,7 +110,7 @@ public class FacilityService {
     @Transactional
     public void updateFacilityId(String id, String newId) {
         if(!isExist(id)){
-            throw new DuplicatedIdException();
+            throw new FacilityNotFoundException();
         }
         facilityRepository.updateFacilityId(id, newId);
     }
@@ -120,7 +124,7 @@ public class FacilityService {
     @Transactional
     public void deleteById(String id) {
         if(!isExist(id)){
-            throw new DuplicatedIdException();
+            throw new FacilityNotFoundException();
         }
         facilityRepository.deleteById(id);
     }

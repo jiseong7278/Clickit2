@@ -34,6 +34,9 @@ public enum ErrorCode {
     // dormitory
     DORMITORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "기숙사가 존재하지 않습니다."),
 
+    // facility
+    FACILITY_NOT_FOUND(HttpStatus.BAD_REQUEST, "시설이 존재하지 않습니다."),
+
     // notice
     NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, "공지사항이 존재하지 않습니다."),
 

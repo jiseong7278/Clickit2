@@ -4,6 +4,8 @@ import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.dto.FacilityDTO;
 import com.project.clickit.entity.DormitoryEntity;
 import com.project.clickit.entity.FacilityEntity;
+import com.project.clickit.exceptions.common.DuplicatedIdException;
+import com.project.clickit.exceptions.facility.FacilityNotFoundException;
 import com.project.clickit.repository.FacilityRepository;
 import com.project.clickit.service.FacilityService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -33,245 +34,417 @@ public class FacilityServiceTest {
     @InjectMocks
     private FacilityService facilityService;
 
-    private FacilityDTO facilityDTO;
+    @Nested
+    @DisplayName("isExist Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class isExist{
+        @Test
+        @Order(1)
+        @DisplayName("isExist Test")
+        void isExistTest(){
+            log.info("isExist Test");
+            // given
+            String facilityId = "dor_1_badminton";
 
-    private FacilityDTO duplicateFacilityDTO;
+            given(facilityRepository.existsById(facilityId)).willReturn(true);
 
-    private DormitoryDTO dormitoryDTO;
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ facilityId = {}
+                    \t  ┗ given(facilityRepository.existsById(facilityId)).willReturn(true)
+                    """, facilityId);
+            // when
+            Boolean result = facilityService.isExist(facilityId);
 
-    private DormitoryDTO duplicateDormitoryDTO;
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Boolean result = facilityService.isExist(facilityId)
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(Boolean.class),
+                    () -> assertThat(result).isTrue(),
+                    () -> then(facilityRepository).should().existsById(facilityId)
+            );
 
-    private FacilityEntity facilityEntity;
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isNotNull()
+                    \t  ┣ assertThat(result).isInstanceOf(Boolean.class)
+                    \t  ┣ assertThat(result).isTrue()
+                    \t  ┗ facilityRepository.should().existsById(facilityId)
+                    """);
+        }
 
-    private DormitoryEntity dormitoryEntity;
+        @Test
+        @Order(2)
+        @DisplayName("시설 아이디 중복 체크 테스트")
+        void isExistTestDuplicated(){
+            log.info("시설 아이디 중복 체크 테스트: true(중복 o)");
+            // given
+            String facilityId = "never_used_id";
 
-    @BeforeEach
-    void setUp(){
-        dormitoryDTO = DormitoryDTO.builder()
-                .id("test_dormitory_id")
-                .name("test_dormitory_name")
-                .build();
+            given(facilityRepository.existsById(facilityId)).willReturn(false);
 
-        duplicateDormitoryDTO = DormitoryDTO.builder()
-                .id("dor_1")
-                .name("test_dormitory_name")
-                .build();
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ facilityId = {}
+                    \t  ┗ given(facilityRepository.existsById(facilityId)).willReturn(false)
+                    """, facilityId);
+            // when
+            Boolean result = facilityService.isExist(facilityId);
 
-        facilityDTO = FacilityDTO.builder()
-                .id("test_facility_id")
-                .name("test_facility_name")
-                .info("test_facility_info")
-                .open(9)
-                .close(21)
-                .img("test_facility_img")
-                .terms("test_facility_terms")
-                .dormitoryDTO(dormitoryDTO)
-                .build();
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Boolean result = facilityService.isExist(facilityId)
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(Boolean.class),
+                    () -> assertThat(result).isFalse(),
+                    () -> then(facilityRepository).should().existsById(facilityId)
+            );
 
-        duplicateFacilityDTO = FacilityDTO.builder()
-                .id("dor_1_pingpong")
-                .name("test_facility_name")
-                .info("test_facility_info")
-                .open(9)
-                .close(21)
-                .img("test_facility_img")
-                .terms("test_facility_terms")
-                .dormitoryDTO(duplicateDormitoryDTO)
-                .build();
-
-        dormitoryEntity = DormitoryEntity.builder().id("dor_1").name("테스트 기숙사 1").build();
-
-        facilityEntity = FacilityEntity.builder()
-                .id("dor_1_pingpong")
-                .name("test_name")
-                .info("test_info")
-                .open(9)
-                .close(21)
-                .img("test_facility_img")
-                .terms("test_facility_terms")
-                .dormitoryEntity(dormitoryEntity)
-                .build();
-    }
-
-    @DisplayName("시설 아이디 중복 체크 테스트")
-    @Test
-    void isExistTest(){
-        log.info("시설 아이디 중복 체크 테스트: false(중복 x)");
-        // given
-        given(facilityRepository.existsById(facilityDTO.getId())).willReturn(false);
-
-        // when
-        Boolean result = facilityService.isExist(facilityDTO.getId());
-
-        // then
-        assertThat(result).isFalse();
-    }
-
-    @DisplayName("시설 아이디 중복 체크 테스트")
-    @Test
-    void isExistTest2(){
-        log.info("시설 아이디 중복 체크 테스트: true(중복 o)");
-        // given
-        given(facilityRepository.existsById(duplicateFacilityDTO.getId())).willReturn(true);
-
-        // when
-        Boolean result = facilityService.isExist(duplicateFacilityDTO.getId());
-
-        // then
-        assertThat(result).isTrue();
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isNotNull()
+                    \t  ┣ assertThat(result).isInstanceOf(Boolean.class)
+                    \t  ┣ assertThat(result).isFalse()
+                    \t  ┗ facilityRepository.should().existsById(facilityId)
+                    """);
+        }
     }
 
     @Nested
-    @DisplayName("시설 생성 기능 테스트")
-    class FacilityCreateTest{
+    @DisplayName("Create Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class CreateTest{
         @Test
-        @DisplayName("시설 생성 테스트")
+        @Order(1)
+        @DisplayName("createFacility Test")
         void createFacilityTest(){
-            log.info("시설 생성 테스트");
+            log.info("createFacility Test");
             // given
+            DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
+                    .id("dor_1")
+                    .name("기숙사1")
+                    .build();
+
+            FacilityDTO facilityDTO = FacilityDTO.builder()
+                    .id("dor_1_tennis")
+                    .name("테니스장")
+                    .info("테니스장입니다.")
+                    .open(6)
+                    .close(18)
+                    .img("테니스장 이미지")
+                    .terms("테니스장 이용 조건")
+                    .dormitoryDTO(dormitoryDTO)
+                    .build();
+
             given(facilityRepository.existsById(facilityDTO.getId())).willReturn(false);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ facilityDTO
+                    \t  ┃  ┣ id = {}
+                    \t  ┃  ┣ name = {}
+                    \t  ┃  ┣ info = {}
+                    \t  ┃  ┣ open = {}
+                    \t  ┃  ┣ close = {}
+                    \t  ┃  ┣ img = {}
+                    \t  ┃  ┣ terms = {}
+                    \t  ┃  ┣ dormitoryDTO
+                    \t  ┃  ┃  ┣ id = {}
+                    \t  ┃  ┃  ┗ name = {}
+                    \t  ┗ given(facilityRepository.existsById(facilityDTO.getId())).willReturn(false)
+                    """, facilityDTO.getId(), facilityDTO.getName(), facilityDTO.getInfo(),
+                    facilityDTO.getOpen(), facilityDTO.getClose(), facilityDTO.getImg(),
+                    facilityDTO.getTerms(), dormitoryDTO.getId(), dormitoryDTO.getName());
             // when
             facilityService.createFacility(facilityDTO);
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ facilityService.createFacility(facilityDTO)
+                    """);
             // then
-            verify(facilityRepository, atLeastOnce()).save(any(FacilityEntity.class));
+            assertAll(
+                    () -> then(facilityRepository).should().save(any(FacilityEntity.class)),
+                    () -> assertThatCode(() -> facilityService.createFacility(facilityDTO)).doesNotThrowAnyException()
+            );
         }
 
         @Test
-        @DisplayName("시설 생성 테스트(중복된 아이디)")
-        void createFacilityTest2(){
-            log.info("시설 생성 테스트(중복된 아이디)");
+        @Order(2)
+        @DisplayName("createFacility Test (중복된 아이디)")
+        void createFacilityTestWithDuplicatedId(){
+            log.info("createFacility Test (중복된 아이디)");
             // given
-            given(facilityRepository.existsById(duplicateFacilityDTO.getId())).willReturn(true);
+            FacilityDTO facilityDTO = FacilityDTO.builder()
+                    .id("dor_1_badminton")
+                    .build();
 
+            given(facilityRepository.existsById(facilityDTO.getId())).willReturn(true);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ facilityDTO
+                    \t  ┃  ┗ id = {}
+                    \t  ┗ given(facilityRepository.existsById(facilityDTO.getId())).willReturn(true)
+                    """, facilityDTO.getId());
             // when
-            assertThatThrownBy(() -> facilityService.createFacility(duplicateFacilityDTO))
-                    .isInstanceOf(RuntimeException.class);
+            Throwable result = catchThrowable(()->facilityService.createFacility(facilityDTO));
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable result = catchThrowable(()->facilityService.createFacility(facilityDTO))
+                    """);
             // then
-            verify(facilityRepository, never()).save(any(FacilityEntity.class));
+            assertAll(
+                    () -> assertThat(result).isInstanceOf(DuplicatedIdException.class),
+                    () -> assertThat(result).hasMessageContaining("이미 존재하는 아이디입니다."),
+                    () -> then(facilityRepository).should(never()).save(any(FacilityEntity.class))
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isInstanceOf(DuplicatedIdException.class)
+                    \t  ┣ assertThat(result).hasMessageContaining("이미 존재하는 아이디입니다.")
+                    \t  ┗ facilityRepository.should(never()).save(any(FacilityEntity.class)
+                    """);
         }
     }
 
     @Nested
-    @DisplayName("시설 조회 기능 테스트")
-    class FacilityReadTest{
+    @DisplayName("Read Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class ReadTest {
         @Test
-        @DisplayName("시설 전체 조회 테스트")
+        @Order(1)
+        @DisplayName("getAll Test")
         void getAllTest(){
-            log.info("시설 전체 조회 테스트");
+            log.info("getAll Test");
             // given
-            given(facilityRepository.findAll()).willReturn(new ArrayList<>());
+            when(facilityRepository.findAll(Pageable.unpaged())).thenReturn(Page.empty());
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ when(facilityRepository.findAll(Pageable.unpaged())).thenReturn(Page.empty())
+                    """);
             // when
-            Page<FacilityDTO> result = facilityService.getAll(Pageable.ofSize(10));
+            Page<FacilityDTO> result = facilityService.getAll(Pageable.unpaged());
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Page<FacilityDTO> result = facilityService.getAll(Pageable.unpaged())
+                    """);
             // then
-            assertThat(result).isNotNull();
-            log.info("테스트 종료");
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(Page.class)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isNotNull()
+                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
+                    """);
         }
 
         @Test
-        @DisplayName("시설 id로 조회 테스트")
+        @Order(2)
+        @DisplayName("findById Test")
         void findByIdTest() {
-            log.info("시설 id로 조회 테스트");
+            log.info("findById Test");
             // given
+            String facilityId = "dor_1_badminton";
 
-            given(facilityRepository.findByFacilityId(duplicateFacilityDTO.getId())).willReturn(facilityEntity);
+            DormitoryEntity dormitoryEntity = DormitoryEntity.builder()
+                    .id("dor_1")
+                    .name("기숙사1")
+                    .build();
 
+            given(facilityRepository.existsById(facilityId)).willReturn(true);
+
+            when(facilityRepository.findByFacilityId(facilityId)).thenReturn(FacilityEntity.builder().dormitoryEntity(dormitoryEntity).build());
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ facilityId = {}
+                    \t  ┣ DormitoryEntity
+                    \t  ┃  ┣ id = {}
+                    \t  ┃  ┗ name = {}
+                    \t  ┣ given(facilityRepository.existsById(facilityId)).willReturn(true)
+                    \t  ┗ when(facilityRepository.findByFacilityId(facilityId)).thenReturn(FacilityEntity.builder().build())
+                    """, facilityId, dormitoryEntity.getId(), dormitoryEntity.getName());
             // when
-            FacilityDTO result = facilityService.findById(duplicateFacilityDTO.getId());
+            FacilityDTO result = facilityService.findById(facilityId);
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ FacilityDTO result = facilityService.findById(facilityId)
+                    """);
             // then
-            assertThat(result).isNotNull();
-            log.info("테스트 종료");
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(FacilityDTO.class)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isNotNull()
+                    \t  ┗ assertThat(result).isInstanceOf(FacilityDTO.class)
+                    """);
         }
 
         @Test
-        @DisplayName("시설 id로 조회 테스트 - 실패")
-        void findByIdTestFail() {
-            log.info("시설 id로 조회 테스트 - 실패");
+        @Order(3)
+        @DisplayName("findById Test (존재하지 않는 아이디)")
+        void findByIdTestWithNotExistId() {
+            log.info("findById Test (존재하지 않는 아이디)");
             // given
-            given(facilityRepository.findByFacilityId(facilityDTO.getId())).willReturn(null);
+            String facilityId = "never_used_id";
 
+            when(facilityRepository.existsById(facilityId)).thenReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ facilityId = {}
+                    \t  ┗ when(facilityRepository.existsById(facilityId)).thenReturn(false)
+                    """, facilityId);
             // when
-            Throwable result = catchThrowable(() -> facilityService.findById(facilityDTO.getId()));
+            Throwable result = catchThrowable(() -> facilityService.findById(facilityId));
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.findById(facilityId))
+                    """);
             // then
-            assertThat(result).isInstanceOf(RuntimeException.class);
-            log.info("테스트 종료");
+            assertAll(
+                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> then(facilityRepository).should(never()).findByFacilityId(facilityId)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
+                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
+                    \t  ┗ facilityRepository.should(never()).findByFacilityId(facilityId)
+                    """);
         }
 
         @Test
-        @DisplayName("시설 이름으로 조회 테스트")
+        @Order(4)
+        @DisplayName("findByName Test")
         void findByNameTest(){
-            log.info("시설 이름으로 조회 테스트");
+            log.info("findByName Test");
             // given
-            given(facilityRepository.findByFacilityName(duplicateFacilityDTO.getName())).willReturn(facilityEntity);
+            String facilityName = "탁구";
 
+            when(facilityRepository.findByFacilityName(facilityName, Pageable.unpaged())).thenReturn(Page.empty());
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ when(facilityRepository.findByFacilityName(facilityName, Pageable.unpaged())).thenReturn(Page.empty())
+                    """);
             // when
-            FacilityDTO result = facilityService.findByName(duplicateFacilityDTO.getName());
+            Page<FacilityDTO> result = facilityService.findByName(facilityName, Pageable.unpaged());
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Page<FacilityDTO> result = facilityService.findByName(facilityName, Pageable.unpaged())
+                    """);
             // then
-            assertThat(result).isNotNull();
-            log.info("테스트 종료");
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(Page.class)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isNotNull()
+                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
+                    """);
         }
 
         @Test
-        @DisplayName("시설 이름으로 조회 테스트 - 실패")
-        void findByNameTestFail(){
-            log.info("시설 이름으로 조회 테스트 - 실패");
-            // given
-            given(facilityRepository.findByFacilityName(facilityDTO.getName())).willReturn(null);
-
-            // when
-            Throwable result = catchThrowable(() -> facilityService.findByName(facilityDTO.getName()));
-
-            // then
-            assertThat(result).isInstanceOf(RuntimeException.class);
-            log.info("테스트 종료");
-        }
-
-        @Test
-        @DisplayName("기숙사 id로 시설 조회 테스트")
+        @Order(5)
+        @DisplayName("findByDormitoryId Test")
         void findByDormitoryIdTest(){
-            log.info("기숙사 id로 시설 조회 테스트");
+            log.info("findByDormitoryId Test");
             // given
-            given(facilityRepository.findByDormitoryId(duplicateDormitoryDTO.getId(), Pageable.ofSize(10))).willReturn(Page.empty());
+            String dormitoryId = "dor_1";
 
+            when(facilityRepository.findByDormitoryId(dormitoryId, Pageable.unpaged())).thenReturn(Page.empty());
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ when(facilityRepository.findByDormitoryId(dormitoryId, Pageable.unpaged())).thenReturn(Page.empty())
+                    """);
             // when
-            Page<FacilityDTO> result = facilityService.findByDormitoryId(duplicateDormitoryDTO.getId(), Pageable.ofSize(10));
+            Page<FacilityDTO> result = facilityService.findByDormitoryId(dormitoryId, Pageable.unpaged());
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Page<FacilityDTO> result = facilityService.findByDormitoryId(dormitoryId, Pageable.unpaged())
+                    """);
             // then
-            assertThat(result).isNotNull();
-            log.info("테스트 종료");
-        }
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(Page.class)
+            );
 
-        @Test
-        @DisplayName("기숙사 id로 시설 조회 테스트 - 실패")
-        void findByDormitoryIdTestFail(){
-            log.info("기숙사 id로 시설 조회 테스트 - 실패");
-            // given
-            given(facilityRepository.findByDormitoryId(dormitoryDTO.getId(), Pageable.ofSize(10))).willReturn(null);
-
-            // when
-            Throwable result = catchThrowable(() -> facilityService.findByDormitoryId(dormitoryDTO.getId(), Pageable.ofSize(10)));
-
-            // then
-            assertThat(result).isInstanceOf(RuntimeException.class);
-            log.info("테스트 종료");
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isNotNull()
+                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
+                    """);
         }
     }
 
     @Nested
-    @DisplayName("시설 수정 기능 테스트")
-    class FacilityUpdateTest{
+    @DisplayName("Update Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class UpdateTest{
         @Test
-        @DisplayName("시설 수정 테스트")
+        @Order(1)
+        @DisplayName("updateFacility Test")
         void updateFacilityTest(){
-            log.info("시설 수정 테스트");
+            log.info("updateFacility Test");
             // given
+            DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
+                    .id("dor_1")
+                    .name("기숙사1")
+                    .build();
+
             FacilityDTO updateFacility = FacilityDTO.builder()
                     .id("dor_1_pingpong")
                     .name("update_fac")
@@ -280,51 +453,262 @@ public class FacilityServiceTest {
                     .close(18)
                     .img("update_test_img")
                     .terms("update_test_terms")
+                    .dormitoryDTO(dormitoryDTO)
                     .build();
 
             given(facilityRepository.existsById(updateFacility.getId())).willReturn(true);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ updateFacility
+                    \t  ┃  ┣ id = {}
+                    \t  ┃  ┣ name = {}
+                    \t  ┃  ┣ info = {}
+                    \t  ┃  ┣ open = {}
+                    \t  ┃  ┣ close = {}
+                    \t  ┃  ┣ img = {}
+                    \t  ┃  ┣ terms = {}
+                    \t  ┃  ┣ dormitoryDTO
+                    \t  ┃  ┃  ┣ id = {}
+                    \t  ┃  ┃  ┗ name = {}
+                    \t  ┗ given(facilityRepository.existsById(updateFacility.getId())).willReturn(true)
+                    """, updateFacility.getId(), updateFacility.getName(), updateFacility.getInfo(),
+                    updateFacility.getOpen(), updateFacility.getClose(), updateFacility.getImg(),
+                    updateFacility.getTerms(), dormitoryDTO.getId(), dormitoryDTO.getName());
             // when
             facilityService.updateFacility(updateFacility);
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ facilityService.updateFacility(updateFacility)
+                    """);
             // then
-            then(facilityRepository).should().save(updateFacility.toEntity());
+            assertAll(
+                    () -> then(facilityRepository).should().save(any(FacilityEntity.class)),
+                    () -> verify(facilityRepository, times(1)).save(any(FacilityEntity.class)),
+                    () -> assertThatCode(() -> facilityService.updateFacility(updateFacility)).doesNotThrowAnyException()
+            );
 
-            assertThatCode(() -> facilityService.updateFacility(updateFacility)).doesNotThrowAnyException();
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ facilityRepository.should().save(any(FacilityEntity.class))
+                    \t  ┣ verify(facilityRepository, times(1)).save(any(FacilityEntity.class))
+                    \t  ┗ assertThatCode(() -> facilityService.updateFacility(updateFacility)).doesNotThrowAnyException()
+                    """);
         }
 
         @Test
-        @DisplayName("시설 아이디 수정 테스트")
-        void updateFacilityIdTest() {
-            log.info("시설 아이디 수정 테스트");
+        @Order(2)
+        @DisplayName("updateFacility Test (존재하지 않는 아이디)")
+        void updateFacilityTestWithNotExistId(){
+            log.info("updateFacility Test (존재하지 않는 아이디)");
             // given
+            FacilityDTO updateFacility = FacilityDTO.builder()
+                    .id("never_used_id")
+                    .build();
+
+            given(facilityRepository.existsById(updateFacility.getId())).willReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ updateFacility
+                    \t  ┃  ┗ id = {}
+                    \t  ┗ given(facilityRepository.existsById(updateFacility.getId())).willReturn(false)
+                    """, updateFacility.getId());
+            // when
+            Throwable result = catchThrowable(() -> facilityService.updateFacility(updateFacility));
+
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.updateFacility(updateFacility))
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> then(facilityRepository).should(never()).save(any(FacilityEntity.class))
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
+                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
+                    \t  ┗ facilityRepository.should(never()).save(any(FacilityEntity.class)
+                    """);
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("updateFacilityId Test")
+        void updateFacilityIdTest() {
+            log.info("updateFacilityId Test");
+            // given
+            String id = "dor_1_badminton";
+
             String newId = "newId";
 
-            given(facilityRepository.existsById(duplicateFacilityDTO.getId())).willReturn(true);
+            given(facilityRepository.existsById(id)).willReturn(true);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id = {}
+                    \t  ┣ newId = {}
+                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(true)
+                    """, id, newId);
             // when
-            facilityService.updateFacilityId(duplicateFacilityDTO.getId(), newId);
+            facilityService.updateFacilityId(id, newId);
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ facilityService.updateFacilityId(id, newId)
+                    """);
             //then
-            then(facilityRepository).should().updateFacilityId(duplicateFacilityDTO.getId(), newId);
+            assertAll(
+                    () -> then(facilityRepository).should().updateFacilityId(id, newId),
+                    () -> verify(facilityRepository, times(1)).updateFacilityId(id, newId),
+                    () -> assertThatCode(() -> facilityService.updateFacilityId(id, newId)).doesNotThrowAnyException()
+            );
 
-            assertThatCode(() -> facilityService.updateFacilityId(duplicateFacilityDTO.getId(), newId)).doesNotThrowAnyException();
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ facilityRepository.should().updateFacilityId(id, newId)
+                    \t  ┣ verify(facilityRepository, times(1)).updateFacilityId(id, newId)
+                    \t  ┗ assertThatCode(() -> facilityService.updateFacilityId(id, newId)).doesNotThrowAnyException()
+                    """);
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("updateFacilityId Test (존재하지 않는 아이디)")
+        void updateFacilityIdTestWithNotExistId(){
+            log.info("updateFacilityId Test (존재하지 않는 아이디)");
+            // given
+            String id = "never_used_id";
+
+            String newId = "newId";
+
+            given(facilityRepository.existsById(id)).willReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id = {}
+                    \t  ┣ newId = {}
+                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(false)
+                    """, id, newId);
+            // when
+            Throwable result = catchThrowable(() -> facilityService.updateFacilityId(id, newId));
+
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.updateFacilityId(id, newId))
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> then(facilityRepository).should(never()).updateFacilityId(id, newId)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
+                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
+                    \t  ┗ facilityRepository.should(never()).updateFacilityId(id, newId)
+                    """);
         }
     }
 
-    @Test
-    @DisplayName("시설 삭제 테스트")
-    void deleteByIdTest(){
-        log.info("시설 삭제 테스트");
-        // given
-        given(facilityRepository.existsById(duplicateFacilityDTO.getId())).willReturn(true);
+    @Nested
+    @DisplayName("Delete Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class DeleteTest{
+        @Test
+        @Order(1)
+        @DisplayName("deleteById Test")
+        void deleteByIdTest(){
+            log.info("deleteById Test");
+            // given
+            String id = "dor_1_badminton";
 
-        // when
-        facilityService.deleteById(duplicateFacilityDTO.getId());
+            given(facilityRepository.existsById(id)).willReturn(true);
 
-        // then
-        then(facilityRepository).should().deleteById(duplicateFacilityDTO.getId());
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id = {}
+                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(true)
+                    """, id);
+            // when
+            facilityService.deleteById(id);
 
-        assertThatCode(() -> facilityService.deleteById(duplicateFacilityDTO.getId())).doesNotThrowAnyException();
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ facilityService.deleteById(id)
+                    """);
+            // then
+            assertAll(
+                    () -> then(facilityRepository).should().deleteById(id),
+                    () -> verify(facilityRepository, times(1)).deleteById(id),
+                    () -> assertThatCode(() -> facilityService.deleteById(id)).doesNotThrowAnyException()
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ facilityRepository.should().deleteById(id)
+                    \t  ┣ verify(facilityRepository, times(1)).deleteById(id)
+                    \t  ┗ assertThatCode(() -> facilityService.deleteById(id)).doesNotThrowAnyException()
+                    """);
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("deleteById Test (존재하지 않는 아이디)")
+        void deleteByIdTestWithNotExistId(){
+            log.info("deleteById Test (존재하지 않는 아이디)");
+            // given
+            String id = "never_used_id";
+
+            given(facilityRepository.existsById(id)).willReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ id = {}
+                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(false)
+                    """, id);
+            // when
+            Throwable result = catchThrowable(() -> facilityService.deleteById(id));
+
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.deleteById(id))
+                    """);
+            // then
+            assertAll(
+                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> then(facilityRepository).should(never()).deleteById(id)
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
+                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
+                    \t  ┗ facilityRepository.should(never()).deleteById(id)
+                    """);
+        }
     }
 }

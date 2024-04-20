@@ -3,6 +3,7 @@ package com.project.clickit.exceptions;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.InvalidIdException;
 import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
+import com.project.clickit.exceptions.facility.FacilityNotFoundException;
 import com.project.clickit.exceptions.jwt.*;
 import com.project.clickit.exceptions.login.*;
 import com.project.clickit.exceptions.reservation.DuplicatedReservationException;
@@ -24,9 +25,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(TokenNotFoundException.class)
-    public ResponseEntity handleTokenNotFoundException(){
-        log.error("*", ErrorCode.TOKEN_NOT_FOUND.getMessage());
-        log.error(ErrorCode.TOKEN_NOT_FOUND.getMessage());
+    public ResponseEntity<String> handleTokenNotFoundException(){
         return ResponseEntity.status(ErrorCode.TOKEN_NOT_FOUND.getHttpStatus()).body(ErrorCode.TOKEN_NOT_FOUND.getMessage());
     }
 
@@ -35,7 +34,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(InvalidIssuerException.class)
-    public ResponseEntity handleInvalidIssuerException(){
+    public ResponseEntity<String> handleInvalidIssuerException(){
         return ResponseEntity.status(ErrorCode.INVALID_ISSUER.getHttpStatus()).body(ErrorCode.INVALID_ISSUER.getMessage());
     }
 
@@ -44,7 +43,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(InvalidSignatureException.class)
-    public ResponseEntity handleInvalidSignatureException(){
+    public ResponseEntity<String> handleInvalidSignatureException(){
         return ResponseEntity.status(ErrorCode.INVALID_SIGNATURE_TOKEN.getHttpStatus()).body(ErrorCode.INVALID_SIGNATURE_TOKEN.getMessage());
     }
 
@@ -53,7 +52,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(ExpiredTokenException.class)
-    public ResponseEntity handleExpiredTokenException(){
+    public ResponseEntity<String> handleExpiredTokenException(){
         return ResponseEntity.status(ErrorCode.EXPIRED_TOKEN.getHttpStatus()).body(ErrorCode.EXPIRED_TOKEN.getMessage());
     }
 
@@ -62,7 +61,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(UnsupportedTokenException.class)
-    public ResponseEntity handleUnsupportedTokenException(){
+    public ResponseEntity<String> handleUnsupportedTokenException(){
         return ResponseEntity.status(ErrorCode.UNSUPPORTED_TOKEN.getHttpStatus()).body(ErrorCode.UNSUPPORTED_TOKEN.getMessage());
     }
 
@@ -71,7 +70,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(IllegalTokenException.class)
-    public ResponseEntity handleIllegalTokenException(){
+    public ResponseEntity<String> handleIllegalTokenException(){
         return ResponseEntity.status(ErrorCode.ILLEGAL_TOKEN.getHttpStatus()).body(ErrorCode.ILLEGAL_TOKEN.getMessage());
     }
 
@@ -80,7 +79,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(UnexpectedTokenException.class)
-    public ResponseEntity handleUnexpectedTokenException(){
+    public ResponseEntity<String> handleUnexpectedTokenException(){
         return ResponseEntity.status(ErrorCode.UNEXPECTED_TOKEN_ERROR.getHttpStatus()).body(ErrorCode.UNEXPECTED_TOKEN_ERROR.getMessage());
     }
 
@@ -90,7 +89,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 409 Conflict
      */
     @ExceptionHandler(ConcurrentlySignUpException.class)
-    public ResponseEntity handleConcurrentlySignUpException(){
+    public ResponseEntity<String> handleConcurrentlySignUpException(){
         return ResponseEntity.status(ErrorCode.CONCURRENTLY_SIGNUP.getHttpStatus()).body(ErrorCode.CONCURRENTLY_SIGNUP.getMessage());
     }
 
@@ -99,7 +98,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(DuplicatedIdException.class)
-    public ResponseEntity handleDuplicatedIdException(){
+    public ResponseEntity<String> handleDuplicatedIdException(){
         return ResponseEntity.status(ErrorCode.DUPLICATED_ID.getHttpStatus()).body(ErrorCode.DUPLICATED_ID.getMessage());
     }
 
@@ -108,7 +107,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(InvalidIdException.class)
-    public ResponseEntity handleInvalidIdException(){
+    public ResponseEntity<String> handleInvalidIdException(){
         return ResponseEntity.status(ErrorCode.INVALID_ID.getHttpStatus()).body(ErrorCode.INVALID_ID.getMessage());
     }
 
@@ -117,7 +116,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity handleInvalidPasswordException(){
+    public ResponseEntity<String> handleInvalidPasswordException(){
         return ResponseEntity.status(ErrorCode.INVALID_PASSWORD.getHttpStatus()).body(ErrorCode.INVALID_PASSWORD.getMessage());
     }
 
@@ -126,7 +125,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity handleMemberNotFoundException(){
+    public ResponseEntity<String> handleMemberNotFoundException(){
         return ResponseEntity.status(ErrorCode.MEMBER_NOT_FOUND.getHttpStatus()).body(ErrorCode.MEMBER_NOT_FOUND.getMessage());
     }
 
@@ -140,8 +139,18 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(DormitoryNotFoundException.class)
-    public ResponseEntity handleDormitoryNotFoundException(){
+    public ResponseEntity<String> handleDormitoryNotFoundException(){
         return ResponseEntity.status(ErrorCode.DORMITORY_NOT_FOUND.getHttpStatus()).body(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
+    }
+
+    // facility
+    /**
+     * 시설이 존재하지 않을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(FacilityNotFoundException.class)
+    public ResponseEntity<String> handleFacilityNotFoundException(){
+        return ResponseEntity.status(ErrorCode.FACILITY_NOT_FOUND.getHttpStatus()).body(ErrorCode.FACILITY_NOT_FOUND.getMessage());
     }
 
     // reservation
@@ -150,7 +159,7 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(DuplicatedReservationException.class)
-    public ResponseEntity handleDuplicatedReservationException(){
+    public ResponseEntity<String> handleDuplicatedReservationException(){
         return ResponseEntity.status(ErrorCode.DUPLICATED_RESERVATION.getHttpStatus()).body(ErrorCode.DUPLICATED_RESERVATION.getMessage());
     }
 
@@ -159,12 +168,12 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity handleReservationNotFoundException(){
+    public ResponseEntity<String> handleReservationNotFoundException(){
         return ResponseEntity.status(ErrorCode.RESERVATION_NOT_FOUND.getHttpStatus()).body(ErrorCode.RESERVATION_NOT_FOUND.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity handleAccessDeniedException(){
+    public ResponseEntity<String> handleAccessDeniedException(){
         return ResponseEntity.status(ErrorCode.ACCESS_DENIED.getHttpStatus()).body(ErrorCode.ACCESS_DENIED.getMessage());
     }
 }

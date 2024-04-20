@@ -3,6 +3,7 @@ package com.project.clickit.controller;
 import com.project.clickit.dto.FacilityDTO;
 import com.project.clickit.service.FacilityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -46,8 +47,9 @@ public class FacilityController {
     }
 
     @GetMapping("${facility.findByName}")
-    public ResponseEntity<Object> findByName(@RequestParam("name") String name){
-        return ResponseEntity.ok().body(facilityService.findByName(name));
+    public ResponseEntity<Page<FacilityDTO>> findByName(@RequestParam("name") String name,
+                                           @PageableDefault(direction = Sort.Direction.ASC, sort = "name", size=10, page=0) Pageable pageable){
+        return ResponseEntity.ok().body(facilityService.findByName(name, pageable));
     }
 
     @GetMapping("${facility.findByDormitoryId}")
