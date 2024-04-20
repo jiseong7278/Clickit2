@@ -200,24 +200,35 @@ public class NoticeServiceTest {
             given(noticeRepository.findByNum(num)).willReturn(noticeEntity);
             given(noticeService.isExist(num)).willReturn(true);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ Integer num = 1" +
-                    "\n\t  ┗ NoticeEntity noticeEntity" +
-                    "\n\t\t  ┗ num: "+num+
-                    "\n\t\t  ┗ memberEntity"+
-                    "\n\t\t\t  ┗ id: "+noticeEntity.getMemberEntity().getId()+
-                    "\n\t  ┗ noticeRepository.findByNum(num).willReturn(noticeEntity)" +
-                    "\n\t  ┗ noticeService.isExist(num).willReturn(true)\n");
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ Integer num = 1
+                    \t  ┗ NoticeEntity noticeEntity
+                    \t\t  ┗ num: {}
+                    \t\t  ┗ memberEntity
+                    \t\t\t  ┗ id: {}
+                    \t  ┗ noticeRepository.findByNum(num).willReturn(noticeEntity)
+                    \t  ┗ noticeService.isExist(num).willReturn(true)
+                    """, num, noticeEntity.getMemberEntity().getId());
             // when
 
             NoticeDTO result = noticeService.findByNoticeNum(num);
 
-            log.info("\n\twhen\n\t  ┗ NoticeDTO result = noticeService.findByNoticeNum(num)\n");
+            log.info("""
+
+                    \twhen
+                    \t  ┗ NoticeDTO result = noticeService.findByNoticeNum(num)
+                    """);
             // then
 
             assertThat(result).isNotNull();
 
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isNotNull()\n");
+            log.info("""
+
+                    \tthen
+                    \t  ┗ assertThat(result).isNotNull()
+                    """);
         }
 
         @Test
@@ -234,7 +245,7 @@ public class NoticeServiceTest {
 
                     \tgiven
                     \t  ┗ Integer num = 11
-                    \t  ┗ noticeService.isExist(num).willReturn(false)                   
+                    \t  ┗ noticeService.isExist(num).willReturn(false)
                     """);
             // when
 

@@ -3,6 +3,7 @@ package com.project.clickit.controller;
 
 import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
+import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +33,25 @@ public class LoginController {
     }
 
     @GetMapping("${login.duplicateCheck}")
-    public ResponseEntity duplicateCheck(@RequestParam("id") String id){
-        if(loginService.duplicateCheck(id))
+    public ResponseEntity<String> duplicateCheck(@RequestParam("id") String id){
+        if(loginService.isExist(id))
             return ResponseEntity.badRequest().body("이미 가입된 아이디입니다.") ;
         else
             return ResponseEntity.ok().body("사용 가능한 아이디입니다.");
     }
 
     @PostMapping("${login.signUp}")
-    public ResponseEntity signUp(@RequestBody MemberDTO memberDTO){
+    public ResponseEntity<TokenDTO> signUp(@RequestBody MemberDTO memberDTO){
         return ResponseEntity.ok().body(loginService.signUp(memberDTO, TYPE_STUDENT));
     }
 
     @PostMapping("${login.signIn}")
-    public ResponseEntity signIn(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<TokenDTO> signIn(@RequestBody LoginDTO loginDTO){
         return ResponseEntity.ok().body(loginService.signIn(loginDTO));
     }
 
     @PostMapping("${login.logout}")
-    public ResponseEntity logout(@RequestHeader("Authorization") String token){
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token){
         loginService.logout(token);
         return ResponseEntity.ok().body("로그아웃 되었습니다.");
     }

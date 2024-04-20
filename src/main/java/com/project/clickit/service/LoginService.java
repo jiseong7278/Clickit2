@@ -12,6 +12,7 @@ import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,9 @@ public class LoginService {
 
     private final Map<String, ReentrantLock> lockMap = new ConcurrentHashMap<>();
 
+    @Value("${roles.student}")
+    private String TYPE_STUDENT;
+
     @Autowired
     public LoginService(MemberRepository memberRepository, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
@@ -42,7 +46,7 @@ public class LoginService {
      * @return Boolean
      */
     @Transactional
-    public Boolean duplicateCheck(String id) {
+    public Boolean isExist(String id) {
         return memberRepository.existsById(id);
     }
 
@@ -61,18 +65,11 @@ public class LoginService {
         }
 
         try{
-            if (duplicateCheck(memberDTO.getId())) {
+            if (isExist(memberDTO.getId())) {
                 throw new DuplicatedIdException();
             }else{
-                MemberEntity memberEntity = MemberEntity.builder()
-                        .id(memberDTO.getId())
-                        .password(memberDTO.getPassword())
-                        .name(memberDTO.getName())
-                        .email(memberDTO.getEmail())
-                        .phone(memberDTO.getPhone())
-                        .studentNum(memberDTO.getStudentNum())
-                        .type("STUDENT")
-                        .build();
+                MemberEntity memberEntity = memberDTO.toEntity();
+                memberEntity.setType(role);
 
                 String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(role));
                 String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(role));
@@ -100,7 +97,7 @@ public class LoginService {
      */
     @Transactional
     public TokenDTO signIn(LoginDTO loginDTO){
-        if(duplicateCheck(loginDTO.getId())){
+        if(isExist(loginDTO.getId())){
             MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
 
             if(memberEntity.getPassword().equals(loginDTO.getPassword())){

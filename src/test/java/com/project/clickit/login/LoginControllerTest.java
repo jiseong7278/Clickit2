@@ -95,7 +95,7 @@ public class LoginControllerTest {
     void duplicateCheckTestFailed() throws Exception {
         log.info("아이디 중복 체크 테스트");
         // given
-        given(loginService.duplicateCheck(memberDTO.getId())).willReturn(true);
+        given(loginService.isExist(memberDTO.getId())).willReturn(true);
 
         log.info("중복된 아이디로 중복 체크 시도");
         //when and then
@@ -113,7 +113,7 @@ public class LoginControllerTest {
 
         log.info("아이디 중복 체크 테스트");
         // given
-        given(loginService.duplicateCheck(never_used_id)).willReturn(false);
+        given(loginService.isExist(never_used_id)).willReturn(false);
 
         log.info("중복되지 않은 아이디로 중복 체크 시도");
         //when and then
