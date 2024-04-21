@@ -240,7 +240,7 @@ public class ReservationRepositoryTest {
         void updateTest(){
             log.info("Update Test");
             // given
-            ReservationEntity originalReservation = reservationRepository.findByNum(1);
+            ReservationEntity originalReservation = reservationRepository.findById(1);
 
             entityManager.clear();
 
@@ -299,7 +299,7 @@ public class ReservationRepositoryTest {
         void updateReservationStatusTest(){
             log.info("updateReservationStatus Test");
             // given
-            ReservationEntity originalReservation = reservationRepository.findByNum(1);
+            ReservationEntity originalReservation = reservationRepository.findById(1);
 
             entityManager.clear();
 
@@ -316,7 +316,7 @@ public class ReservationRepositoryTest {
             // when
             reservationRepository.updateReservationStatus(originalReservation.getNum(), status);
 
-            ReservationEntity result = reservationRepository.findByNum(originalReservation.getNum());
+            ReservationEntity result = reservationRepository.findById(originalReservation.getNum());
 
             log.info("""
 
@@ -365,7 +365,7 @@ public class ReservationRepositoryTest {
             // when
             reservationRepository.deleteByNum(num);
 
-            ReservationEntity result = reservationRepository.findByNum(num);
+            Boolean result = reservationRepository.existsById(num);
 
             log.info("""
 

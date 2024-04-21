@@ -99,22 +99,22 @@ public class ReservationService {
     // ========== Delete ========== //
     @Transactional
     public void delete(Integer num){
-        if (reservationRepository.findByNum(num) == null) throw new ReservationNotFoundException();
+        if (!reservationRepository.existsById(num)) throw new ReservationNotFoundException();
         reservationRepository.deleteByNum(num);
     }
 
-    private Page<ReservationDTO> toDTOPage(Page<ReservationEntity> reservationEntityPage){
+    public Page<ReservationDTO> toDTOPage(Page<ReservationEntity> reservationEntityPage){
         return reservationEntityPage.map(ReservationEntity::toDTO);
     }
 
-    private Boolean hasReservation(Page<ReservationEntity> reservationEntity, Integer num){
+    public Boolean hasReservation(Page<ReservationEntity> reservationEntity, Integer num){
         for(ReservationEntity re : reservationEntity){
             if(re.getNum().equals(num)) return true;
         }
         return false;
     }
 
-    private Boolean isDuplicatedReservation(Page<ReservationEntity> reservationEntities){
+    public Boolean isDuplicatedReservation(Page<ReservationEntity> reservationEntities){
         for (ReservationEntity re : reservationEntities.getContent()) {
             if(re.getStatus().equals("예약"))
                 return true;

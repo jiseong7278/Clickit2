@@ -26,7 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
-@DisplayName("SeatService 테스트")
+@DisplayName("SeatService Test")
 @ExtendWith({MockitoExtension.class})
 public class SeatServiceTest {
     @Mock
@@ -579,20 +579,26 @@ public class SeatServiceTest {
         void updateSeatTestWithNotExist(){
             log.info("updateSeat Test(Not Exist)");
             // given
-            given(seatRepository.existsById(anyString())).willReturn(false);
+            SeatDTO seatDTO = SeatDTO.builder()
+                            .id(anyString())
+                            .build();
+
+            given(seatRepository.existsById(seatDTO.getId())).willReturn(false);
 
             log.info("""
                     
                     \tgiven
-                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(false);
+                    \t  ┣ SeatDTO
+                    \t  ┃  ┗ id = anyString();
+                    \t  ┗ given(seatRepository.existsById(seatDTO.getId())).willReturn(false);
                     """);
             // when
-            Throwable result = catchThrowable(() -> seatService.updateSeat(SeatDTO.builder().id("bad1_1").build()));
+            Throwable result = catchThrowable(() -> seatService.updateSeat(seatDTO));
 
             log.info("""
                     
                     \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.updateSeat(SeatDTO.builder().id("bad1_1").build()));
+                    \t  ┗ result = catchThrowable(() -> seatService.updateSeat(seatDTO));
                     """);
             // then
             assertThat(result).isInstanceOf(ObjectNotFoundException.class);
@@ -610,10 +616,36 @@ public class SeatServiceTest {
         void updateSeatFacilityTest(){
             log.info("updateSeatFacility Test");
             // given
+            String seatId = anyString();
 
+            given(seatRepository.existsById(seatId)).willReturn(true);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ seatId = anyString();
+                    \t  ┗ given(seatRepository.existsById(seatId)).willReturn(true);
+                    """);
             // when
+            seatService.updateSeatFacility(seatId, anyString());
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ seatService.updateSeatFacility(seatId, anyString());
+                    """);
             // then
+            assertAll(
+                    () -> verify(seatRepository, times(1)).updateSeatFacility(anyString(), anyString()),
+                    () -> assertThatCode(() -> seatService.updateSeatFacility(seatId, anyString())).doesNotThrowAnyException()
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ verify(seatRepository, times(1)).updateSeatFacility(anyString(), anyString());
+                    \t  ┗ assertThatCode(() -> seatService.updateSeatFacility(seatId, anyString())).doesNotThrowAnyException();
+                    """);
         }
 
         @Test
@@ -622,10 +654,32 @@ public class SeatServiceTest {
         void updateSeatFacilityTestWithNotExist(){
             log.info("updateSeatFacility Test(Not Exist)");
             // given
+            String seatId = anyString();
 
+            given(seatRepository.existsById(seatId)).willReturn(false);
+
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┣ seatId = anyString();
+                    \t  ┗ given(seatRepository.existsById(seatId)).willReturn(false);
+                    """);
             // when
+            Throwable result = catchThrowable(() -> seatService.updateSeatFacility(seatId, anyString()));
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ result = catchThrowable(() -> seatService.updateSeatFacility(seatId, anyString()));
+                    """);
             // then
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┗ assertThat(result).isInstanceOf(ObjectNotFoundException.class);
+                    """);
         }
 
         @Test
@@ -634,10 +688,33 @@ public class SeatServiceTest {
         void updateSeatIsEmptyTest(){
             log.info("updateSeatIsEmpty Test");
             // given
+            given(seatRepository.existsById(anyString())).willReturn(true);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(true);
+                    """);
             // when
+            seatService.updateSeatIsEmpty(anyString(), true);
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ seatService.updateSeatIsEmpty(anyString(), true);
+                    """);
             // then
+            assertAll(
+                    () -> verify(seatRepository, times(1)).updateSeatIsEmpty(anyString(), anyBoolean()),
+                    () -> assertThatCode(() -> seatService.updateSeatIsEmpty(anyString(), true)).doesNotThrowAnyException()
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ verify(seatRepository, times(1)).updateSeatIsEmpty(anyString(), anyBoolean());
+                    \t  ┗ assertThatCode(() -> seatService.updateSeatIsEmpty(anyString(), true)).doesNotThrowAnyException();
+                    """);
         }
 
         @Test
@@ -646,10 +723,29 @@ public class SeatServiceTest {
         void updateSeatIsEmptyTestWithNotExist(){
             log.info("updateSeatIsEmpty Test(Not Exist)");
             // given
+            given(seatRepository.existsById(anyString())).willReturn(false);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(false);
+                    """);
             // when
+            Throwable result = catchThrowable(() -> seatService.updateSeatIsEmpty(anyString(), true));
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ result = catchThrowable(() -> seatService.updateSeatIsEmpty(anyString(), true);
+                    """);
             // then
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┗ assertThat(result).isInstanceOf(ObjectNotFoundException.class);
+                    """);
         }
     }
 
@@ -663,10 +759,33 @@ public class SeatServiceTest {
         void deleteByIdTest(){
             log.info("deleteById Test");
             // given
+            given(seatRepository.existsById(anyString())).willReturn(true);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(true);
+                    """);
             // when
+            seatService.deleteById(anyString());
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ seatService.deleteById(anyString());
+                    """);
             // then
+            assertAll(
+                    () -> verify(seatRepository, times(1)).deleteById(anyString()),
+                    () -> assertThatCode(() -> seatService.deleteById(anyString())).doesNotThrowAnyException()
+            );
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┣ verify(seatRepository, times(1)).deleteById(anyString());
+                    \t  ┗ assertThatCode(() -> seatService.deleteById(anyString())).doesNotThrowAnyException();
+                    """);
         }
 
         @Test
@@ -675,10 +794,29 @@ public class SeatServiceTest {
         void deleteByIdTestWithNotExist(){
             log.info("deleteById Test(Not Exist)");
             // given
+            given(seatRepository.existsById(anyString())).willReturn(false);
 
+            log.info("""
+                    
+                    \tgiven
+                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(false);
+                    """);
             // when
+            Throwable result = catchThrowable(() -> seatService.deleteById(anyString()));
 
+            log.info("""
+                    
+                    \twhen
+                    \t  ┗ result = catchThrowable(() -> seatService.deleteById(anyString());
+                    """);
             // then
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
+
+            log.info("""
+                    
+                    \tthen
+                    \t  ┗ assertThat(result).isInstanceOf(ObjectNotFoundException.class);
+                    """);
         }
     }
 }
