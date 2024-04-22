@@ -37,7 +37,7 @@ public class DormitoryController {
 
     @GetMapping("${dormitory.getAll}")
     public ResponseEntity<Object> getAll(@PageableDefault(direction = Sort.Direction.DESC,
-            sort = "name", size=10, page=0) Pageable pageable){
+            sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(dormitoryService.getAll(pageable));
     }
 
@@ -48,13 +48,19 @@ public class DormitoryController {
 
     @GetMapping("${dormitory.findByName}")
     public ResponseEntity<Object> findByName(@RequestParam("name") String name, @PageableDefault(direction = Sort.Direction.DESC,
-            sort = "name", size=10, page=0) Pageable pageable){
+            sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(dormitoryService.findByName(name, pageable));
     }
 
     @PutMapping("${dormitory.update}")
     public ResponseEntity<Object> updateDormitoryName(@RequestBody DormitoryDTO dormitoryDTO){
         dormitoryService.updateDormitory(dormitoryDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("${dormitory.deleteById}")
+    public ResponseEntity<Object> deleteById(@RequestParam("id") String id){
+        dormitoryService.deleteById(id);
         return ResponseEntity.ok().build();
     }
 }
