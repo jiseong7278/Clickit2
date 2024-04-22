@@ -1,13 +1,13 @@
-package com.project.clickit.dormitory;
+package com.project.clickit.facility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.clickit.configs.SecurityConfig;
-import com.project.clickit.controller.DormitoryController;
-import com.project.clickit.dto.DormitoryDTO;
+import com.project.clickit.controller.FacilityController;
+import com.project.clickit.dto.FacilityDTO;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
+import com.project.clickit.exceptions.facility.FacilityNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
-import com.project.clickit.service.DormitoryService;
+import com.project.clickit.service.FacilityService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +18,21 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
-import static org.mockito.BDDMockito.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@WebMvcTest(value = DormitoryController.class,
+@WebMvcTest(value = FacilityController.class,
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtProvider.class),
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
         })
 @AutoConfigureMockMvc(addFilters = false)
-public class DormitoryControllerTest {
+public class FacilityControllerTest {
     @Autowired
     private MockMvc mvc;
 
@@ -41,7 +40,7 @@ public class DormitoryControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private DormitoryService dormitoryService;
+    private FacilityService facilityService;
 
     @Nested
     @DisplayName("DuplicateCheck Test")
@@ -55,17 +54,17 @@ public class DormitoryControllerTest {
             // given
             String id = anyString();
 
-            given(dormitoryService.isExist(id)).willReturn(true);
+            given(facilityService.isExist(id)).willReturn(true);
 
             log.info("duplicateCheck Test given: ✔");
             // when
 
             log.info("duplicateCheck Test when: ✔");
             // then
-            mvc.perform(get("/dormitory/duplicateCheck")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .characterEncoding("UTF-8")
-                            .param("id", id))
+            mvc.perform(get("/facility/duplicateCheck")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
                     .andExpect(status().isBadRequest());
 
             log.info("duplicateCheck Test then: ✔");
@@ -79,17 +78,17 @@ public class DormitoryControllerTest {
             // given
             String id = anyString();
 
-            given(dormitoryService.isExist(id)).willReturn(false);
+            given(facilityService.isExist(id)).willReturn(false);
 
             log.info("duplicateCheck Test - Success given: ✔");
             // when
 
             log.info("duplicateCheck Test - Success when: ✔");
             // then
-            mvc.perform(get("/dormitory/duplicateCheck")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .characterEncoding("UTF-8")
-                            .param("id", id))
+            mvc.perform(get("/facility/duplicateCheck")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
                     .andExpect(status().isOk());
 
             log.info("duplicateCheck Test - Success then: ✔");
@@ -103,57 +102,51 @@ public class DormitoryControllerTest {
         @Test
         @Order(1)
         @DisplayName("create Test")
-        void createTest() throws Exception{
+        void createTest() throws Exception {
             log.info("create Test");
             // given
-            DormitoryDTO dormitoryDTO = mock(DormitoryDTO.class);
+            FacilityDTO facilityDTO = mock(FacilityDTO.class);
 
-            given(dormitoryService.isExist(anyString())).willReturn(false);
+            given(facilityService.isExist(anyString())).willReturn(false);
 
-            String requestBody = objectMapper.writeValueAsString(dormitoryDTO);
+            String requestBody = objectMapper.writeValueAsString(facilityDTO);
 
             log.info("create Test given: ✔");
-            // when
-            ResultActions result = mvc.perform(post("/dormitory/create")
+            // when & then
+            mvc.perform(post("/facility/create")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
-                    .content(requestBody));
+                    .content(requestBody))
+                    .andExpect(status().isOk());
 
-            log.info("create Test when: ✔");
-            // then
-            assertAll(
-                    () -> result.andExpect(status().isOk()),
-                    () -> verify(dormitoryService, times(1)).createDormitory(any())
-            );
+            verify(facilityService, times(1)).createFacility(any());
 
-            log.info("create Test then: ✔");
+            log.info("create Test when & then: ✔");
         }
 
         @Test
         @Order(2)
         @DisplayName("create Test - Failed")
-        void createTestFailed() throws Exception{
+        void createTestFailed() throws Exception {
             log.info("create Test - Failed");
             // given
-            DormitoryDTO dormitoryDTO = mock(DormitoryDTO.class);
+            FacilityDTO facilityDTO = mock(FacilityDTO.class);
 
-            String requestBody = objectMapper.writeValueAsString(dormitoryDTO);
+            String requestBody = objectMapper.writeValueAsString(facilityDTO);
 
-            given(dormitoryService.isExist(anyString())).willReturn(true);
+            given(facilityService.isExist(anyString())).willReturn(true);
 
-            doThrow(new DuplicatedIdException()).when(dormitoryService).createDormitory(any());
+            doThrow(new DuplicatedIdException()).when(facilityService).createFacility(any());
 
             log.info("create Test - Failed given: ✔");
-            // when
-            mvc.perform(post("/dormitory/create")
+            // when & then
+            mvc.perform(post("/facility/create")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(requestBody))
                     .andExpect(status().isBadRequest());
 
-            log.info("create Test - Failed when: ✔");
-            // then
-            log.info("create Test - Failed then: ✔");
+            log.info("create Test - Failed when & then: ✔");
         }
     }
 
@@ -164,7 +157,7 @@ public class DormitoryControllerTest {
         @Test
         @Order(1)
         @DisplayName("getAll Test")
-        void getAllTest() throws Exception {
+        void getAllTest() throws Exception{
             log.info("getAll Test");
             // given
             int size = 10;
@@ -172,29 +165,27 @@ public class DormitoryControllerTest {
 
             log.info("getAll Test given: ✔");
             // when & then
-            mvc.perform(get("/dormitory/getAll")
+            mvc.perform(get("/facility/getAll")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
-                    .param("size", Integer.toString(size))
-                    .param("page", Integer.toString(page)))
+                    .param("size", String.valueOf(size))
+                    .param("page", String.valueOf(page)))
                     .andExpect(status().isOk());
-
-            log.info("getAll Test when & then: ✔");
         }
 
         @Test
         @Order(2)
         @DisplayName("findById Test")
-        void findByIdTest() throws Exception {
+        void findByIdTest() throws Exception{
             log.info("findById Test");
             // given
             String id = anyString();
 
-            given(dormitoryService.isExist(id)).willReturn(true);
+            given(facilityService.isExist(id)).willReturn(true);
 
             log.info("findById Test given: ✔");
             // when & then
-            mvc.perform(get("/dormitory/findById")
+            mvc.perform(get("/facility/findById")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))
@@ -206,18 +197,18 @@ public class DormitoryControllerTest {
         @Test
         @Order(3)
         @DisplayName("findById Test - Failed")
-        void findByIdTestFailed() throws Exception {
+        void findByIdTestFailed() throws Exception{
             log.info("findById Test - Failed");
             // given
             String id = anyString();
 
-            given(dormitoryService.isExist(id)).willReturn(false);
+            given(facilityService.isExist(id)).willReturn(false);
 
-            doThrow(new DuplicatedIdException()).when(dormitoryService).findById(anyString());
+            doThrow(new FacilityNotFoundException()).when(facilityService).findById(anyString());
 
             log.info("findById Test - Failed given: ✔");
             // when & then
-            mvc.perform(get("/dormitory/findById")
+            mvc.perform(get("/facility/findById")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))
@@ -229,7 +220,7 @@ public class DormitoryControllerTest {
         @Test
         @Order(4)
         @DisplayName("findByName Test")
-        void findByNameTest() throws Exception {
+        void findByNameTest() throws Exception{
             log.info("findByName Test");
             // given
             String name = "test";
@@ -238,15 +229,38 @@ public class DormitoryControllerTest {
 
             log.info("findByName Test given: ✔");
             // when & then
-            mvc.perform(get("/dormitory/findByName")
+            mvc.perform(get("/facility/findByName")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("name", name)
-                    .param("size", eq(Integer.toString(size)))
-                    .param("page", eq(Integer.toString(page))))
+                    .param("size", eq(String.valueOf(size)))
+                    .param("page", eq(String.valueOf(page))))
                     .andExpect(status().isOk());
 
             log.info("findByName Test when & then: ✔");
+        }
+
+        @Test
+        @Order(5)
+        @DisplayName("findByDormitoryId Test")
+        void findByDormitoryIdTest() throws Exception {
+            log.info("findByDormitoryId Test");
+            // given
+            String dormitoryId = "test";
+            int size = 10;
+            int page = 0;
+
+            log.info("findByDormitoryId Test given: ✔");
+            // when & then
+            mvc.perform(get("/facility/findByDormitoryId")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("dormitoryId", dormitoryId)
+                    .param("size", eq(String.valueOf(size)))
+                    .param("page", eq(String.valueOf(page)))
+            ).andExpect(status().isOk());
+
+            log.info("findByDormitoryId Test when & then: ✔");
         }
     }
 
@@ -260,19 +274,21 @@ public class DormitoryControllerTest {
         void updateTest() throws Exception {
             log.info("update Test");
             // given
-            DormitoryDTO dormitoryDTO = mock(DormitoryDTO.class);
+            FacilityDTO facilityDTO = mock(FacilityDTO.class);
 
-            String requestBody = objectMapper.writeValueAsString(dormitoryDTO);
+            given(facilityService.isExist(anyString())).willReturn(true);
+
+            String requestBody = objectMapper.writeValueAsString(facilityDTO);
 
             log.info("update Test given: ✔");
             // when & then
-            mvc.perform(put("/dormitory/updateDormitoryName")
+            mvc.perform(put("/facility/update")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(requestBody))
                     .andExpect(status().isOk());
 
-            verify(dormitoryService, times(1)).updateDormitory(any());
+            verify(facilityService, times(1)).updateFacility(any());
 
             log.info("update Test when & then: ✔");
         }
@@ -283,15 +299,17 @@ public class DormitoryControllerTest {
         void updateTestFailed() throws Exception {
             log.info("update Test - Failed");
             // given
-            DormitoryDTO dormitoryDTO = mock(DormitoryDTO.class);
+            FacilityDTO facilityDTO = mock(FacilityDTO.class);
 
-            String requestBody = objectMapper.writeValueAsString(dormitoryDTO);
+            String requestBody = objectMapper.writeValueAsString(facilityDTO);
 
-            doThrow(new DormitoryNotFoundException()).when(dormitoryService).updateDormitory(any());
+            given(facilityService.isExist(anyString())).willReturn(false);
+
+            doThrow(new FacilityNotFoundException()).when(facilityService).updateFacility(any());
 
             log.info("update Test - Failed given: ✔");
             // when & then
-            mvc.perform(put("/dormitory/updateDormitoryName")
+            mvc.perform(put("/facility/update")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(requestBody))
@@ -307,48 +325,48 @@ public class DormitoryControllerTest {
     class DeleteTest{
         @Test
         @Order(1)
-        @DisplayName("deleteById Test")
-        void deleteByIdTest() throws Exception {
-            log.info("deleteById Test");
+        @DisplayName("delete Test")
+        void deleteTest() throws Exception {
+            log.info("delete Test");
             // given
             String id = anyString();
 
-            given(dormitoryService.isExist(id)).willReturn(true);
+            given(facilityService.isExist(id)).willReturn(true);
 
-            log.info("deleteById Test given: ✔");
+            log.info("delete Test given: ✔");
             // when & then
-            mvc.perform(delete("/dormitory/deleteById")
+            mvc.perform(delete("/facility/deleteById")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))
                     .andExpect(status().isOk());
 
-            verify(dormitoryService, times(1)).deleteById(anyString());
+            verify(facilityService, times(1)).deleteById(anyString());
 
-            log.info("deleteById Test when & then: ✔");
+            log.info("delete Test when & then: ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("deleteById Test - Failed")
-        void deleteByIdTestFailed() throws Exception {
-            log.info("deleteById Test - Failed");
+        @DisplayName("delete Test - Failed")
+        void deleteTestFailed() throws Exception {
+            log.info("delete Test - Failed");
             // given
             String id = anyString();
 
-            given(dormitoryService.isExist(id)).willReturn(false);
+            given(facilityService.isExist(id)).willReturn(false);
 
-            doThrow(new DormitoryNotFoundException()).when(dormitoryService).deleteById(anyString());
+            doThrow(new FacilityNotFoundException()).when(facilityService).deleteById(anyString());
 
-            log.info("deleteById Test - Failed given: ✔");
+            log.info("delete Test - Failed given: ✔");
             // when & then
-            mvc.perform(delete("/dormitory/deleteById")
+            mvc.perform(delete("/facility/deleteById")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))
                     .andExpect(status().isBadRequest());
 
-            log.info("deleteById Test - Failed when & then: ✔");
+            log.info("delete Test - Failed when & then: ✔");
         }
     }
 }
