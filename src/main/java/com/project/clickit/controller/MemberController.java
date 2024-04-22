@@ -34,15 +34,8 @@ public class MemberController {
     @GetMapping("${member.getAll}")
     @ResponseBody
     public ResponseEntity<Page<MemberDTO>> getAll(@PageableDefault(direction = Sort.Direction.ASC,
-            sort = "studentNum", size=10, page=0) Pageable pageable) {
+            sort = "studentNum") Pageable pageable) {
         return ResponseEntity.ok().body(memberService.getAll(pageable));
-    }
-
-    @GetMapping("${member.findByMemberName}")
-    public ResponseEntity<Page<MemberDTO>> findByMemberName(@RequestParam("name") String name,
-                                           @PageableDefault(direction = Sort.Direction.ASC,
-                                                   sort = "studentNum", size=10, page=0) Pageable pageable) {
-        return ResponseEntity.ok().body(memberService.findByMemberName(name, pageable));
     }
 
     @GetMapping("${member.findByMemberId}")
@@ -50,10 +43,17 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.findByMemberId(id));
     }
 
+    @GetMapping("${member.findByMemberName}")
+    public ResponseEntity<Page<MemberDTO>> findByMemberName(@RequestParam("name") String name,
+                                           @PageableDefault(direction = Sort.Direction.ASC,
+                                                   sort = "studentNum") Pageable pageable) {
+        return ResponseEntity.ok().body(memberService.findByMemberName(name, pageable));
+    }
+
     @GetMapping("${member.findByDormitoryId}")
     public ResponseEntity<Page<MemberDTO>> findByDormitoryId(@RequestParam("dormitoryId") String dormitoryId,
                                             @PageableDefault(direction = Sort.Direction.ASC,
-                                                    sort = "studentNum", size=10, page=0)Pageable pageable){
+                                                    sort = "studentNum")Pageable pageable){
         return ResponseEntity.ok().body(memberService.findByDormitoryId(dormitoryId, pageable));
     }
 

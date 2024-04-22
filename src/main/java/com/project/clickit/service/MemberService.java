@@ -40,14 +40,13 @@ public class MemberService {
     /**
      * <b>회원 생성</b>
      * @param memberDTO MemberDTO
-     * @return MemberDTO
      */
     @Transactional
-    public MemberDTO create(MemberDTO memberDTO) {
+    public void create(MemberDTO memberDTO) {
         if (isExist(memberDTO.getId())) {
             throw new DuplicatedIdException();
         }
-        return memberRepository.save(memberDTO.toEntity()).toDTO();
+        memberRepository.save(memberDTO.toEntity()).toDTO();
     }
 
     /**
