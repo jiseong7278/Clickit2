@@ -48,42 +48,18 @@ public class FacilityControllerTest {
     class DuplicateCheckTest{
         @Test
         @Order(1)
-        @DisplayName("duplicateCheck Test")
+        @DisplayName("duplicateCheck Test - ok")
         void duplicateCheckTest() throws Exception {
-            log.info("duplicateCheck Test");
-            // given
-            String id = anyString();
-
-            given(facilityService.isExist(id)).willReturn(true);
-
-            log.info("duplicateCheck Test given: ✔");
-            // when
-
-            log.info("duplicateCheck Test when: ✔");
-            // then
-            mvc.perform(get("/facility/duplicateCheck")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding("UTF-8")
-                    .param("id", id))
-                    .andExpect(status().isBadRequest());
-
-            log.info("duplicateCheck Test then: ✔");
-        }
-
-        @Test
-        @Order(2)
-        @DisplayName("duplicateCheck Test - Success")
-        void duplicateCheckTestSuccess() throws Exception {
-            log.info("duplicateCheck Test - Success");
+            log.info("duplicateCheck Test - ok");
             // given
             String id = anyString();
 
             given(facilityService.isExist(id)).willReturn(false);
 
-            log.info("duplicateCheck Test - Success given: ✔");
+            log.info("duplicateCheck Test - ok | given: ✔");
             // when
 
-            log.info("duplicateCheck Test - Success when: ✔");
+            log.info("duplicateCheck Test - ok | when: ✔");
             // then
             mvc.perform(get("/facility/duplicateCheck")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +67,31 @@ public class FacilityControllerTest {
                     .param("id", id))
                     .andExpect(status().isOk());
 
-            log.info("duplicateCheck Test - Success then: ✔");
+            log.info("duplicateCheck Test - ok | then: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("duplicateCheck Test - badRequest")
+        void duplicateCheckTestFalse() throws Exception {
+            log.info("duplicateCheck Test - badRequest");
+            // given
+            String id = anyString();
+
+            given(facilityService.isExist(id)).willReturn(true);
+
+            log.info("duplicateCheck Test - badRequest | given: ✔");
+            // when
+
+            log.info("duplicateCheck Test - badRequest | when: ✔");
+            // then
+            mvc.perform(get("/facility/duplicateCheck")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
+                    .andExpect(status().isBadRequest());
+
+            log.info("duplicateCheck Test - badRequest | then: ✔");
         }
     }
 

@@ -97,29 +97,49 @@ public class LoginService {
      */
     @Transactional
     public TokenDTO signIn(LoginDTO loginDTO){
-        if(isExist(loginDTO.getId())){
-            MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
+        if (!isExist(loginDTO.getId())) throw new InvalidIdException();
 
-            if(memberEntity.getPassword().equals(loginDTO.getPassword())){
-                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
-                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
+        MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
 
-                memberEntity.setRefreshToken(refreshToken);
+        if (!memberEntity.getPassword().equals(loginDTO.getPassword())) throw new InvalidPasswordException();
 
-                memberRepository.save(memberEntity);
+        String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
+        String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
 
-                return TokenDTO.builder()
-                        .id(memberEntity.getId())
-                        .password(memberEntity.getPassword())
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build();
-            }else{
-                throw new InvalidPasswordException();
-            }
-        }else{
-            throw new InvalidIdException();
-        }
+        memberEntity.setRefreshToken(refreshToken);
+
+        memberRepository.save(memberEntity);
+
+        return TokenDTO.builder()
+                .id(memberEntity.getId())
+                .password(memberEntity.getPassword())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+
+//        if(isExist(loginDTO.getId())){
+//            MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
+//
+//            if(memberEntity.getPassword().equals(loginDTO.getPassword())){
+//                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
+//                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
+//
+//                memberEntity.setRefreshToken(refreshToken);
+//
+//                memberRepository.save(memberEntity);
+//
+//                return TokenDTO.builder()
+//                        .id(memberEntity.getId())
+//                        .password(memberEntity.getPassword())
+//                        .accessToken(accessToken)
+//                        .refreshToken(refreshToken)
+//                        .build();
+//            }else{
+//                throw new InvalidPasswordException();
+//            }
+//        }else{
+//            throw new InvalidIdException();
+//        }
     }
 
     /**

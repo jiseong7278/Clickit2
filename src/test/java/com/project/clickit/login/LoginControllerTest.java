@@ -1,34 +1,44 @@
 package com.project.clickit.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.LoginController;
+import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
+import com.project.clickit.exceptions.common.InvalidIdException;
+import com.project.clickit.exceptions.jwt.IllegalTokenException;
+import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
-
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@WebMvcTest(LoginController.class)
+@WebMvcTest(value = LoginController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtProvider.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
+        }
+)
 @AutoConfigureMockMvc(addFilters = false)
 public class LoginControllerTest {
 
@@ -44,167 +54,239 @@ public class LoginControllerTest {
     @Value("${roles.student}")
     private String TYPE_STUDENT;
 
-    private final LocalDateTime localDateTime = LocalDateTime.now();
+    @Nested
+    @DisplayName("DuplicateCheck Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class DuplicateCheckTest{
+        @Test
+        @Order(1)
+        @DisplayName("duplicateCheck Test - ok")
+        void duplicateCheck() throws Exception{
+            log.info("duplicateCheck Test - ok");
+            // given
+            String id = anyString();
 
-    private LoginDTO loginDTO;
-    private LoginDTO loginDTO2;
-    private MemberDTO memberDTO;
-    private MemberDTO memberDTO2;
+            given(loginService.isExist(id)).willReturn(false);
 
-    @BeforeEach
-    void setUp(){
-        // 로그인 테스트 시 사용할 DTO
-        loginDTO = LoginDTO.builder()
-                .id("test_member_id")
-                .password("test_member_password")
-                .build();
+            log.info("duplicateCheck Test - ok | given: ✔");
+            // when
 
-        // 회원가입 및 아이디 중복 실패 테스트 시 사용할 DTO
-        memberDTO = MemberDTO.builder()
-                .id("test_member_id")
-                .password("test_member_password")
-                .name("회원가입")
-                .email("signUpTest_email@clickit.com")
-                .phone("010-1234-5678")
-                .studentNum("20181216")
-                .build();
+            log.info("duplicateCheck Test - ok | when: ✔");
+            // then
+            mvc.perform(get("/login/duplicateCheck")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .characterEncoding("UTF-8")
+                            .param("id", id))
+                    .andExpect(status().isOk());
 
-        memberDTO2 = MemberDTO.builder()
-                .id("id_"+localDateTime.getSecond()+String.valueOf(localDateTime.getNano()).substring(0, 2))
-                .password("password_"+String.valueOf(localDateTime.getNano()).substring(0, 2)+localDateTime.getSecond())
-                .name("이름이")
-                .email("signUp@clickit.com")
-                .phone("010-"+String.valueOf(localDateTime.getNano()).substring(0, 2)+localDateTime.getSecond()+"-"+localDateTime.getSecond()+String.valueOf(localDateTime.getNano()).substring(0, 2))
-                .studentNum("20"+localDateTime.getSecond()+"12"+String.valueOf(localDateTime.getNano()).substring(0, 2))
-                .build();
+            log.info("duplicateCheck Test - ok | then: ✔");
+        }
 
-        // 로그인 실패 테스트 시 사용할 DTO
-        loginDTO = LoginDTO.builder()
-                .id("fail_id")
-                .password("fail_password")
-                .build();
+        @Test
+        @Order(2)
+        @DisplayName("duplicateCheck Test - badRequest")
+        void duplicateCheckFalse() throws Exception{
+            log.info("duplicateCheck Test - badRequest");
+            // given
+            String id = anyString();
 
-        loginDTO2 = LoginDTO.builder()
-                .id("test_member_id")
-                .password("test_member_password")
-                .build();
+            given(loginService.isExist(id)).willReturn(true);
+
+            log.info("duplicateCheck Test - badRequest | given: ✔");
+            // when
+
+            log.info("duplicateCheck Test - badRequest | when: ✔");
+            // then
+            mvc.perform(get("/login/duplicateCheck")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
+                    .andExpect(status().isBadRequest());
+
+            log.info("duplicateCheck Test - badRequest | then: ✔");
+        }
+
     }
 
-    @Test
-    @DisplayName("중복 체크 실패 테스트")
-    void duplicateCheckTestFailed() throws Exception {
-        log.info("아이디 중복 체크 테스트");
-        // given
-        given(loginService.isExist(memberDTO.getId())).willReturn(true);
+    @Nested
+    @DisplayName("SignUp Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class SignUpTest{
+        @Test
+        @Order(1)
+        @DisplayName("signUp Test - ok")
+        void signUpTest() throws Exception{
+            log.info("signUp Test - ok");
+            // given
+            MemberDTO memberDTO = MemberDTO.builder()
+                    .id("test")
+                    .password("test")
+                    .name("test")
+                    .email("test")
+                    .phone("test")
+                    .studentNum("test")
+                    .type(TYPE_STUDENT)
+                    .dormitoryDTO(mock(DormitoryDTO.class))
+                    .build();
 
-        log.info("중복된 아이디로 중복 체크 시도");
-        //when and then
-        ResultActions result = mvc.perform(get("/login/duplicateCheck")
-                        .param("id", memberDTO.getId()))
-                .andExpect(status().isBadRequest());
-        log.info("중복 체크 결과: {}", result.andReturn().getResponse().getContentAsString());
+            TokenDTO tokenDTO = mock(TokenDTO.class);
+
+            given(loginService.isExist(anyString())).willReturn(false);
+            given(loginService.signUp(any(MemberDTO.class), anyString())).willReturn(tokenDTO);
+
+            log.info("signUp Test - ok | given: ✔");
+            // when
+            mvc.perform(post("/login/signUp")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .content(objectMapper.writeValueAsString(memberDTO)))
+                    .andExpect(status().isOk());
+
+            log.info("signUp Test - ok | when: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("signUp Test - badRequest")
+        void signUpTestFalse() throws Exception{
+            log.info("signUp Test - badRequest");
+            // given
+            MemberDTO memberDTO = mock(MemberDTO.class);
+
+            given(loginService.isExist(anyString())).willReturn(true);
+            given(loginService.signUp(any(MemberDTO.class), anyString())).willThrow(DuplicatedIdException.class);
+
+            log.info("signUp Test - badRequest | given: ✔");
+            // when
+            mvc.perform(post("/login/signUp")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .content(objectMapper.writeValueAsString(memberDTO)))
+                    .andExpect(status().isBadRequest());
+
+            log.info("signUp Test - badRequest | when: ✔");
+        }
     }
 
-    @Test
-    @DisplayName("중복 체크 성공 테스트")
-    void duplicateCheckTestSuccess() throws Exception {
-        // 한번도 사용되지 않은 아이디
-        String never_used_id = "never_used_id";
+    @Nested
+    @DisplayName("SignIn Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class SignInTest{
+        @Test
+        @Order(1)
+        @DisplayName("signIn Test - ok")
+        void signInTest() throws Exception{
+            log.info("signIn Test - ok");
+            // given
+            LoginDTO loginDTO = LoginDTO.builder()
+                    .id("test")
+                    .password("test")
+                    .build();
 
-        log.info("아이디 중복 체크 테스트");
-        // given
-        given(loginService.isExist(never_used_id)).willReturn(false);
+            TokenDTO tokenDTO = mock(TokenDTO.class);
 
-        log.info("중복되지 않은 아이디로 중복 체크 시도");
-        //when and then
-        ResultActions result = mvc.perform(get("/login/duplicateCheck")
-                        .param("id", never_used_id)).andExpect(status().isOk());
-        log.info("중복 체크 결과: {}", result.andReturn().getResponse().getContentAsString());
+            given(loginService.signIn(any(LoginDTO.class))).willReturn(tokenDTO);
+
+            log.info("signIn Test - ok | given: ✔");
+            // when
+            mvc.perform(post("/login/signIn")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .content(objectMapper.writeValueAsString(loginDTO)))
+                    .andExpect(status().isOk());
+
+            log.info("signIn Test - ok | when: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("signIn Test(InvalidIdException) - badRequest")
+        void signInTestFalse() throws Exception{
+            log.info("signIn Test(InvalidIdException) - badRequest");
+            // given
+            LoginDTO loginDTO = mock(LoginDTO.class);
+
+            given(loginService.signIn(any(LoginDTO.class))).willThrow(InvalidIdException.class);
+
+            log.info("signIn Test(InvalidIdException) - badRequest | given: ✔");
+            // when
+            mvc.perform(post("/login/signIn")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .content(objectMapper.writeValueAsString(loginDTO)))
+                    .andExpect(status().isBadRequest());
+
+            log.info("signIn Test(InvalidIdException) - badRequest | when: ✔");
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("signIn Test(InvalidPasswordExcpetion) - badRequest")
+        void signInTestFalse2() throws Exception{
+            log.info("signIn Test(InvalidPasswordExcpetion) - badRequest");
+            // given
+            LoginDTO loginDTO = mock(LoginDTO.class);
+
+            given(loginService.signIn(any(LoginDTO.class))).willThrow(InvalidIdException.class);
+
+            log.info("signIn Test(InvalidPasswordExcpetion) - badRequest | given: ✔");
+            // when
+            mvc.perform(post("/login/signIn")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .content(objectMapper.writeValueAsString(loginDTO)))
+                    .andExpect(status().isBadRequest());
+
+            log.info("signIn Test(InvalidPasswordExcpetion) - badRequest | when: ✔");
+        }
     }
 
-    @Test
-    @DisplayName("회원가입 실패 테스트")
-    void singUpTestFailed() throws Exception{
-        log.info("회원가입 실패 테스트");
+    @Nested
+    @DisplayName("Logout Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class LogoutTest{
+        @Test
+        @Order(1)
+        @DisplayName("logout Test - ok")
+        void logoutTest() throws Exception{
+            log.info("logout Test - ok");
+            // given
+            String token = "test";
 
-        String con = objectMapper.writeValueAsString(memberDTO);
-        log.info("con: {}", con);
+            doNothing().when(loginService).logout(anyString());
 
-        // given
-//        given(loginService.signUp(memberDTO)).willReturn(null);
-        given(loginService.signUp(memberDTO, TYPE_STUDENT)).willThrow(new DuplicatedIdException());
+            log.info("logout Test - ok | given: ✔");
+            // when
+            mvc.perform(post("/login/logout")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .header("Authorization", token))
+                    .andExpect(status().isOk());
 
-        log.info("회원가입 시도");
-        // when and then
-        ResultActions result = mvc.perform(post("/login/signUp")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(con)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        log.info("회원가입 결과: {}", result.andReturn().getResponse().getContentAsString());
-    }
+            log.info("logout Test - ok | when: ✔");
+        }
 
-    @Test
-    @DisplayName("회원가입 성공 테스트")
-    void signUpTestSuccess() throws Exception{
-        log.info("회원가입 테스트");
+        @Test
+        @Order(2)
+        @DisplayName("logout Test - badRequest")
+        void logoutTestFalse() throws Exception{
+            log.info("logout Test - badRequest");
+            // given
+            String token = "test";
 
-        // given
-        given(loginService.signUp(memberDTO2, TYPE_STUDENT)).willReturn(new TokenDTO());
+            // 여러가지 Exception이 있지만 IllegalTokenException을 사용
+            // 나중에 다른 Exception으로 변경하여 테스트 진행
+            doThrow(IllegalTokenException.class).when(loginService).logout(anyString());
 
-        log.info("회원가입 시도");
-        // when and then
-        ResultActions result = mvc.perform(post("/login/signUp")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content("{\"id\":\""+memberDTO2.getId()+"\", \"password\":\""+memberDTO2.getPassword()+"\", \"name\":\""+memberDTO2.getName()+"\", \"email\":\""+memberDTO2.getEmail()+"\", \"phone\":\""+memberDTO2.getPhone()+"\", \"studentNum\":\""+memberDTO2.getStudentNum()+"\"}")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        log.info("회원가입 결과: {}", result.andReturn().getResponse().getContentAsString());
-    }
+            log.info("logout Test - badRequest | given: ✔");
+            // when
+            mvc.perform(post("/login/logout")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .header("Authorization", token))
+                    .andExpect(status().isBadRequest());
 
-    @Test
-    @DisplayName("로그인 실패 테스트")
-    void signInTestFailed() throws Exception{
-        log.info("로그인 실패 테스트");
-
-        String con = objectMapper.writeValueAsString(loginDTO);
-        log.info("con: {}", con);
-
-        // given
-        given(loginService.signIn(loginDTO)).willThrow(RuntimeException.class);
-
-        log.info("로그인 시도");
-        // when and then
-        ResultActions result = mvc.perform(post("/login/signIn")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(con)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        log.info("로그인 결과: {}", result.andReturn().getResponse().getContentAsString());
-    }
-
-    @Test
-    @DisplayName("로그인 성공 테스트")
-    void signInTestSuccess() throws Exception{
-        log.info("로그인 성공 테스트");
-
-        String con = objectMapper.writeValueAsString(loginDTO2);
-        log.info("con: {}", con);
-
-        // given
-        given(loginService.signIn(loginDTO)).willReturn(new TokenDTO());
-
-        log.info("로그인 시도");
-        // when and then
-        ResultActions result = mvc.perform(post("/login/signIn")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content("{\"id\":\""+loginDTO.getId()+"\", \"password\":\""+loginDTO.getPassword()+"\"}")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        log.info("로그인 결과: {}", result.andReturn().getResponse().getContentAsString());
+            log.info("logout Test - badRequest | when: ✔");
+        }
     }
 }
