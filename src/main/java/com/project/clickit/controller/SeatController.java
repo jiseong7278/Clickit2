@@ -45,7 +45,7 @@ public class SeatController {
 
     @GetMapping("${seat.getAll}")
     public ResponseEntity<Page<SeatDTO>> getAll(@PageableDefault(direction = Sort.Direction.ASC,
-            sort = "id", size=10, page=0)Pageable pageable){
+            sort = "id")Pageable pageable){
         return ResponseEntity.ok().body(seatService.getAll(pageable));
     }
 
@@ -57,12 +57,12 @@ public class SeatController {
     @GetMapping("${seat.findByFacilityId}")
     public ResponseEntity<Page<SeatDTO>> findByFacilityId(@RequestParam("facilityId") String facilityId,
                                                    @PageableDefault(direction = Sort.Direction.ASC,
-                                                           sort = "id", size=10, page=0)Pageable pageable){
+                                                           sort = "id")Pageable pageable){
         return ResponseEntity.ok().body(seatService.findByFacilityId(facilityId, pageable));
     }
 
     @PutMapping("${seat.update}")
-    public ResponseEntity<Object> updateSeatName(@RequestBody SeatDTO seatDTO){
+    public ResponseEntity<Object> updateSeat(@RequestBody SeatDTO seatDTO){
         seatService.updateSeat(seatDTO);
         return ResponseEntity.ok().build();
     }
