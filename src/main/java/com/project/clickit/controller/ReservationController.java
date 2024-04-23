@@ -3,11 +3,12 @@ package com.project.clickit.controller;
 import com.project.clickit.dto.ReservationDTO;
 import com.project.clickit.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,11 +22,59 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
+    @PostMapping("${reservation.create}")
+    public ResponseEntity<Object> create(@RequestBody ReservationDTO reservationDTO){
+        reservationService.create(reservationDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("${reservation.getAll}")
+    public ResponseEntity<Page<ReservationDTO>> getAll(@PageableDefault(direction = Sort.Direction.ASC, sort = "num")Pageable pageable){
+        return ResponseEntity.ok(reservationService.findAll(pageable));
+    }
+
+    @GetMapping("${reservation.findByMemberId}")
+    public ResponseEntity<Page<ReservationDTO>> findByMemberId(@RequestParam("memberId") String memberId, @PageableDefault(direction = Sort.Direction.ASC, sort = "num")Pageable pageable){
+        return ResponseEntity.ok(reservationService.findByMemberId(memberId, pageable));
+    }
+
+    @GetMapping("${reservation.findMyReservation}")
+    public ResponseEntity<Page<ReservationDTO>> findMyReservation(@PageableDefault(direction = Sort.Direction.ASC, sort = "num")Pageable pageable){
+        return ResponseEntity.ok(reservationService.findByMemberId(pageable));
+    }
+
+    @GetMapping("${reservation.findBySeatIdAndToday}")
+    public ResponseEntity<Page<ReservationDTO>> findBySeatIdAndToday(@RequestParam("seatId") String seatId, @PageableDefault(direction = Sort.Direction.ASC, sort = "num")Pageable pageable){
+        return ResponseEntity.ok(reservationService.findBySeatIdAndToday(seatId, pageable));
+    }
+
+    @GetMapping("${reservation.findByMemberIdAndToday}")
+    public ResponseEntity<Page<ReservationDTO>> findByMemberIdAndToday(@RequestParam("memberId") String memberId, @PageableDefault(direction = Sort.Direction.ASC, sort = "num")Pageable pageable){
+        return ResponseEntity.ok(reservationService.findByMemberIdAndToday(memberId, pageable));
+    }
+
+    @GetMapping("${reservation.findMyReservationToday}")
+    public ResponseEntity<Page<ReservationDTO>> findMyReservationToday(@PageableDefault(direction = Sort.Direction.ASC, sort = "num")Pageable pageable){
+        return ResponseEntity.ok(reservationService.findByMemberIdAndToday(pageable));
+    }
+
+    @PutMapping("${reservation.update}")
+    public ResponseEntity<Object> update(@RequestBody ReservationDTO reservationDTO){
+        reservationService.update(reservationDTO);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("${reservation.updateStatus}")
     public ResponseEntity<Object> updateStatus(@RequestBody List<ReservationDTO> reservationDTOList){
         for (ReservationDTO reservationDTO : reservationDTOList) {
             reservationService.updateStatus(reservationDTO.getNum(), reservationDTO.getStatus());
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("${reservation.delete}")
+    public ResponseEntity<Object> delete(@RequestParam("num") Integer num){
+        reservationService.delete(num);
         return ResponseEntity.ok().build();
     }
 }
