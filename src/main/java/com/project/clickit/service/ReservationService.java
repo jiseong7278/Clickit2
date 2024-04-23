@@ -77,6 +77,7 @@ public class ReservationService {
     // ========== Update ========== //
     @Transactional
     public void update(ReservationDTO reservationDTO){
+        if (!reservationRepository.existsById(reservationDTO.getNum())) throw new ReservationNotFoundException();
         reservationRepository.save(reservationDTO.toEntity());
     }
 
