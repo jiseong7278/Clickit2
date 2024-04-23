@@ -7,6 +7,7 @@ import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
 import com.project.clickit.exceptions.facility.FacilityNotFoundException;
 import com.project.clickit.exceptions.jwt.*;
 import com.project.clickit.exceptions.login.*;
+import com.project.clickit.exceptions.notice.NoticeNotFoundException;
 import com.project.clickit.exceptions.reservation.DuplicatedReservationException;
 import com.project.clickit.exceptions.reservation.ReservationNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -162,6 +163,16 @@ public class ControllerExceptionHandler extends RuntimeException{
     @ExceptionHandler(FacilityNotFoundException.class)
     public ResponseEntity<String> handleFacilityNotFoundException(){
         return ResponseEntity.status(ErrorCode.FACILITY_NOT_FOUND.getHttpStatus()).body(ErrorCode.FACILITY_NOT_FOUND.getMessage());
+    }
+
+    // notice
+    /**
+     * 공지사항이 존재하지 않을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(NoticeNotFoundException.class)
+    public ResponseEntity<String> handleNoticeNotFoundException(){
+        return ResponseEntity.status(ErrorCode.NOTICE_NOT_FOUND.getHttpStatus()).body(ErrorCode.NOTICE_NOT_FOUND.getMessage());
     }
 
     // reservation

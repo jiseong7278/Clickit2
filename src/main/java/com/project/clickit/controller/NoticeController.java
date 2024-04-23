@@ -28,7 +28,7 @@ public class NoticeController {
 
     @GetMapping("${notice.getAll}")
     public ResponseEntity<Page<NoticeDTO>> getAll(@PageableDefault(direction = Sort.Direction.DESC,
-            sort = "num", size=10, page=0) Pageable pageable){
+            sort = "num") Pageable pageable){
         return ResponseEntity.ok().body(noticeService.getAll(pageable));
     }
 
@@ -40,7 +40,7 @@ public class NoticeController {
     @GetMapping("${notice.findByWriterId}")
     public ResponseEntity<Page<NoticeDTO>> findByWriterId(@RequestParam("writerId") String writerId,
                                                           @PageableDefault(direction = Sort.Direction.DESC,
-                                                        sort = "num", size=10, page=0) Pageable pageable){
+                                                        sort = "num") Pageable pageable){
         return ResponseEntity.ok().body(noticeService.findNoticeByWriterId(writerId, pageable));
     }
 
