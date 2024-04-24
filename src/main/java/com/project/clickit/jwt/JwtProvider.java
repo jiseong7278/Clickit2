@@ -45,7 +45,7 @@ public class JwtProvider{
     }
 
     /**
-     * <b>Create access token</b>
+     * <b>Access token 생성</b>
      * @param memberId String
      * @param roles List&lt;String&gt;
      * @return String
@@ -69,7 +69,7 @@ public class JwtProvider{
     }
 
     /**
-     * <b>Create refresh token</b>
+     * <b>Refresh token 생성</b>
      * @param memberId String
      * @param roles List&lt;String&gt;
      * @return String
@@ -102,7 +102,7 @@ public class JwtProvider{
     }
 
     /**
-     * <b>Get member name from token</b>
+     * <b>토큰으로부터 member id 추출</b>
      * @param token String
      * @return String
      */
@@ -111,7 +111,7 @@ public class JwtProvider{
     }
 
     /**
-     * <b>Get issuer from token</b>
+     * <b>토큰으로부터 issuer 추출</b>
      * @param token String
      * @return String
      */
@@ -120,7 +120,7 @@ public class JwtProvider{
     }
 
     /**
-     * <b>Get subject from token</b>
+     * <b>토큰으로부터 subject 추출</b>
      * @param token String
      * @return String
      */

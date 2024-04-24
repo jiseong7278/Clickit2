@@ -390,7 +390,7 @@ public class ReservationServiceTest {
         void deleteTest(){
             log.info("delete Test");
             // given
-            given(reservationRepository.existsById(anyInt())).willReturn(true);
+            given(reservationRepository.existsByNum(anyInt())).willReturn(true);
 
             log.info("delete Test given: ✓");
             // when
@@ -399,7 +399,7 @@ public class ReservationServiceTest {
             log.info("delete Test when: ✓");
             // then
             assertAll(
-                    ()->verify(reservationRepository, times(1)).existsById(anyInt()),
+                    ()->verify(reservationRepository, times(1)).existsByNum(anyInt()),
                     ()->verify(reservationRepository, times(1)).deleteByNum(anyInt())
             );
 
@@ -412,7 +412,7 @@ public class ReservationServiceTest {
         void deleteTestWithNotFoundException(){
             log.info("delete Test - ThrowException");
             // given
-            given(reservationRepository.existsById(anyInt())).willReturn(false);
+            given(reservationRepository.existsByNum(anyInt())).willReturn(false);
 
             log.info("delete Test - ThrowException given: ✓");
             // when
@@ -422,7 +422,7 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isInstanceOf(ReservationNotFoundException.class),
-                    ()->verify(reservationRepository, times(1)).existsById(anyInt()),
+                    ()->verify(reservationRepository, times(1)).existsByNum(anyInt()),
                     ()->verifyNoMoreInteractions(reservationRepository)
             );
 

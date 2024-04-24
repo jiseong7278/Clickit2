@@ -40,18 +40,19 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 if(jwtProvider.validateToken(token)){
                     Authentication auth = jwtProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(auth);
+                    log.info("SecurityContextHolder.getContext().getAuthentication().getName(): {}", SecurityContextHolder.getContext().getAuthentication().getName());
                 }
             }
             chain.doFilter(request, response);
         }catch (Exception e) {
-            log.error("doFilter Exception: " + e.getMessage());
+            log.error("doFilter Exception: {}", e.getMessage());
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setCharacterEncoding("UTF-8");
             httpResponse.setContentType("application/json");
             httpResponse.setStatus(HttpStatus.BAD_REQUEST.value());
             httpResponse.getWriter().write("인증 과정에서 오류가 발생하였습니다.\n다시 로그인해주세요.\n증상이 반복될 경우 관리자에게 문의해주세요.");
             httpResponse.getWriter().close();
-            log.error("JwtAuthenticationFilter Exception: " + e.getMessage());
+            log.error("JwtAuthenticationFilter Exception: {}", e.getMessage());
         }
     }
 }

@@ -50,6 +50,22 @@ public class LoginController {
         return ResponseEntity.ok().body(loginService.signIn(loginDTO));
     }
 
+    @PostMapping("${login.smsVerify}")
+    public ResponseEntity<String> smsVerify(@RequestParam("id")String id){
+        loginService.sendVerifyCodeBySMS(id);
+        return ResponseEntity.ok().body("인증번호가 전송되었습니다.");
+    }
+
+    // email 인증 추가
+
+    @PostMapping("${login.verifyCodeBySMS}")
+    public ResponseEntity<String> verifyCode(@RequestParam("key")String key, @RequestParam("code")String code){
+        if (!loginService.verification(key, code))
+            return ResponseEntity.badRequest().body("인증번호가 일치하지 않습니다.");
+
+        return ResponseEntity.ok().body(loginService.findPasswordByPhone(key));
+    }
+
     @PostMapping("${login.logout}")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token){
         loginService.logout(token);

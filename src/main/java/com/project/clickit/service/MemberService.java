@@ -9,6 +9,8 @@ import com.project.clickit.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ public class MemberService {
 
     final MemberRepository memberRepository;
     final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider) {
@@ -43,10 +46,12 @@ public class MemberService {
      */
     @Transactional
     public void create(MemberDTO memberDTO) {
-        if (isExist(memberDTO.getId())) {
-            throw new DuplicatedIdException();
-        }
-        memberRepository.save(memberDTO.toEntity()).toDTO();
+        if (isExist(memberDTO.getId())) throw new DuplicatedIdException();
+
+        MemberEntity memberEntity = memberDTO.toEntity();
+        memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
+
+        memberRepository.save(memberEntity);
     }
 
     /**
@@ -82,9 +87,7 @@ public class MemberService {
      */
     @Transactional
     public MemberDTO findByMemberId(String id) {
-        if (!isExist(id)) {
-            throw new MemberNotFoundException();
-        }
+        if (!isExist(id)) throw new MemberNotFoundException();
         return memberRepository.findById(id).toDTO();
     }
 
@@ -106,8 +109,7 @@ public class MemberService {
      */
     @Transactional
     public String findPasswordByMemberId(String id) {
-        if (!isExist(id))
-            throw new MemberNotFoundException();
+        if (!isExist(id)) throw new MemberNotFoundException();
         return memberRepository.findPasswordByMemberId(id);
     }
 
@@ -129,9 +131,10 @@ public class MemberService {
      */
     @Transactional
     public void update(MemberDTO memberDTO){
-        if (!isExist(memberDTO.getId()))
-            throw new MemberNotFoundException();
-        memberRepository.save(memberDTO.toEntity());
+        if (!isExist(memberDTO.getId())) throw new MemberNotFoundException();
+        MemberEntity memberEntity = memberDTO.toEntity();
+        memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
+        memberRepository.save(memberEntity);
     }
 
     /**
@@ -143,7 +146,7 @@ public class MemberService {
         if (!isExist(memberDTO.getId()))
             throw new MemberNotFoundException();
         memberRepository.updateMemberForStaff(memberDTO.getId(),
-                memberDTO.getPassword(),
+                passwordEncoder.encode(memberDTO.getPassword()),
                 memberDTO.getName(),
                 memberDTO.getEmail(),
                 memberDTO.getPhone(),
@@ -159,9 +162,8 @@ public class MemberService {
      */
     @Transactional
     public void updatePassword(String id, String password) {
-        if (!isExist(id))
-            throw new MemberNotFoundException();
-        memberRepository.updatePassword(id, password);
+        if (!isExist(id)) throw new MemberNotFoundException();
+        memberRepository.updatePassword(id, passwordEncoder.encode(password));
     }
 
     /**
@@ -196,7 +198,9 @@ public class MemberService {
     private List<MemberEntity> toEntityList(List<MemberDTO> memberDTOList) {
         List<MemberEntity> memberEntityList = new ArrayList<>();
         for (MemberDTO memberDTO : memberDTOList) {
-            memberEntityList.add(memberDTO.toEntity());
+            MemberEntity memberEntity = memberDTO.toEntity();
+            memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
+            memberEntityList.add(memberEntity);
         }
         return memberEntityList;
     }

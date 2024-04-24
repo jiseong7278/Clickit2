@@ -16,9 +16,9 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @NonNull
     Page<ReservationEntity> findAll(@NonNull Pageable pageable);
 
-    ReservationEntity findById(@Param("num") Integer num);
+    ReservationEntity findByNum(@Param("num") Integer num);
 
-    Boolean existsById(@Param("num") Integer num);
+    Boolean existsByNum(@Param("num") Integer num);
 
     // find by ReservationEntity memberEntity memberId
     @Query("SELECT r FROM ReservationEntity r WHERE r.memberEntity.id = :memberId")

@@ -77,7 +77,7 @@ public class ReservationService {
     // ========== Update ========== //
     @Transactional
     public void update(ReservationDTO reservationDTO){
-        if (!reservationRepository.existsById(reservationDTO.getNum())) throw new ReservationNotFoundException();
+        if (!reservationRepository.existsByNum(reservationDTO.getNum())) throw new ReservationNotFoundException();
         reservationRepository.save(reservationDTO.toEntity());
     }
 
@@ -100,7 +100,7 @@ public class ReservationService {
     // ========== Delete ========== //
     @Transactional
     public void delete(Integer num){
-        if (!reservationRepository.existsById(num)) throw new ReservationNotFoundException();
+        if (!reservationRepository.existsByNum(num)) throw new ReservationNotFoundException();
         reservationRepository.deleteByNum(num);
     }
 

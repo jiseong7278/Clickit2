@@ -10,19 +10,22 @@ import com.project.clickit.exceptions.common.InvalidIdException;
 import com.project.clickit.exceptions.login.InvalidPasswordException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.project.clickit.util.SmsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-@Slf4j
 @Service
 public class LoginService {
     private final MemberRepository memberRepository;
@@ -31,13 +34,21 @@ public class LoginService {
 
     private final Map<String, ReentrantLock> lockMap = new ConcurrentHashMap<>();
 
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    private final RedisService redisService;
+
+    private final SmsUtil smsUtil;
+
     @Value("${roles.student}")
     private String TYPE_STUDENT;
 
     @Autowired
-    public LoginService(MemberRepository memberRepository, JwtProvider jwtProvider) {
+    public LoginService(MemberRepository memberRepository, JwtProvider jwtProvider, RedisService redisService, SmsUtil smsUtil){
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
+        this.redisService = redisService;
+        this.smsUtil = smsUtil;
     }
 
     /**
@@ -70,6 +81,7 @@ public class LoginService {
             }else{
                 MemberEntity memberEntity = memberDTO.toEntity();
                 memberEntity.setType(role);
+                memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
 
                 String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(role));
                 String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(role));
@@ -101,7 +113,7 @@ public class LoginService {
 
         MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
 
-        if (!memberEntity.getPassword().equals(loginDTO.getPassword())) throw new InvalidPasswordException();
+        if (!passwordEncoder.matches(loginDTO.getPassword(), memberEntity.getPassword())) throw new InvalidPasswordException();
 
         String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
         String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
@@ -116,30 +128,33 @@ public class LoginService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
 
-//        if(isExist(loginDTO.getId())){
-//            MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
-//
-//            if(memberEntity.getPassword().equals(loginDTO.getPassword())){
-//                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
-//                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
-//
-//                memberEntity.setRefreshToken(refreshToken);
-//
-//                memberRepository.save(memberEntity);
-//
-//                return TokenDTO.builder()
-//                        .id(memberEntity.getId())
-//                        .password(memberEntity.getPassword())
-//                        .accessToken(accessToken)
-//                        .refreshToken(refreshToken)
-//                        .build();
-//            }else{
-//                throw new InvalidPasswordException();
-//            }
-//        }else{
-//            throw new InvalidIdException();
-//        }
+    /**
+     * <b>문자로 인증번호 전송</b>
+     * @param id String
+     */
+    @Transactional
+    public void sendVerifyCodeBySMS(String id){
+        if(!isExist(id)) throw new InvalidIdException();
+
+        MemberEntity memberEntity = memberRepository.findById(id);
+        memberEntity.setPhone(memberEntity.getPhone().replaceAll("-", ""));
+
+        String verifyCode = generateVerifyCode();
+
+        smsUtil.sendOne(memberEntity.getPhone(), verifyCode);
+
+        redisService.setData(memberEntity.getPhone(), verifyCode, Duration.ofMinutes(3));
+    }
+
+    /**
+     * <b>비밀번호 찾기</b>
+     * @param phone String
+     * @return String
+     */
+    public String findPasswordByPhone(String phone){
+        return memberRepository.findByPhone(phone);
     }
 
     /**
@@ -151,5 +166,26 @@ public class LoginService {
         if (jwtProvider.validateToken(resolvedToken)){
             SecurityContextHolder.clearContext();
         }
+    }
+
+    /**
+     * <b>인증번호 생성</b>
+     * @return String
+     */
+    private String generateVerifyCode(){
+        long seed = System.currentTimeMillis();
+        Random random = new Random(seed);
+        return String.format("%06d", random.nextInt(1000000));
+    }
+
+    /**
+     * <b>인증번호 확인</b>
+     * @param key String 이메일 또는 전화번호
+     * @param verifyCode String
+     * @return 사용자가 입력한 코드와 Redis에 저장된 코드가 같을 경우 {@code true}, 그 외 {@code false}
+     */
+    public Boolean verification(String key, String verifyCode){
+        String code = redisService.getData(key);
+        return code != null && code.equals(verifyCode);
     }
 }
