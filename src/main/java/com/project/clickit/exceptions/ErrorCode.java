@@ -29,6 +29,7 @@ public enum ErrorCode {
     CONCURRENTLY_SIGNUP(HttpStatus.CONFLICT, "잠시만 기다려 주세요."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "회원이 존재하지 않습니다."),
+    MAIL_SEND_FAILED(HttpStatus.BAD_REQUEST, "메일 전송에 실패했습니다."),
 
     // member
 

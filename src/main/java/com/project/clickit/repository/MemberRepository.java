@@ -31,7 +31,11 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
     // find by phone
     @Query("SELECT m.password FROM MemberEntity m WHERE m.phone = :phone")
-    String findByPhone(String phone);
+    String findByPhone(@Param("phone") String phone);
+
+    // find by email
+    @Query("SELECT m.password FROM MemberEntity m WHERE m.email = :email")
+    String findByEmail(@Param("email") String email);
 
     // update member password
     @Modifying

@@ -32,6 +32,8 @@ dependencies {
 	implementation 'org.springframework.data:spring-data-redis:2.7.5'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'io.lettuce:lettuce-core:6.2.1.RELEASE'
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	implementation 'com.sun.mail:javax.mail:1.6.2'
 
 	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 

@@ -141,6 +141,14 @@ public class ControllerExceptionHandler extends RuntimeException{
         return ResponseEntity.status(ErrorCode.MEMBER_NOT_FOUND.getHttpStatus()).body(ErrorCode.MEMBER_NOT_FOUND.getMessage());
     }
 
+    /**
+     * 메일 전송에 실패했을 경우 발생하는 예외
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(MailSendFailedException.class)
+    public ResponseEntity<String> handleMailSendFailedException(){
+        return ResponseEntity.status(ErrorCode.MAIL_SEND_FAILED.getHttpStatus()).body(ErrorCode.MAIL_SEND_FAILED.getMessage());
+    }
 
     // member
 

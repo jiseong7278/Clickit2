@@ -10,7 +10,9 @@ import com.project.clickit.exceptions.common.InvalidIdException;
 import com.project.clickit.exceptions.login.InvalidPasswordException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
-import com.project.clickit.util.SmsUtil;
+import com.project.clickit.util.EmailUtil;
+import com.project.clickit.util.SMSUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+@Slf4j
 @Service
 public class LoginService {
     private final MemberRepository memberRepository;
@@ -38,17 +41,20 @@ public class LoginService {
 
     private final RedisService redisService;
 
-    private final SmsUtil smsUtil;
+    private final SMSUtil smsUtil;
+
+    private final EmailUtil emailUtil;
 
     @Value("${roles.student}")
     private String TYPE_STUDENT;
 
     @Autowired
-    public LoginService(MemberRepository memberRepository, JwtProvider jwtProvider, RedisService redisService, SmsUtil smsUtil){
+    public LoginService(MemberRepository memberRepository, JwtProvider jwtProvider, RedisService redisService, SMSUtil smsUtil, EmailUtil emailUtil){
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.redisService = redisService;
         this.smsUtil = smsUtil;
+        this.emailUtil = emailUtil;
     }
 
     /**
@@ -149,12 +155,42 @@ public class LoginService {
     }
 
     /**
-     * <b>비밀번호 찾기</b>
+     * <b>이메일로 인증번호 전송</b>
+     * @param id String
+     */
+    @Transactional
+    public void sendVerifyCodeByEmail(String id){
+        if(!isExist(id)) throw new InvalidIdException();
+
+        MemberEntity memberEntity = memberRepository.findById(id);
+
+        String verifyCode = generateVerifyCode();
+
+        String emailText = "[ClickIt] 인증번호는 " + verifyCode + " 입니다.";
+
+        emailUtil.sendEmail(memberEntity.getEmail(), "ClickIt 인증번호", emailText);
+
+        redisService.setData(memberEntity.getEmail(), verifyCode, Duration.ofMinutes(3));
+    }
+
+    /**
+     * <b>휴대폰 인증으로 비밀번호 찾기</b>
      * @param phone String
      * @return String
      */
+    @Transactional
     public String findPasswordByPhone(String phone){
         return memberRepository.findByPhone(phone);
+    }
+
+    /**
+     * <b>이메일 인증으로 비밀번호 찾기</b>
+     * @param email String
+     * @return String
+     */
+    @Transactional
+    public String findPasswordByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     /**

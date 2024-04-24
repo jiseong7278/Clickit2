@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SmsUtil {
+public class SMSUtil {
 
     @Value("${coolsms.api.key}")
     private String smsApiKey;
