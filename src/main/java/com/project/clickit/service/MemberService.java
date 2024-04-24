@@ -9,6 +9,7 @@ import com.project.clickit.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -103,17 +104,6 @@ public class MemberService {
     }
 
     /**
-     * <b>비밀번호 찾기</b>
-     * @param id String
-     * @return String password
-     */
-    @Transactional
-    public String findPasswordByMemberId(String id) {
-        if (!isExist(id)) throw new MemberNotFoundException();
-        return memberRepository.findPasswordByMemberId(id);
-    }
-
-    /**
      * <b>기숙사 아이디로 회원 조회</b>
      * @param dormitoryId String
      * @param pageable Pageable
@@ -131,8 +121,10 @@ public class MemberService {
      */
     @Transactional
     public void update(MemberDTO memberDTO){
-        if (!isExist(memberDTO.getId())) throw new MemberNotFoundException();
+        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!isExist(memberId)) throw new MemberNotFoundException();
         MemberEntity memberEntity = memberDTO.toEntity();
+        memberEntity.setId(memberId);
         memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
         memberRepository.save(memberEntity);
     }
@@ -157,13 +149,13 @@ public class MemberService {
 
     /**
      * <b>비밀번호 업데이트</b>
-     * @param id String
      * @param password String
      */
     @Transactional
-    public void updatePassword(String id, String password) {
-        if (!isExist(id)) throw new MemberNotFoundException();
-        memberRepository.updatePassword(id, passwordEncoder.encode(password));
+    public void updatePassword(String password) {
+        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!isExist(memberId)) throw new MemberNotFoundException();
+        memberRepository.updatePassword(memberId, passwordEncoder.encode(password));
     }
 
     /**
@@ -173,8 +165,7 @@ public class MemberService {
      */
     @Transactional
     public void updateRefreshToken(String id, String refreshToken) {
-        if (!isExist(id))
-            throw new MemberNotFoundException();
+        if (!isExist(id)) throw new MemberNotFoundException();
         memberRepository.updateRefreshToken(id, refreshToken);
     }
 

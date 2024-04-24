@@ -618,89 +618,6 @@ public class MemberServiceTest {
 
         @Test
         @Order(5)
-        @DisplayName("findPasswordByMemberId Test")
-        void findPasswordByMemberIdTest(){
-            log.info("findPasswordByMemberId Test");
-            // given
-            String id = "test_member_id";
-            String password = "test_member_password";
-
-            given(memberRepository.existsById(id)).willReturn(true);
-
-            given(memberRepository.findPasswordByMemberId(id)).willReturn(password);
-
-            log.info("""
-
-                    \tgiven
-                    \t  ┣ id: {}
-                    \t  ┣ password: {}
-                    \t  ┣ given(memberRepository.existsById(id)).willReturn(true)
-                    \t  ┗ given(memberRepository.findPasswordByMemberId(id)).willReturn(password)
-                    """, id, password);
-            // when
-            String result = memberService.findPasswordByMemberId(id);
-
-            log.info("""
-
-                    \twhen
-                    \t  ┗ memberService.findPasswordByMemberId(id)
-                    """);
-            // then
-            assertAll(
-                    () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result).isInstanceOf(String.class),
-                    () -> assertThat(result).isEqualTo(password)
-            );
-
-            log.info("""
-
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┣ assertThat(result).isInstanceOf(String.class)
-                    \t  ┗ assertThat(result).isEqualTo(password)
-                    """);
-        }
-
-        @Test
-        @Order(6)
-        @DisplayName("findPasswordByMemberId Test(존재하지 않는 아이디)")
-        void findPasswordByMemberIdTestNotFound(){
-            log.info("findPasswordByMemberId Test(존재하지 않는 아이디)");
-            // given
-            String id = "never_used_id";
-
-            given(memberRepository.existsById(id)).willReturn(false);
-
-            log.info("""
-
-                    \tgiven
-                    \t  ┣ id: never_used_id
-                    \t  ┗ given(memberRepository.existsById(id)).willReturn(false)
-                    """);
-            // when
-            Throwable result = catchThrowable(() -> memberService.findPasswordByMemberId(id));
-
-            log.info("""
-
-                    \twhen
-                    \t  ┗ memberService.findPasswordByMemberId(id)
-                    """);
-            // then
-            assertAll(
-                    () -> assertThat(result).isInstanceOf(MemberNotFoundException.class),
-                    () -> then(memberRepository).should(never()).findPasswordByMemberId(id)
-            );
-
-            log.info("""
-
-                    \tthen
-                    \t  ┣ assertThat(result).isInstanceOf(MemberNotFoundException.class)
-                    \t  ┗ then(memberRepository).should(never()).findPasswordByMemberId(id)
-                    """);
-        }
-
-        @Test
-        @Order(7)
         @DisplayName("findByDormitoryId Test")
         void findByDormitoryIdTest(){
             log.info("findByDormitoryId Test");
@@ -742,7 +659,7 @@ public class MemberServiceTest {
         }
 
         @Test
-        @Order(8)
+        @Order(6)
         @DisplayName("findByDormitoryId Test(존재하지 않는 아이디)")
         void findByDormitoryIdTestNotFound(){
             // 존재하지 않는 기숙사 아이디로 조회할 일은 없을 것 같지만 혹시 모르니 테스트 진행
@@ -1052,6 +969,7 @@ public class MemberServiceTest {
         void updatePasswordTest(){
             log.info("updatePassword Test");
             // given
+            // SecurityContextHolder 사용하도록 변경
             String id = "test_member_id";
             String password = "update_password";
 
@@ -1065,7 +983,7 @@ public class MemberServiceTest {
                     \t  ┗ given(memberRepository.existsById(id)).willReturn(true)
                     """, id, password);
             // when
-            memberService.updatePassword(id, password);
+            memberService.updatePassword(password);
 
             log.info("""
                     
@@ -1076,7 +994,7 @@ public class MemberServiceTest {
             assertAll(
                     () -> then(memberRepository).should().updatePassword(id, password),
                     () -> verify(memberRepository, times(1)).updatePassword(id, password),
-                    () -> assertThatCode(() -> memberService.updatePassword(id, password)).doesNotThrowAnyException()
+                    () -> assertThatCode(() -> memberService.updatePassword(password)).doesNotThrowAnyException()
             );
 
             log.info("""
@@ -1094,6 +1012,7 @@ public class MemberServiceTest {
         void updatePasswordTestWithNotExistedId(){
             log.info("updatePassword Test(존재하지 않는 아이디)");
             // given
+            // SecurityContextHolder를 사용하도록 변경
             String id = "never_used_id";
             String password = "update_password";
 
@@ -1107,7 +1026,7 @@ public class MemberServiceTest {
                     \t  ┗ given(memberRepository.existsById(id)).willReturn(false)
                     """, id, password);
             // when
-            Throwable exception = catchThrowable(() -> memberService.updatePassword(id, password));
+            Throwable exception = catchThrowable(() -> memberService.updatePassword(password));
 
             log.info("""
                     

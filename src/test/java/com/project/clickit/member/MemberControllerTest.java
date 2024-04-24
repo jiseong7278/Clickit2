@@ -260,27 +260,6 @@ public class MemberControllerTest {
 
             log.info("findByDormitoryId Test when & then: ✔");
         }
-
-        @Test
-        @Order(6)
-        @DisplayName("findPasswordByMemberId Test")
-        void findPasswordByMemberIdTest() throws Exception{
-            log.info("findPasswordByMemberId Test");
-            // given
-            String id = "test";
-
-            given(memberService.findPasswordByMemberId(any())).willReturn("password");
-
-            log.info("findPasswordByMemberId Test given: ✔");
-            // when & then
-            mvc.perform(get("/member/findPasswordByMemberId")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .characterEncoding("UTF-8")
-                            .param("id", id))
-                    .andExpect(status().isOk());
-
-            log.info("findPasswordByMemberId Test when & then: ✔");
-        }
     }
 
     @Nested
@@ -314,17 +293,17 @@ public class MemberControllerTest {
         void updatePasswordTest() throws Exception{
             log.info("updatePassword Test");
             // given
+            // securityContextHolder 사용하도록 변경
             String id = "test";
             String password = "password";
 
-            doNothing().when(memberService).updatePassword(any(), any());
+            doNothing().when(memberService).updatePassword(any());
 
             log.info("updatePassword Test given: ✔");
             // when & then
             mvc.perform(put("/member/updatePassword")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
-                    .param("id", id)
                     .param("password", password))
                     .andExpect(status().isOk());
 
@@ -337,17 +316,17 @@ public class MemberControllerTest {
         void updatePasswordTestMemberNotFoundException() throws Exception{
             log.info("updatePassword Test - MemberNotFoundException");
             // given
+            // SecurityContextHolder 사용하도록 변경
             String id = "test";
             String password = "password";
 
-            doThrow(new MemberNotFoundException()).when(memberService).updatePassword(any(), any());
+            doThrow(new MemberNotFoundException()).when(memberService).updatePassword(any());
 
             log.info("updatePassword Test - MemberNotFoundException | given: ✔");
             // when & then
             mvc.perform(put("/member/updatePassword")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
-                    .param("id", id)
                     .param("password", password))
                     .andExpect(status().isBadRequest());
 

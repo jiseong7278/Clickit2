@@ -57,11 +57,6 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.findByDormitoryId(dormitoryId, pageable));
     }
 
-    @GetMapping("${member.findPasswordByMemberId}")
-    public ResponseEntity<String> findPasswordByMemberId(@RequestParam("id") String id) {
-        return ResponseEntity.ok().body(memberService.findPasswordByMemberId(id));
-    }
-
     @PutMapping("${member.update}")
     public ResponseEntity<Object> updateMember(@RequestBody MemberDTO memberDTO) {
         memberService.update(memberDTO);
@@ -69,8 +64,8 @@ public class MemberController {
     }
 
     @PutMapping("${member.updatePassword}")
-    public ResponseEntity<Object> updatePassword(@RequestParam("id") String id, @RequestParam("password") String password) {
-        memberService.updatePassword(id, password);
+    public ResponseEntity<Object> updatePassword(@RequestParam("password") String password) {
+        memberService.updatePassword(password);
         return ResponseEntity.ok().build();
     }
 
