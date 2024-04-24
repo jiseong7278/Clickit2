@@ -38,18 +38,16 @@ public class DormitoryRepositoryTest {
             // given
             String id = "dor_1";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id +"\n");
+            log.info("existsById test given: ✔");
             // when
             Boolean result = dormitoryRepository.existsById(id);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ Boolean result = dormitoryRepository.existsById(id)\n");
+            log.info("existsById test given: ✔");
             // then
             assertThat(result).isTrue();
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(result).isTrue()\n");
+            log.info("existsById test given: ✔");
+
         }
 
         @Test
@@ -60,18 +58,15 @@ public class DormitoryRepositoryTest {
             // given
             String id = "dor_100";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id + "\n");
+            log.info("existsById test - False | given: ✔");
             // when
             Boolean result = dormitoryRepository.existsById(id);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ Boolean result = dormitoryRepository.existsById(id)\n");
+            log.info("existsById test - False | when: ✔");
             // then
             assertThat(result).isFalse();
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(result).isFalse()\n");
+            log.info("existsById test - False | then: ✔");
         }
     }
 
@@ -90,24 +85,17 @@ public class DormitoryRepositoryTest {
                     .name("test")
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ DormitoryEntity" +
-                    "\n\t\t  ┗ id: " + dormitoryEntity.getId() +
-                    "\n\t\t  ┗ name: " + dormitoryEntity.getName() + "\n");
+            log.info("Create test given: ✔");
             // when
             DormitoryEntity savedDormitoryEntity = dormitoryRepository.save(dormitoryEntity);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ DormitoryEntity savedDormitoryEntity = dormitoryRepository.save(dormitoryEntity)\n");
+            log.info("Create test when: ✔");
             // then
             assertThat(savedDormitoryEntity).isNotNull();
             assertThat(savedDormitoryEntity.getId()).isEqualTo(dormitoryEntity.getId());
             assertThat(savedDormitoryEntity.getName()).isEqualTo(dormitoryEntity.getName());
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(savedDormitoryEntity).isNotNull()" +
-                    "\n\t  ┗ assertThat(savedDormitoryEntity.getId()).isEqualTo(dormitoryEntity.getId())" +
-                    "\n\t  ┗ assertThat(savedDormitoryEntity.getName()).isEqualTo(dormitoryEntity.getName())\n");
+            log.info("Create test then: ✔");
         }
     }
 
@@ -122,16 +110,15 @@ public class DormitoryRepositoryTest {
             log.info("getAll test");
             // given
 
+            log.info("getAll test given: ✔");
             // when
             List<DormitoryEntity> dormitoryEntityList = dormitoryRepository.findAll();
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ List<DormitoryEntity> dormitoryEntityList = dormitoryRepository.findAll()\n");
+            log.info("getAll test when: ✔");
             // then
             assertThat(dormitoryEntityList).isNotNull();
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(dormitoryEntityList).isNotNull()\n");
+            log.info("getAll test then: ✔");
         }
 
         @Test
@@ -142,18 +129,15 @@ public class DormitoryRepositoryTest {
             // given
             String id = "dor_1";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id + "\n");
+            log.info("findById test given: ✔");
             // when
             DormitoryEntity result = dormitoryRepository.findByDormitoryId(id);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ Optional<DormitoryEntity> result = dormitoryRepository.findById(id)\n");
+            log.info("findById test when: ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(result).isNotNull()\n");
+            log.info("findById test then: ✔");
         }
 
         @Test
@@ -164,18 +148,15 @@ public class DormitoryRepositoryTest {
             // given
             String name = "테스트";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ name: " + name + "\n");
+            log.info("findByName test given: ✔");
             // when
             Page<DormitoryEntity> result = dormitoryRepository.findByDormitoryName(name, Pageable.unpaged());
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ Page<DormitoryEntity> result = dormitoryRepository.findByDormitoryName(name, Pageable.unpaged())\n");
+            log.info("findByName test when: ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(result).isNotNull()\n");
+            log.info("findByName test then: ✔");
         }
     }
 
@@ -183,7 +164,6 @@ public class DormitoryRepositoryTest {
     @DisplayName("Update")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class Update{
-
         @Test
         @Order(1)
         @DisplayName("update test")
@@ -199,29 +179,18 @@ public class DormitoryRepositoryTest {
 
             entityManager.clear();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ DormitoryEntity" +
-                    "\n\t\t  ┗ id: " + dormitoryEntity.getId() +
-                    "\n\t\t  ┗ name: " + dormitoryEntity.getName() +
-                    "\n\t  ┗ DormitoryEntity originalDormitoryEntity" +
-                    "\n\t\t  ┗ id: " + originalDormitoryEntity.getId() +
-                    "\n\t\t  ┗ name: " + originalDormitoryEntity.getName() + "\n");
+            log.info("update test given: ✔");
             // when
             DormitoryEntity result = dormitoryRepository.save(dormitoryEntity);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ DormitoryEntity result = dormitoryRepository.save(dormitoryEntity)\n");
+            log.info("update test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(dormitoryEntity.getId());
             assertThat(result.getName()).isEqualTo(dormitoryEntity.getName());
             assertThat(result.getName()).isNotEqualTo(originalDormitoryEntity.getName());
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(result).isNotNull()" +
-                    "\n\t  ┗ assertThat(result.getId()).isEqualTo(dormitoryEntity.getId())" +
-                    "\n\t  ┗ assertThat(result.getName()).isEqualTo(dormitoryEntity.getName())" +
-                    "\n\t  ┗ assertThat(result.getName()).isNotEqualTo(originalDormitoryEntity.getName())\n");
+            log.info("update test then: ✔");
         }
     }
 
@@ -237,21 +206,17 @@ public class DormitoryRepositoryTest {
             // given
             String id = "dor_1";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id + "\n");
+            log.info("deleteById test given: ✔");
             // when
             dormitoryRepository.deleteById(id);
 
+            log.info("deleteById test when: ✔");
+            // then
             DormitoryEntity result = dormitoryRepository.findByDormitoryId(id);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ dormitoryRepository.deleteById(id)" +
-                    "\n\t  ┗ DormitoryEntity result = dormitoryRepository.findByDormitoryId(id)\n");
-            // then
             assertThat(result).isNull();
 
-            log.info("\n\tthen" +
-                    "\n\t  ┗ assertThat(result).isNull()\n");
+            log.info("deleteById test then: ✔");
         }
     }
 }

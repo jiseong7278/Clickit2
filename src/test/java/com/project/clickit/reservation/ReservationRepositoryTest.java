@@ -61,34 +61,18 @@ public class ReservationRepositoryTest {
                     .status("예약")
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ ReservationEntity" +
-                    "\n\t\t  ┗ seatEntity: " + reservationEntity.getSeatEntity() +
-                    "\n\t\t  ┗ memberEntity: " + reservationEntity.getMemberEntity() +
-                    "\n\t\t  ┗ timestamp: " + reservationEntity.getTimestamp() +
-                    "\n\t\t  ┗ status: " + reservationEntity.getStatus() +"\n");
+            log.info("create test given: ✔");
             // when
             ReservationEntity result = reservationRepository.save(reservationEntity);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ ReservationEntity result = reservationRepository.save(reservationEntity)
-                    """);
+            log.info("create test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getSeatEntity().getId()).isEqualTo(seatEntity.getId());
             assertThat(result.getMemberEntity().getId()).isEqualTo(memberEntity.getId());
             assertThat(result.getStatus()).isEqualTo("예약");
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getSeatEntity().getId()).isEqualTo(seatEntity.getId())
-                    \t  ┗ assertThat(result.getMemberEntity().getId()).isEqualTo(memberEntity.getId())
-                    \t  ┗ assertThat(result.getStatus()).isEqualTo("예약")
-                    """);
+            log.info("create test then: ✔");
         }
     }
 
@@ -103,28 +87,18 @@ public class ReservationRepositoryTest {
             log.info("findAll Test");
             // given
 
+            log.info("findAll Test given: ✔");
             // when
             Page<ReservationEntity> result = reservationRepository.findAll(Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<ReservationEntity> result = reservationRepository.findAll(Pageable.unpaged())
-                    """);
+            log.info("findAll Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result).isNotEmpty();
             assertThat(result).isInstanceOf(Page.class);
             assertThatIterable(result).isInstanceOf(Page.class);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isNotEmpty()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    \t  ┗ assertThatIterable(result).isInstanceOf(Page.class)
-                    """);
+            log.info("findAll Test then: ✔");
         }
 
         @Test
@@ -134,30 +108,18 @@ public class ReservationRepositoryTest {
             log.info("findByMemberId Test");
             // given
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ memberId: " + memberEntity.getId() + "\n");
+            log.info("findByMemberId Test given: ✔");
             // when
             Page<ReservationEntity> result = reservationRepository.findByMemberEntityId(memberEntity.getId(), Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<ReservationEntity> result = reservationRepository.findByMemberEntityId(memberEntity.getId(), Pageable.unpaged())
-                    """);
+            log.info("findByMemberId Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result).isNotEmpty();
             assertThat(result).isInstanceOf(Page.class);
             assertThatIterable(result).map(ReservationEntity::getMemberEntity).extracting(MemberEntity::getId).contains(memberEntity.getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isNotEmpty()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    \t  ┗ assertThatIterable(result).map(ReservationEntity::getMemberEntity).extracting(MemberEntity::getId).contains(memberEntity.getId())
-                    """);
+            log.info("findByMemberId Test then: ✔");
         }
 
         @Test
@@ -167,30 +129,18 @@ public class ReservationRepositoryTest {
             log.info("findBySeatIdAndToday Test");
             // given
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ seatId: " + seatEntity.getId() + "\n");
+            log.info("findBySeatIdAndToday Test given: ✔");
             // when
             Page<ReservationEntity> result = reservationRepository.findBySeatEntityIdAndToday(seatEntity.getId(), Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<ReservationEntity> result = reservationRepository.findBySeatEntityIdAndToday(seatEntity.getId(), Pageable.unpaged())
-                    """);
+            log.info("findBySeatIdAndToday Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result).isNotEmpty();
             assertThat(result).isInstanceOf(Page.class);
             assertThatIterable(result).map(ReservationEntity::getSeatEntity).extracting(SeatEntity::getId).contains(seatEntity.getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isNotEmpty()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    \t  ┗ assertThatIterable(result).map(ReservationEntity::getSeatEntity).extracting(SeatEntity::getId).contains(seatEntity.getId())
-                    """);
+            log.info("findBySeatIdAndToday Test then: ✔");
         }
 
         @Test
@@ -200,16 +150,11 @@ public class ReservationRepositoryTest {
             log.info("findByMemberIdAndToday Test");
             // given
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ memberId: " + memberEntity.getId() + "\n");
+            log.info("findByMemberIdAndToday Test given: ✔");
             // when
             Page<ReservationEntity> result = reservationRepository.findByMemberEntityIdAndToday(memberEntity.getId(), Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<ReservationEntity> result = reservationRepository.findByMemberEntityIdAndToday(memberEntity.getId(), Pageable.unpaged())
-                    """);
+            log.info("findByMemberIdAndToday Test when: ✔");
             // then
 
             log.info("만약 예외가 발생한다면 DB에 저장된 데이터의 timestamp가 현재 날짜와 일치하는지 확인");
@@ -219,14 +164,7 @@ public class ReservationRepositoryTest {
             assertThat(result).isInstanceOf(Page.class);
             assertThatIterable(result).map(ReservationEntity::getMemberEntity).extracting(MemberEntity::getId).contains(memberEntity.getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isNotEmpty()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    \t  ┗ assertThatIterable(result).map(ReservationEntity::getMemberEntity).extracting(MemberEntity::getId).contains(memberEntity.getId())
-                    """);
+            log.info("findByMemberIdAndToday Test then: ✔");
         }
     }
 
@@ -252,27 +190,11 @@ public class ReservationRepositoryTest {
                     .status("취소")
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalReservation: " +
-                    "\n\t\t  ┗ num: " + originalReservation.getNum() +
-                    "\n\t\t  ┗ seatEntity: " + originalReservation.getSeatEntity().getId() +
-                    "\n\t\t  ┗ memberEntity: " + originalReservation.getMemberEntity().getId() +
-                    "\n\t\t  ┗ timestamp: " + originalReservation.getTimestamp() +
-                    "\n\t\t  ┗ status: " + originalReservation.getStatus() +
-                    "\n\t  ┗ updateReservation: " +
-                    "\n\t\t  ┗ num: " + updateReservation.getNum() +
-                    "\n\t\t  ┗ seatEntity: " + updateReservation.getSeatEntity().getId() +
-                    "\n\t\t  ┗ memberEntity: " + updateReservation.getMemberEntity().getId() +
-                    "\n\t\t  ┗ timestamp: " + updateReservation.getTimestamp() +
-                    "\n\t\t  ┗ status: " + updateReservation.getStatus() +"\n");
+            log.info("update test given: ✔");
             // when
             ReservationEntity result = reservationRepository.save(updateReservation);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ ReservationEntity result = reservationRepository.save(updateReservation)
-                    """);
+            log.info("update test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getNum()).isEqualTo(originalReservation.getNum());
@@ -281,16 +203,7 @@ public class ReservationRepositoryTest {
             assertThat(result.getTimestamp()).isNotEqualTo(originalReservation.getTimestamp());
             assertThat(result.getStatus()).isNotEqualTo(originalReservation.getStatus());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getNum()).isEqualTo(originalReservation.getNum())
-                    \t  ┗ assertThat(result.getSeatEntity().getId()).isEqualTo(originalReservation.getSeatEntity().getId())
-                    \t  ┗ assertThat(result.getMemberEntity().getId()).isEqualTo(originalReservation.getMemberEntity().getId())
-                    \t  ┗ assertThat(result.getTimestamp()).isNotEqualTo(originalReservation.getTimestamp())
-                    \t  ┗ assertThat(result.getStatus()).isNotEqualTo(originalReservation.getStatus())
-                    """);
+            log.info("update test then: ✔");
         }
 
         @Test
@@ -305,25 +218,13 @@ public class ReservationRepositoryTest {
 
             String status = "취소";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalReservation: " +
-                    "\n\t\t  ┗ num: " + originalReservation.getNum() +
-                    "\n\t\t  ┗ seatEntity: " + originalReservation.getSeatEntity().getId() +
-                    "\n\t\t  ┗ memberEntity: " + originalReservation.getMemberEntity().getId() +
-                    "\n\t\t  ┗ timestamp: " + originalReservation.getTimestamp() +
-                    "\n\t\t  ┗ status: " + originalReservation.getStatus() +
-                    "\n\t  ┗ status: " + status + "\n");
+            log.info("updateReservationStatus Test given: ✔");
             // when
             reservationRepository.updateReservationStatus(originalReservation.getNum(), status);
 
             ReservationEntity result = reservationRepository.findByNum(originalReservation.getNum());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ reservationRepository.updateReservationStatus(originalReservation.getNum(), status)
-                    \t  ┗ ReservationEntity result = reservationRepository.findByNum(originalReservation.getNum())
-                    """);
+            log.info("updateReservationStatus Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getNum()).isEqualTo(originalReservation.getNum());
@@ -333,18 +234,7 @@ public class ReservationRepositoryTest {
             assertThat(result.getStatus()).isEqualTo(status);
             assertThat(result.getStatus()).isNotEqualTo(originalReservation.getStatus());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getNum()).isEqualTo(originalReservation.getNum())
-                    \t  ┗ assertThat(result.getSeatEntity().getId()).isEqualTo(originalReservation.getSeatEntity().getId())
-                    \t  ┗ assertThat(result.getMemberEntity().getId()).isEqualTo(originalReservation.getMemberEntity().getId())
-                    \t  ┗ assertThat(result.getTimestamp()).isEqualTo(originalReservation.getTimestamp())
-                    \t  ┗ assertThat(result.getStatus()).isEqualTo(status)
-                    \t  ┗ assertThat(result.getStatus()).isNotEqualTo(originalReservation.getStatus())
-                    """);
-
+            log.info("updateReservationStatus Test then: ✔");
         }
     }
 
@@ -360,27 +250,17 @@ public class ReservationRepositoryTest {
             // given
             Integer num = 1;
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ num: " + num + "\n");
+            log.info("delete test given: ✔");
             // when
             reservationRepository.deleteByNum(num);
 
             Boolean result = reservationRepository.existsByNum(num);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ reservationRepository.deleteByNum(num)
-                    \t  ┗ ReservationEntity result = reservationRepository.findByNum(num)
-                    """);
+            log.info("delete test when: ✔");
             // then
             assertThat(result).isNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNull()
-                    """);
+            log.info("delete test then: ✔");
         }
     }
 }

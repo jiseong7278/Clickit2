@@ -19,8 +19,9 @@ import org.springframework.data.domain.Pageable;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.then;
 
 @Slf4j
 @DisplayName("DormitoryService 테스트")
@@ -38,61 +39,41 @@ public class DormitoryServiceTest {
     class IsExist{
         @Test
         @Order(1)
-        @DisplayName("isExist Test")
+        @DisplayName("isExist Test false(중복 x)")
         void isExistTest() {
-            log.info("기숙사 아이디 중복 체크 테스트: false(중복 x)");
+            log.info("isExist test false(중복 x)");
             // given
             String dormitoryId = "dor_100";
-            given(dormitoryRepository.existsById(dormitoryId)).willReturn(false);
+            given(dormitoryRepository.existsById(anyString())).willReturn(false);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryId: " + dormitoryId +
-                    "\n\t  ┗ given(dormitoryRepository.existsById(dormitoryId)).willReturn(false)\n");
+            log.info("isExist test false | given: ✔");
             // when
             Boolean result = dormitoryService.isExist(dormitoryId);
 
-            log.info("""
-
-                \twhen
-                \t  ┗ Boolean result = dormitoryService.isExist(dormitoryId)
-                """);
+            log.info("isExist test false | when: ✔");
             // then
             assertThat(result).isFalse();
 
-            log.info("""
-
-                \tthen
-                \t  ┗ assertThat(result).isFalse()
-                """);
+            log.info("isExist test false | then: ✔");
         }
 
         @Test
-        @DisplayName("isExist Test(중복된 아이디)")
+        @DisplayName("isExist Test true(중복된 아이디)")
         void isExistTestDuplicated() {
-            log.info("isExist Test(중복된 아이디)");
+            log.info("isExist Test true(중복된 아이디)");
             // given
             String dormitoryId = "dor_1";
-            given(dormitoryRepository.existsById(dormitoryId)).willReturn(true);
+            given(dormitoryRepository.existsById(anyString())).willReturn(true);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryId: " + dormitoryId +
-                    "\n\t  ┗ given(dormitoryRepository.existsById(dormitoryId)).willReturn(true)\n");
+            log.info("isExist Test true(중복된 아이디) | given: ✔");
             // when
             Boolean result = dormitoryService.isExist(dormitoryId);
 
-            log.info("""
-
-                \twhen
-                \t  ┗ Boolean result = dormitoryService.isExist(dormitoryId)
-                """);
+            log.info("isExist Test true(중복된 아이디) | when: ✔");
             // then
             assertThat(result).isTrue();
 
-            log.info("""
-
-                \tthen
-                \t  ┗ assertThat(result).isTrue()
-                """);
+            log.info("isExist Test true(중복된 아이디) | then: ✔");
         }
     }
 
@@ -111,26 +92,20 @@ public class DormitoryServiceTest {
                     .name("test_dormitory_name")
                     .build();
 
-            given(dormitoryRepository.existsById(dormitoryDTO.getId())).willReturn(false);
+            given(dormitoryRepository.existsById(anyString())).willReturn(false);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryDTO" +
-                    "\n\t  ┗ id: " + dormitoryDTO.getId() +
-                    "\n\t  ┗ name: " + dormitoryDTO.getName() +
-                    "\n\t  ┗ given(dormitoryRepository.existsById(dormitoryEntity.getId())).willReturn(false)\n");
+            log.info("Create Test | given: ✔");
             // when
             dormitoryService.createDormitory(dormitoryDTO);
 
-            log.info("""
-
-                \twhen
-                \t  ┗ dormitoryService.createDormitory(dormitoryEntity.toDTO())
-                """);
+            log.info("Create Test | when: ✔");
             // then
             assertAll(
-                    () -> verify(dormitoryRepository, times(1)).save(any(DormitoryEntity.class)),
+                    () -> then(dormitoryRepository).should().save(any(DormitoryEntity.class)),
                     () -> assertThatCode(() -> dormitoryService.createDormitory(dormitoryDTO)).doesNotThrowAnyException()
             );
+
+            log.info("Create Test | then: ✔");
         }
 
         @Test
@@ -145,30 +120,18 @@ public class DormitoryServiceTest {
                     .name("test_dormitory_name")
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ duplicatedDormitoryDTO" +
-                    "\n\t  ┗ id: " + duplicatedDormitoryDTO.getId() +
-                    "\n\t  ┗ name: " + duplicatedDormitoryDTO.getName() + "\n");
-            // when
-            when(dormitoryRepository.existsById(duplicatedDormitoryDTO.getId())).thenReturn(true);
+            given(dormitoryRepository.existsById(anyString())).willReturn(true);
 
+            log.info("Create Test(중복된 아이디) | given: ✔");
+            // when
             Throwable result = catchThrowable(() -> dormitoryService.createDormitory(duplicatedDormitoryDTO));
 
-            log.info("""
-
-                \twhen
-                \t  ┗ when(dormitoryRepository.existsById(duplicatedDormitoryDTO.getId())).thenReturn(true)
-                \t  ┗ Throwable result = catchThrowable(() -> dormitoryService.createDormitory(duplicatedDormitoryDTO))
-                """);
+            log.info("Create Test(중복된 아이디) | when: ✔");
             // then
             assertThat(result).isInstanceOf(DuplicatedIdException.class)
                     .hasMessage("이미 존재하는 아이디입니다.");
 
-            log.info("""
-                \tthen
-                \t  ┗ assertThat(result).isInstanceOf(DuplicatedIdException.class)
-                \t  ┗ assertThat(result).hasMessage("이미 존재하는 아이디입니다.")
-                """);
+            log.info("Create Test(중복된 아이디) | then: ✔");
         }
     }
 
@@ -186,72 +149,44 @@ public class DormitoryServiceTest {
 
             given(dormitoryRepository.findAll(Pageable.unpaged())).willReturn(dormitoryEntityPage);
 
-            log.info("""
-
-                    \tgiven
-                    \t  ┗ Page<DormitoryEntity> dormitoryEntityPage = Page.empty()
-                    \t  ┗ given(dormitoryRepository.findAll(Pageable.unpaged())).willReturn(dormitoryEntityPage)
-                    """);
+            log.info("getAll Test | given: ✔");
             // when
             Page<DormitoryDTO> result = dormitoryService.getAll(Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<DormitoryDTO> result = dormitoryService.getAll(Pageable.unpaged())
-                    """);
+            log.info("getAll Test | when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result).isInstanceOf(Page.class);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("getAll Test | then: ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("getById Test")
-        void getByIdTest(){
-            log.info("getById Test");
+        @DisplayName("findById Test")
+        void findByIdTest(){
+            log.info("findById Test");
             // given
             DormitoryEntity dormitoryEntity = DormitoryEntity.builder()
                     .id("dor_1")
                     .name("test_dormitory_name")
                     .build();
 
-            given(dormitoryRepository.existsById(dormitoryEntity.getId())).willReturn(true);
+            given(dormitoryRepository.existsById(anyString())).willReturn(true);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryEntity" +
-                    "\n\t  ┗ id: " + dormitoryEntity.getId() +
-                    "\n\t  ┗ name: " + dormitoryEntity.getName() +
-                    "\n\t  ┗ given(dormitoryRepository.existsById(dormitoryEntity.getId())).willReturn(true)\n");
+            given(dormitoryRepository.findByDormitoryId(anyString())).willReturn(dormitoryEntity);
+
+            log.info("findById Test | given: ✔");
             // when
-            when(dormitoryRepository.findByDormitoryId(dormitoryEntity.getId())).thenReturn(dormitoryEntity);
-
             DormitoryDTO result = dormitoryService.findById(dormitoryEntity.getId());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ when(dormitoryRepository.findByDormitoryId(dormitoryEntity.getId())).thenReturn(dormitoryEntity)
-                    """);
+            log.info("findById Test | when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(dormitoryEntity.getId());
             assertThat(result.getName()).isEqualTo(dormitoryEntity.getName());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(dormitoryEntity.getId())
-                    \t  ┗ assertThat(result.getName()).isEqualTo(dormitoryEntity.getName())
-                    """);
+            log.info("findById Test | then: ✔");
         }
 
         @Test
@@ -267,33 +202,18 @@ public class DormitoryServiceTest {
 
             Page<DormitoryEntity> dormitoryEntityPage = Page.empty();
 
-            when(dormitoryRepository.findByDormitoryName(dormitoryEntity.getName(), Pageable.unpaged()))
-                    .thenReturn(dormitoryEntityPage);
+            given(dormitoryRepository.findByDormitoryName(anyString(), any(Pageable.class))).willReturn(dormitoryEntityPage);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryEntity" +
-                    "\n\t\t  ┗ id: " + dormitoryEntity.getId() +
-                    "\n\t\t  ┗ name: " + dormitoryEntity.getName() +
-                    "\n\t  ┗ Page<DormitoryEntity> dormitoryEntityPage = Page.empty()" +
-                    "\n\t  ┗ when(dormitoryRepository.findByDormitoryName(dormitoryEntity.getName(), Pageable.unpaged())).thenReturn(dormitoryEntityPage)\n");
+            log.info("findByName Test | given: ✔");
             // when
             Page<DormitoryDTO> result = dormitoryService.findByName(dormitoryEntity.getName(), Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<DormitoryDTO> result = dormitoryService.findByName(dormitoryEntity.getName(), Pageable.unpaged())
-                    """);
+            log.info("findByName Test | when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result).isInstanceOf(Page.class);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("findByName Test | then: ✔");
         }
     }
 
@@ -312,31 +232,17 @@ public class DormitoryServiceTest {
 
             given(dormitoryRepository.existsById(dormitoryDTO.getId())).willReturn(true);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryDTO" +
-                    "\n\t\t  ┗ id: " + dormitoryDTO.getId() +
-                    "\n\t\t  ┗ name: " + dormitoryDTO.getName() +
-                    "\n\t  ┗ given(dormitoryRepository.existsById(dormitoryDTO.getId())).willReturn(true)\n");
+            log.info("updateDormitoryName Test | given: ✔");
             // when
             dormitoryService.updateDormitory(dormitoryDTO);
 
-            log.info("""
-
-                \twhen
-                \t  ┗ dormitoryService.updateDormitory(dormitoryDTO)
-                """);
+            log.info("updateDormitoryName Test | when: ✔");
             // then
             assertAll(
-                    () -> verify(dormitoryRepository, times(1)).save(any(DormitoryEntity.class)),
+                    () -> then(dormitoryRepository).should().save(any(DormitoryEntity.class)),
                     () -> assertThatCode(() -> dormitoryService.updateDormitory(dormitoryDTO)).doesNotThrowAnyException()
             );
 
-            log.info("""
-
-                \tthen
-                \t  ┗ verify(dormitoryRepository, times(1)).save(any(DormitoryEntity.class))
-                \t  ┗ assertThatCode(() -> dormitoryService.updateDormitory(dormitoryDTO)).doesNotThrowAnyException()
-                """);
         }
 
         @Test
@@ -351,29 +257,16 @@ public class DormitoryServiceTest {
 
             given(dormitoryRepository.existsById(dormitoryDTO.getId())).willReturn(false);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryDTO" +
-                    "\n\t\t  ┗ id: " + dormitoryDTO.getId() +
-                    "\n\t\t  ┗ name: " + dormitoryDTO.getName() +
-                    "\n\t  ┗ given(dormitoryRepository.existsById(dormitoryDTO.getId())).willReturn(false)\n");
+            log.info("updateDormitoryName Test(존재하지 않는 기숙사) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> dormitoryService.updateDormitory(dormitoryDTO));
 
-            log.info("""
-
-                \twhen
-                \t  ┗ Throwable result = catchThrowable(() -> dormitoryService.updateDormitory(dormitoryDTO))
-                """);
+            log.info("updateDormitoryName Test(존재하지 않는 기숙사) | when: ✔");
             // then
             assertThat(result).isInstanceOf(DormitoryNotFoundException.class)
                     .hasMessage(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
 
-            log.info("""
-                
-                \tthen
-                \t  ┗ assertThat(result).isInstanceOf(DormitoryNotFoundException.class)
-                \t  ┗ assertThat(result).hasMessage(ErrorCode.DORMITORY_NOT_FOUND.getMessage())
-                """);
+            log.info("updateDormitoryName Test(존재하지 않는 기숙사) | then: ✔");
         }
     }
 
@@ -387,26 +280,19 @@ public class DormitoryServiceTest {
             // given
             String dormitoryId = "dor_1";
 
-            when(dormitoryRepository.existsById(dormitoryId)).thenReturn(true);
+            given(dormitoryRepository.existsById(dormitoryId)).willReturn(true);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryId: " + dormitoryId +
-                    "\n\t  ┗ when(dormitoryRepository.existsById(dormitoryId)).thenReturn(true)\n");
+            log.info("deleteById Test | given: ✔");
             // when
             dormitoryService.deleteById(dormitoryId);
 
+            log.info("deleteById Test | when: ✔");
             // then
             assertAll(
-                    () -> verify(dormitoryRepository, times(1)).deleteById(dormitoryId),
+                    () -> then(dormitoryRepository).should().deleteById(dormitoryId),
                     () -> assertThatCode(() -> dormitoryService.deleteById(dormitoryId)).doesNotThrowAnyException()
             );
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ verify(dormitoryRepository, times(1)).deleteById(dormitoryId)
-                    \t  ┗ assertThatCode(() -> dormitoryService.deleteById(dormitoryId)).doesNotThrowAnyException()
-                    """);
         }
 
         @Test
@@ -416,29 +302,18 @@ public class DormitoryServiceTest {
             // given
             String dormitoryId = "dor_3";
 
-            when(dormitoryRepository.existsById(dormitoryId)).thenReturn(false);
+            given(dormitoryRepository.existsById(dormitoryId)).willReturn(false);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryId: " + dormitoryId +
-                    "\n\t  ┗ when(dormitoryRepository.existsById(dormitoryId)).thenReturn(false)\n");
+            log.info("deleteById Test (존재하지 않는 기숙사) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> dormitoryService.deleteById(dormitoryId));
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> dormitoryService.deleteById(dormitoryId))
-                    """);
+            log.info("deleteById Test (존재하지 않는 기숙사) | when: ✔");
             // then
             assertThat(result).isInstanceOf(DormitoryNotFoundException.class)
                     .hasMessage(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
 
-            log.info("""
-                
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(DormitoryNotFoundException.class)
-                    \t  ┗ assertThat(result).hasMessage(ErrorCode.DORMITORY_NOT_FOUND.getMessage())
-                    """);
+            log.info("deleteById Test (존재하지 않는 기숙사) | then: ✔");
         }
     }
 }

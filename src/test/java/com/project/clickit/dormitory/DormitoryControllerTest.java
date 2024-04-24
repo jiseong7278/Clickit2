@@ -53,9 +53,9 @@ public class DormitoryControllerTest {
         void duplicateCheckTest() throws Exception {
             log.info("duplicateCheck Test - ok");
             // given
-            String id = anyString();
+            String id = "test";
 
-            given(dormitoryService.isExist(id)).willReturn(false);
+            given(dormitoryService.isExist(anyString())).willReturn(false);
 
             log.info("duplicateCheck Test - ok | given: ✔");
             // when
@@ -77,9 +77,9 @@ public class DormitoryControllerTest {
         void duplicateCheckTestFalse() throws Exception {
             log.info("duplicateCheck Test - badRequest");
             // given
-            String id = anyString();
+            String id = "test";
 
-            given(dormitoryService.isExist(id)).willReturn(true);
+            given(dormitoryService.isExist(anyString())).willReturn(true);
 
             log.info("duplicateCheck Test - badRequest | given: ✔");
             // when
