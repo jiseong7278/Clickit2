@@ -242,6 +242,150 @@ public class LoginControllerTest {
     }
 
     @Nested
+    @DisplayName("sendVerifyCode Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class SendVerifyCode{
+        @Test
+        @Order(1)
+        @DisplayName("sendVerifyCode Test - SMS")
+        void sendVerifyCodeTestSMS() throws Exception{
+            log.info("sendVerifyCode Test - SMS");
+            // given
+            String id = "test";
+
+            doNothing().when(loginService).sendVerifyCodeBySMS(anyString());
+
+            log.info("sendVerifyCode Test - SMS | given: ✔");
+            // when & then
+            mvc.perform(post("/login/sendVerifyBySMS")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
+                    .andExpect(status().isOk());
+
+            log.info("sendVerifyCode Test - SMS | when & then: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("sendVerifyCode Test - Email")
+        void sendVerifyCodeTestEmail() throws Exception{
+            log.info("sendVerifyCode Test - Email");
+            // given
+            String id = "test";
+
+            doNothing().when(loginService).sendVerifyCodeByEmail(anyString());
+
+            log.info("sendVerifyCode Test - Email | given: ✔");
+            // when & then
+            mvc.perform(post("/login/sendVerifyByEmail")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
+                    .andExpect(status().isOk());
+
+            log.info("sendVerifyCode Test - Email | when & then: ✔");
+        }
+    }
+
+    @Nested
+    @DisplayName("verifyCode Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class verifyCodeTest{
+        @Test
+        @Order(1)
+        @DisplayName("verifyCodeBySMS Test - ok")
+        void verifyCodeBySMSTest() throws Exception{
+            log.info("verifyCodeBySMS Test - ok");
+            // given
+            String key = "test";
+            String code = "test";
+
+            given(loginService.verification(anyString(), anyString())).willReturn(true);
+
+            log.info("verifyCodeBySMS Test - ok | given: ✔");
+            // when & then
+            mvc.perform(post("/login/verifyCodeBySMS")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("key", key)
+                    .param("code", code))
+                    .andExpect(status().isOk());
+
+            log.info("verifyCodeBySMS Test - ok | when & then: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("verifyCodeBySMS Test - badRequest")
+        void verifyCodeBySMSTestFalse() throws Exception{
+            log.info("verifyCodeBySMS Test - badRequest");
+            // given
+            String key = "test";
+            String code = "test";
+
+            given(loginService.verification(anyString(), anyString())).willReturn(false);
+
+            log.info("verifyCodeBySMS Test - badRequest | given: ✔");
+            // when & then
+            mvc.perform(post("/login/verifyCodeBySMS")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("key", key)
+                    .param("code", code))
+                    .andExpect(status().isBadRequest());
+
+            log.info("verifyCodeBySMS Test - badRequest | when & then: ✔");
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("verifyCodeByEmail Test - ok")
+        void verifyCodeByEmailTest() throws Exception{
+            log.info("verifyCodeByEmail Test - ok");
+            // given
+            String key = "test";
+            String code = "test";
+
+            given(loginService.verification(anyString(), anyString())).willReturn(true);
+
+            log.info("verifyCodeByEmail Test - ok | given: ✔");
+            // when & then
+            mvc.perform(post("/login/verifyCodeByEmail")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("key", key)
+                    .param("code", code))
+                    .andExpect(status().isOk());
+
+            log.info("verifyCodeByEmail Test - ok | when & then: ✔");
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("verifyCodeByEmail Test - badRequest")
+        void verifyCodeByEmailTestFalse() throws Exception{
+            log.info("verifyCodeByEmail Test - badRequest");
+            // given
+            String key = "test";
+            String code = "test";
+
+            given(loginService.verification(anyString(), anyString())).willReturn(false);
+
+            log.info("verifyCodeByEmail Test - badRequest | given: ✔");
+            // when & then
+            mvc.perform(post("/login/verifyCodeByEmail")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("key", key)
+                    .param("code", code))
+                    .andExpect(status().isBadRequest());
+
+            log.info("verifyCodeByEmail Test - badRequest | when & then: ✔");
+        }
+    }
+
+    @Nested
     @DisplayName("Logout Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class LogoutTest{

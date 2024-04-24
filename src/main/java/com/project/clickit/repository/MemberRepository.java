@@ -29,13 +29,15 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.dormitoryEntity.id = :dormitoryId")
     Page<MemberEntity> findByDormitoryId(@Param("dormitoryId") String dormitoryId, Pageable pageable);
 
-    // find by phone
-    @Query("SELECT m.password FROM MemberEntity m WHERE m.phone = :phone")
-    String findByPhone(@Param("phone") String phone);
+    // update password by phone
+    @Modifying
+    @Query("UPDATE MemberEntity m SET m.password = :password WHERE m.phone = :phone")
+    void updatePasswordByPhone(@Param("phone") String phone, @Param("password") String password);
 
-    // find by email
-    @Query("SELECT m.password FROM MemberEntity m WHERE m.email = :email")
-    String findByEmail(@Param("email") String email);
+    // update password by email
+    @Modifying
+    @Query("UPDATE MemberEntity m SET m.password = :password WHERE m.email = :email")
+    void updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
 
     // update member password
     @Modifying

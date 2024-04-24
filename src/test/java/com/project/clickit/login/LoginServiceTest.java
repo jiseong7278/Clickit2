@@ -11,6 +11,9 @@ import com.project.clickit.exceptions.login.InvalidPasswordException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.service.LoginService;
+import com.project.clickit.service.RedisService;
+import com.project.clickit.util.EmailUtil;
+import com.project.clickit.util.SMSUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,15 +24,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collections;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 
 @Slf4j
 @DisplayName("LoginService Test")
@@ -45,6 +49,18 @@ public class LoginServiceTest {
     @InjectMocks
     private LoginService loginService;
 
+    @Mock
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Mock
+    private SMSUtil smsUtil;
+
+    @Mock
+    private EmailUtil emailUtil;
+
+    @Mock
+    private RedisService redisService;
+
     private final String TYPE_STUDENT = "CLICKIT_STUDENT";
 
     @Nested
@@ -59,22 +75,13 @@ public class LoginServiceTest {
             // given
             String id = "never_used_id";
 
-            given(memberRepository.existsById(id)).willReturn(false);
+            given(memberRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                
-                \tgiven
-                \t  ┣ id = {}
-                \t  ┗ memberRepository.existsById(id) = {}
-                """, id, false);
+            log.info("isExist Test given: ✔");
             // when
             Boolean result = loginService.isExist(id);
 
-            log.info("""
-                
-                \twhen
-                \t  ┗ result = {}
-                """, result);
+            log.info("isExist Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
@@ -82,39 +89,24 @@ public class LoginServiceTest {
                     () -> assertThat(result).isInstanceOf(Boolean.class)
             );
 
-            log.info("""
-                
-                \tthen
-                \t  ┣ assertThat(result).isNotNull()
-                \t  ┣ assertThat(result).isFalse()
-                \t  ┗ assertThat(result).isInstanceOf(Boolean.class)
-                """);
+            log.info("isExist Test then: ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("isExist (중복된 아이디)")
+        @DisplayName("isExist - (중복된 아이디)")
         void isExistTestWithDuplicatedId(){
-            log.info("isExist Test (중복된 아이디)");
+            log.info("isExist Test - (중복된 아이디)");
             // given
             String id = "test_member_id";
 
-            given(memberRepository.existsById(id)).willReturn(true);
+            given(memberRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                
-                \tgiven
-                \t  ┣ id = {}
-                \t  ┗ memberRepository.existsById(id) = {}
-                """, id, true);
+            log.info("isExist Test - (중복된 아이디) | given: ✔");
             // when
             Boolean result = loginService.isExist(id);
 
-            log.info("""
-                
-                \twhen
-                \t  ┗ result = {}
-                """, result);
+            log.info("isExist Test - (중복된 아이디) | when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
@@ -122,13 +114,7 @@ public class LoginServiceTest {
                     () -> assertThat(result).isInstanceOf(Boolean.class)
             );
 
-            log.info("""
-                
-                \tthen
-                \t  ┣ assertThat(result).isNotNull()
-                \t  ┣ assertThat(result).isTrue()
-                \t  ┗ assertThat(result).isInstanceOf(Boolean.class)
-                """);
+            log.info("isExist Test - (중복된 아이디) | then: ✔");
         }
     }
 
@@ -157,50 +143,24 @@ public class LoginServiceTest {
                     .dormitoryDTO(dormitoryDTO)
                     .build();
 
-            String role = TYPE_STUDENT;
+            given(memberRepository.existsById(anyString())).willReturn(false);
+            given(jwtProvider.createAccessToken(anyString(), anyList())).willReturn("access_token");
+            given(jwtProvider.createRefreshToken(anyString(), anyList())).willReturn("refresh_token");
 
-            given(memberRepository.existsById(memberDTO.getId())).willReturn(false);
-            given(jwtProvider.createAccessToken(memberDTO.getId(), Collections.singletonList(role))).willReturn("access_token");
-            given(jwtProvider.createRefreshToken(memberDTO.getId(), Collections.singletonList(role))).willReturn("refresh_token");
+            given(memberRepository.save(any(MemberEntity.class))).willReturn(memberDTO.toEntity());
 
-            when(memberRepository.save(any(MemberEntity.class))).thenReturn(memberDTO.toEntity());
-
-            log.info("""
-                    \tgiven
-                    \t  ┣ MemberDTO
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┣ password = {}
-                    \t  ┃  ┣ name = {}
-                    \t  ┃  ┣ email = {}
-                    \t  ┃  ┣ phone = {}
-                    \t  ┃  ┣ studentNum = {}
-                    \t  ┃  ┣ dormitoryDTO
-                    \t  ┃  ┃  ┣ id = {}
-                    \t  ┃  ┃  ┗ name = {}
-                    \t  ┣ role = {}
-                    \t  ┣ given(memberRepository.existsById(memberDTO.getId())).willReturn({})
-                    \t  ┣ given(jwtProvider.createAccessToken(memberDTO.getId(), Collections.singletonList(role))).willReturn("access_token")
-                    \t  ┣ given(jwtProvider.createRefreshToken(memberDTO.getId(), Collections.singletonList(role))).willReturn("refresh_token")
-                    \t  ┗ when(memberRepository.save(any(MemberEntity.class))).thenReturn(memberDTO.toEntity())
-                    """, memberDTO.getId(), memberDTO.getPassword(), memberDTO.getName(), memberDTO.getEmail(), memberDTO.getPhone(), memberDTO.getStudentNum(), dormitoryDTO.getId(), dormitoryDTO.getName(), role, false);
+            log.info("signUp Test given: ✔");
             // when
-            TokenDTO result = loginService.signUp(memberDTO, role);
+            TokenDTO result = loginService.signUp(memberDTO, TYPE_STUDENT);
 
-            log.info("""
-                    \twhen
-                    \t  ┗ TokenDTO result = loginService.signUp(memberDTO, role)
-                    """);
+            log.info("signUp Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(TokenDTO.class)
             );
 
-            log.info("""
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(TokenDTO.class)
-                    """);
+            log.info("signUp Test then: ✔");
         }
 
         @Test
@@ -213,32 +173,20 @@ public class LoginServiceTest {
                     .id("test_member_id")
                     .build();
 
-            given(memberRepository.existsById(memberDTO.getId())).willReturn(true);
+            given(memberRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    \tgiven
-                    \t  ┣ MemberDTO
-                    \t  ┃  ┗ id = {}
-                    \t  ┣ given(memberRepository.existsById(memberDTO.getId())).willReturn({})
-                    """, memberDTO.getId(), true);
+            log.info("signUp Test(중복된 아이디) given: ✔");
             // when
             Throwable result = catchThrowable(() -> loginService.signUp(memberDTO, TYPE_STUDENT));
 
-            log.info("""
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> loginService.signUp(memberDTO, TYPE_STUDENT))
-                    """);
+            log.info("signUp Test(중복된 아이디) when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(DuplicatedIdException.class)
             );
 
-            log.info("""
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(DuplicatedIdException.class)
-                    """);
+            log.info("signUp Test(중복된 아이디) then: ✔");
         }
 
     }
@@ -254,48 +202,40 @@ public class LoginServiceTest {
             log.info("signIn Test");
             // given
             LoginDTO loginDTO = LoginDTO.builder()
-                    .id("test_member_id")
-                    .password("test_member_password")
+                    .id("id_12")
+                    .password("password_22")
                     .build();
 
-            given(memberRepository.existsById(loginDTO.getId())).willReturn(true);
-            given(memberRepository.findById(loginDTO.getId())).willReturn(MemberEntity.builder()
-                    .id("test_member_id")
-                    .password("test_member_password")
+            MemberEntity memberEntity = MemberEntity.builder()
+                    .id("id_12")
+                    .password("$2a$10$PFBSZO36OS.kE0xUD3Ams.P1NLz8Rv6ZDPgn2UgbY28z5PJgru9W2")
                     .type(TYPE_STUDENT)
-                    .build());
+                    .build();
 
-            when(jwtProvider.createAccessToken(loginDTO.getId(), Collections.singletonList(TYPE_STUDENT))).thenReturn("access_token");
-            when(jwtProvider.createRefreshToken(loginDTO.getId(), Collections.singletonList(TYPE_STUDENT))).thenReturn("refresh_token");
+//            memberEntity.setPassword("$2a$10$PFBSZO36OS.kE0xUD3Ams.P1NLz8Rv6ZDPgn2UgbY28z5PJgru9W2");
 
-            log.info("""
-                    \tgiven
-                    \t  ┣ LoginDTO
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┗ password = {}
-                    \t  ┣ given(memberRepository.existsById(loginDTO.getId())).willReturn({})
-                    \t  ┣ given(memberRepository.findById(loginDTO.getId())).willReturn(MemberEntity.builder().id("test_member_id").password("test_member_password").build())
-                    \t  ┣ when(jwtProvider.createAccessToken(loginDTO.getId(), Collections.singletonList(TYPE_STUDENT))).thenReturn("access_token")
-                    \t  ┗ when(jwtProvider.createRefreshToken(loginDTO.getId(), Collections.singletonList(TYPE_STUDENT))).thenReturn("refresh_token")
-                    """, loginDTO.getId(), loginDTO.getPassword(), true);
+            given(memberRepository.existsById(anyString())).willReturn(true);
+            given(memberRepository.findById(anyString())).willReturn(memberEntity);
+
+            given(passwordEncoder.matches(anyString(), anyString())).willReturn(true);
+
+            log.info("passwordEncoder.matches: {}", passwordEncoder.matches(anyString(), anyString()));
+
+            given(jwtProvider.createAccessToken(anyString(), anyList())).willReturn("access_token");
+            given(jwtProvider.createRefreshToken(anyString(), anyList())).willReturn("refresh_token");
+
+            log.info("signIn Test given: ✔");
             // when
             TokenDTO result = loginService.signIn(loginDTO);
 
-            log.info("""
-                    \twhen
-                    \t  ┗ TokenDTO result = loginService.signIn(loginDTO)
-                    """);
+            log.info("signIn Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(TokenDTO.class)
             );
 
-            log.info("""
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(TokenDTO.class)
-                    """);
+            log.info("signIn Test then: ✔");
         }
 
         @Test
@@ -309,31 +249,20 @@ public class LoginServiceTest {
                     .password("test_member_password")
                     .build();
 
-            given(memberRepository.existsById(loginDTO.getId())).willReturn(false);
+            given(memberRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┗ given(memberRepository.existsById({}})).willReturn({})
-                    """, loginDTO.getId(), loginDTO.getId(), false);
+            log.info("signIn Test (아이디가 존재하지 않음) given: ✔");
             // when
             Throwable result = catchThrowable(() -> loginService.signIn(loginDTO));
 
-            log.info("""
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> loginService.signIn(loginDTO))
-                    """);
+            log.info("signIn Test (아이디가 존재하지 않음) when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(InvalidIdException.class)
             );
 
-            log.info("""
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(InvalidIdException.class)
-                    """);
+            log.info("signIn Test (아이디가 존재하지 않음) then: ✔");
         }
 
         @Test
@@ -347,39 +276,199 @@ public class LoginServiceTest {
                     .password("invalid_password")
                     .build();
 
-            given(memberRepository.existsById(loginDTO.getId())).willReturn(true);
-            given(memberRepository.findById(loginDTO.getId())).willReturn(MemberEntity.builder()
+            given(memberRepository.existsById(anyString())).willReturn(true);
+            given(memberRepository.findById(anyString())).willReturn(MemberEntity.builder()
                     .id("test_member_id")
                     .password("test_member_password")
                     .type(TYPE_STUDENT)
                     .build());
 
-            log.info("""
-                    \tgiven
-                    \t  ┣ LoginDTO
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┗ password = {}
-                    \t  ┣ given(memberRepository.existsById(loginDTO.getId())).willReturn({})
-                    \t  ┗ given(memberRepository.findById(loginDTO.getId())).willReturn(MemberEntity.builder().id("test_member_id").password("test_member_password").build())
-                    """, loginDTO.getId(), loginDTO.getPassword(), true);
+            log.info("signIn Test (비밀번호가 일치하지 않음) given: ✔");
             // when
             Throwable result = catchThrowable(() -> loginService.signIn(loginDTO));
 
-            log.info("""
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> loginService.signIn(loginDTO))
-                    """);
+            log.info("signIn Test (비밀번호가 일치하지 않음) when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(InvalidPasswordException.class)
             );
 
-            log.info("""
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(InvalidPasswordException.class)
-                    """);
+            log.info("signIn Test (비밀번호가 일치하지 않음) then: ✔");
+        }
+    }
+
+    @Nested
+    @DisplayName("sendVerifyCode Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class sendVerifyTest{
+        @Test
+        @Order(1)
+        @DisplayName("sendVerifyCodeBySMS Test")
+        void sendVerifyCodeBySMSTest(){
+            log.info("sendVerifyCodeBySMS Test");
+            // given
+            String id = "id";
+
+            MemberEntity memberEntity = MemberEntity.builder()
+                    .id("id")
+                    .phone("010-1234-5678")
+                    .build();
+
+            given(memberRepository.existsById(anyString())).willReturn(true);
+            given(memberRepository.findById(anyString())).willReturn(memberEntity);
+
+            willDoNothing().given(smsUtil).sendOne(anyString(), anyString());
+
+            willDoNothing().given(redisService).setData(anyString(), anyString(), any(Duration.class));
+
+            log.info("sendVerifyCodeBySMS Test given: ✔");
+            // when
+            loginService.sendVerifyCodeBySMS(id);
+
+            log.info("sendVerifyCodeBySMS Test when: ✔");
+            // then
+            assertAll(
+                    () -> assertThatCode(() -> loginService.sendVerifyCodeBySMS(id)).doesNotThrowAnyException()
+            );
+
+            log.info("sendVerifyCodeBySMS Test then: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("sendVerifyCodeBySMS Test (아이디가 존재하지 않음)")
+        void sendVerifyCodeBySMSTestWithInvalidId(){
+            log.info("sendVerifyCodeBySMS Test (아이디가 존재하지 않음)");
+            // given
+            String id = "never_used_id";
+
+            given(memberRepository.existsById(anyString())).willReturn(false);
+
+            log.info("sendVerifyCodeBySMS Test (아이디가 존재하지 않음) given: ✔");
+            // when
+            Throwable result = catchThrowable(() -> loginService.sendVerifyCodeBySMS(id));
+
+            log.info("sendVerifyCodeBySMS Test (아이디가 존재하지 않음) when: ✔");
+            // then
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(InvalidIdException.class)
+            );
+
+            log.info("sendVerifyCodeBySMS Test (아이디가 존재하지 않음) then: ✔");
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("sendVerifyCodeByEmail Test")
+        void sendVerifyCodeByEmailTest(){
+            log.info("sendVerifyCodeByEmail Test");
+            // given
+            String id = "id";
+
+            MemberEntity memberEntity = MemberEntity.builder()
+                    .id("id")
+                    .email("test_member_email")
+                    .build();
+
+            given(memberRepository.existsById(anyString())).willReturn(true);
+            given(memberRepository.findById(anyString())).willReturn(memberEntity);
+
+            willDoNothing().given(emailUtil).sendEmail(anyString(), anyString(), anyString());
+
+            willDoNothing().given(redisService).setData(anyString(), anyString(), any(Duration.class));
+
+            log.info("sendVerifyCodeByEmail Test given: ✔");
+            // when
+            loginService.sendVerifyCodeByEmail(id);
+
+            log.info("sendVerifyCodeByEmail Test when: ✔");
+            // then
+            assertAll(
+                    () -> assertThatCode(() -> loginService.sendVerifyCodeByEmail(id)).doesNotThrowAnyException()
+            );
+
+            log.info("sendVerifyCodeByEmail Test then: ✔");
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("sendVerifyCodeByEmail Test (아이디가 존재하지 않음)")
+        void sendVerifyCodeByEmailTestWithInvalidId(){
+            log.info("sendVerifyCodeByEmail Test (아이디가 존재하지 않음)");
+            // given
+            String id = "never_used_id";
+
+            given(memberRepository.existsById(anyString())).willReturn(false);
+
+            log.info("sendVerifyCodeByEmail Test (아이디가 존재하지 않음) given: ✔");
+            // when
+            Throwable result = catchThrowable(() -> loginService.sendVerifyCodeByEmail(id));
+
+            log.info("sendVerifyCodeByEmail Test (아이디가 존재하지 않음) when: ✔");
+            // then
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(InvalidIdException.class)
+            );
+
+            log.info("sendVerifyCodeByEmail Test (아이디가 존재하지 않음) then: ✔");
+        }
+    }
+
+    @Nested
+    @DisplayName("updatePassword Test")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class updatePasswordTest{
+        @Test
+        @Order(1)
+        @DisplayName("updatePasswordByPhone Test")
+        void updatePasswordByPhoneTest(){
+            log.info("updatePasswordByPhone Test");
+            // given
+            String phone = "010-1234-5678";
+            String password = "test_password";
+
+            willDoNothing().given(memberRepository).updatePasswordByPhone(anyString(), anyString());
+
+            log.info("updatePasswordByPhone Test given: ✔");
+            // when
+            loginService.updatePasswordByPhone(phone, password);
+
+            log.info("updatePasswordByPhone Test when: ✔");
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().updatePasswordByPhone(anyString(), anyString()),
+                    () -> assertThatCode(() -> loginService.updatePasswordByPhone(phone, password)).doesNotThrowAnyException()
+            );
+
+            log.info("updatePasswordByPhone Test then: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("updatePasswordByEmail Test")
+        void updatePasswordByEmailTest(){
+            log.info("updatePasswordByEmail Test");
+            // given
+            String email = "test_member_email";
+            String password = "test_password";
+
+            willDoNothing().given(memberRepository).updatePasswordByEmail(anyString(), anyString());
+
+            log.info("updatePasswordByEmail Test given: ✔");
+            // when
+            loginService.updatePasswordByEmail(email, password);
+
+            log.info("updatePasswordByEmail Test when: ✔");
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().updatePasswordByEmail(anyString(), anyString()),
+                    () -> assertThatCode(() -> loginService.updatePasswordByEmail(email, password)).doesNotThrowAnyException()
+            );
+
+            log.info("updatePasswordByEmail Test then: ✔");
         }
     }
 
@@ -399,39 +488,21 @@ public class LoginServiceTest {
             securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"));
             SecurityContextHolder.setContext(securityContext);
 
-            given(jwtProvider.resolveToken(token)).willReturn(token);
-            given(jwtProvider.validateToken(token)).willReturn(true);
+            given(jwtProvider.resolveToken(anyString())).willReturn(token);
+            given(jwtProvider.validateToken(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ token = {}
-                    \t  ┣ SecurityContext securityContext = new SecurityContextImpl()
-                    \t  ┣ securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"))
-                    \t  ┣ SecurityContextHolder.setContext(securityContext)
-                    \t  ┣ given(jwtProvider.resolveToken({}})).willReturn({}})
-                    \t  ┗ given(jwtProvider.validateToken({}})).willReturn(true)
-                    """, token, token, token, token);
+            log.info("logout Test given: ✔");
             // when
             loginService.logout(token);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ loginService.logout(token)
-                    """);
+            log.info("logout Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(SecurityContextHolder.getContext()).isNotNull(),
                     () -> assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(SecurityContextHolder.getContext()).isNotNull()
-                    \t  ┗ assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull()
-                    """);
+            log.info("logout Test then: ✔");
         }
 
         @Test
@@ -446,27 +517,14 @@ public class LoginServiceTest {
             securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"));
             SecurityContextHolder.setContext(securityContext);
 
-            given(jwtProvider.resolveToken(token)).willReturn(token);
-            given(jwtProvider.validateToken(token)).willThrow(RuntimeException.class);
+            given(jwtProvider.resolveToken(anyString())).willReturn(token);
+            given(jwtProvider.validateToken(anyString())).willThrow(RuntimeException.class);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ token = {}
-                    \t  ┣ SecurityContext securityContext = new SecurityContextImpl()
-                    \t  ┣ securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"))
-                    \t  ┣ SecurityContextHolder.setContext(securityContext)
-                    \t  ┣ given(jwtProvider.resolveToken({}})).willReturn({}})
-                    \t  ┗ given(jwtProvider.validateToken({}})).willThrow(RuntimeException.class)
-                    """, token, token, token, token);
+            log.info("logout Test (토큰이 유효하지 않음) given: ✔");
             // when
             Throwable result = catchThrowable(() -> loginService.logout(token));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ loginService.logout(token)
-                    """);
+            log.info("logout Test (토큰이 유효하지 않음) when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
@@ -475,13 +533,7 @@ public class LoginServiceTest {
 
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┣ assertThat(result).isInstanceOf(RuntimeException.class)
-                    \t  ┗ assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull()
-                    """);
+            log.info("logout Test (토큰이 유효하지 않음) then: ✔");
         }
     }
 }

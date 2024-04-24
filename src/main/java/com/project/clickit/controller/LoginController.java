@@ -50,13 +50,13 @@ public class LoginController {
         return ResponseEntity.ok().body(loginService.signIn(loginDTO));
     }
 
-    @PostMapping("${login.smsVerify}")
+    @PostMapping("${login.sendVerifyBySMS}")
     public ResponseEntity<String> smsVerify(@RequestParam("id")String id){
         loginService.sendVerifyCodeBySMS(id);
         return ResponseEntity.ok().body("인증번호가 전송되었습니다.");
     }
 
-    @PostMapping("${login.emailVerify}")
+    @PostMapping("${login.sendVerifyByEmail}")
     public ResponseEntity<String> emailVerify(@RequestParam("id")String id){
         loginService.sendVerifyCodeByEmail(id);
         return ResponseEntity.ok().body("인증번호가 전송되었습니다.");
@@ -67,7 +67,7 @@ public class LoginController {
         if (!loginService.verification(key, code))
             return ResponseEntity.badRequest().body("인증번호가 일치하지 않습니다.");
 
-        return ResponseEntity.ok().body(loginService.findPasswordByPhone(key));
+        return ResponseEntity.ok().body("인증되었습니다.");
     }
 
     @PostMapping("${login.verifyCodeByEmail}")
@@ -75,7 +75,19 @@ public class LoginController {
         if (!loginService.verification(key, code))
             return ResponseEntity.badRequest().body("인증번호가 일치하지 않습니다.");
 
-        return ResponseEntity.ok().body(loginService.findPasswordByEmail(key));
+        return ResponseEntity.ok().body("인증되었습니다.");
+    }
+
+    @PutMapping("${login.updatePasswordBySMS}")
+    public ResponseEntity<String> updatePasswordBySMS(@RequestParam("phone")String phone, @RequestParam("password")String password){
+        loginService.updatePasswordByPhone(phone, password);
+        return ResponseEntity.ok().body("비밀번호가 변경되었습니다.");
+    }
+
+    @PutMapping("${login.updatePasswordByEmail}")
+    public ResponseEntity<String> updatePasswordByEmail(@RequestParam("email")String email, @RequestParam("password")String password){
+        loginService.updatePasswordByEmail(email, password);
+        return ResponseEntity.ok().body("비밀번호가 변경되었습니다.");
     }
 
     @PostMapping("${login.logout}")

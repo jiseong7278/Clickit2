@@ -174,23 +174,23 @@ public class LoginService {
     }
 
     /**
-     * <b>휴대폰 인증으로 비밀번호 찾기</b>
+     * <b>비밀번호 변경</b>
      * @param phone String
-     * @return String
+     * @param password String
      */
     @Transactional
-    public String findPasswordByPhone(String phone){
-        return memberRepository.findByPhone(phone);
+    public void updatePasswordByPhone(String phone, String password){
+        memberRepository.updatePasswordByPhone(phone, passwordEncoder.encode(password));
     }
 
     /**
-     * <b>이메일 인증으로 비밀번호 찾기</b>
+     * <b>비밀번호 변경</b>
      * @param email String
-     * @return String
+     * @param password String
      */
     @Transactional
-    public String findPasswordByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public void updatePasswordByEmail(String email, String password){
+        memberRepository.updatePasswordByEmail(email, passwordEncoder.encode(password));
     }
 
     /**
