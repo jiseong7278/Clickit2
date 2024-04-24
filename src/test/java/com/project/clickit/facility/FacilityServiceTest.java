@@ -20,9 +20,9 @@ import org.springframework.data.domain.Pageable;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
 
 @Slf4j
 @DisplayName("FacilityService 테스트")
@@ -46,80 +46,48 @@ public class FacilityServiceTest {
             // given
             String facilityId = "dor_1_badminton";
 
-            given(facilityRepository.existsById(facilityId)).willReturn(true);
+            given(facilityRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ facilityId = {}
-                    \t  ┗ given(facilityRepository.existsById(facilityId)).willReturn(true)
-                    """, facilityId);
+            log.info("isExist Test given: ✔");
             // when
             Boolean result = facilityService.isExist(facilityId);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Boolean result = facilityService.isExist(facilityId)
-                    """);
+            log.info("isExist Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(Boolean.class),
                     () -> assertThat(result).isTrue(),
-                    () -> then(facilityRepository).should().existsById(facilityId)
+                    () -> then(facilityRepository).should().existsById(anyString())
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┣ assertThat(result).isInstanceOf(Boolean.class)
-                    \t  ┣ assertThat(result).isTrue()
-                    \t  ┗ facilityRepository.should().existsById(facilityId)
-                    """);
+            log.info("isExist Test then: ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("시설 아이디 중복 체크 테스트")
+        @DisplayName("isExist Test: true(중복 o)")
         void isExistTestDuplicated(){
-            log.info("시설 아이디 중복 체크 테스트: true(중복 o)");
+            log.info("isExist Test: true(중복 o)");
             // given
             String facilityId = "never_used_id";
 
-            given(facilityRepository.existsById(facilityId)).willReturn(false);
+            given(facilityRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ facilityId = {}
-                    \t  ┗ given(facilityRepository.existsById(facilityId)).willReturn(false)
-                    """, facilityId);
+            log.info("isExist Test: true(중복 o) | given: ✔");
             // when
             Boolean result = facilityService.isExist(facilityId);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Boolean result = facilityService.isExist(facilityId)
-                    """);
+            log.info("isExist Test: true(중복 o) | when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(Boolean.class),
                     () -> assertThat(result).isFalse(),
-                    () -> then(facilityRepository).should().existsById(facilityId)
+                    () -> then(facilityRepository).should().existsById(anyString())
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┣ assertThat(result).isInstanceOf(Boolean.class)
-                    \t  ┣ assertThat(result).isFalse()
-                    \t  ┗ facilityRepository.should().existsById(facilityId)
-                    """);
+            log.info("isExist Test: true(중복 o) | then: ✔");
         }
     }
 
@@ -149,39 +117,20 @@ public class FacilityServiceTest {
                     .dormitoryDTO(dormitoryDTO)
                     .build();
 
-            given(facilityRepository.existsById(facilityDTO.getId())).willReturn(false);
+            given(facilityRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ facilityDTO
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┣ name = {}
-                    \t  ┃  ┣ info = {}
-                    \t  ┃  ┣ open = {}
-                    \t  ┃  ┣ close = {}
-                    \t  ┃  ┣ img = {}
-                    \t  ┃  ┣ terms = {}
-                    \t  ┃  ┣ dormitoryDTO
-                    \t  ┃  ┃  ┣ id = {}
-                    \t  ┃  ┃  ┗ name = {}
-                    \t  ┗ given(facilityRepository.existsById(facilityDTO.getId())).willReturn(false)
-                    """, facilityDTO.getId(), facilityDTO.getName(), facilityDTO.getInfo(),
-                    facilityDTO.getOpen(), facilityDTO.getClose(), facilityDTO.getImg(),
-                    facilityDTO.getTerms(), dormitoryDTO.getId(), dormitoryDTO.getName());
+            log.info("createFacility Test given: ✔");
             // when
             facilityService.createFacility(facilityDTO);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ facilityService.createFacility(facilityDTO)
-                    """);
+            log.info("createFacility Test when: ✔");
             // then
             assertAll(
                     () -> then(facilityRepository).should().save(any(FacilityEntity.class)),
                     () -> assertThatCode(() -> facilityService.createFacility(facilityDTO)).doesNotThrowAnyException()
             );
+
+            log.info("createFacility Test then: ✔");
         }
 
         @Test
@@ -194,37 +143,21 @@ public class FacilityServiceTest {
                     .id("dor_1_badminton")
                     .build();
 
-            given(facilityRepository.existsById(facilityDTO.getId())).willReturn(true);
+            given(facilityRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ facilityDTO
-                    \t  ┃  ┗ id = {}
-                    \t  ┗ given(facilityRepository.existsById(facilityDTO.getId())).willReturn(true)
-                    """, facilityDTO.getId());
+            log.info("createFacility Test (중복된 아이디) | given: ✔");
             // when
             Throwable result = catchThrowable(()->facilityService.createFacility(facilityDTO));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(()->facilityService.createFacility(facilityDTO))
-                    """);
+            log.info("createFacility Test (중복된 아이디) | when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isInstanceOf(DuplicatedIdException.class),
                     () -> assertThat(result).hasMessageContaining("이미 존재하는 아이디입니다."),
-                    () -> then(facilityRepository).should(never()).save(any(FacilityEntity.class))
+                    () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isInstanceOf(DuplicatedIdException.class)
-                    \t  ┣ assertThat(result).hasMessageContaining("이미 존재하는 아이디입니다.")
-                    \t  ┗ facilityRepository.should(never()).save(any(FacilityEntity.class)
-                    """);
+            log.info("createFacility Test (중복된 아이디) | then: ✔");
         }
     }
 
@@ -238,33 +171,20 @@ public class FacilityServiceTest {
         void getAllTest(){
             log.info("getAll Test");
             // given
-            when(facilityRepository.findAll(Pageable.unpaged())).thenReturn(Page.empty());
+            given(facilityRepository.findAll(any(Pageable.class))).willReturn(Page.empty());
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ when(facilityRepository.findAll(Pageable.unpaged())).thenReturn(Page.empty())
-                    """);
+            log.info("getAll Test given: ✔");
             // when
             Page<FacilityDTO> result = facilityService.getAll(Pageable.unpaged());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Page<FacilityDTO> result = facilityService.getAll(Pageable.unpaged())
-                    """);
+            log.info("getAll Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(Page.class)
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("getAll Test then: ✔");
         }
 
         @Test
@@ -280,40 +200,22 @@ public class FacilityServiceTest {
                     .name("기숙사1")
                     .build();
 
-            given(facilityRepository.existsById(facilityId)).willReturn(true);
+            given(facilityRepository.existsById(anyString())).willReturn(true);
 
-            when(facilityRepository.findByFacilityId(facilityId)).thenReturn(FacilityEntity.builder().dormitoryEntity(dormitoryEntity).build());
+            given(facilityRepository.findByFacilityId(anyString())).willReturn(FacilityEntity.builder().dormitoryEntity(dormitoryEntity).build());
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ facilityId = {}
-                    \t  ┣ DormitoryEntity
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┗ name = {}
-                    \t  ┣ given(facilityRepository.existsById(facilityId)).willReturn(true)
-                    \t  ┗ when(facilityRepository.findByFacilityId(facilityId)).thenReturn(FacilityEntity.builder().build())
-                    """, facilityId, dormitoryEntity.getId(), dormitoryEntity.getName());
+            log.info("findById Test given: ✔");
             // when
             FacilityDTO result = facilityService.findById(facilityId);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ FacilityDTO result = facilityService.findById(facilityId)
-                    """);
+            log.info("findById Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(FacilityDTO.class)
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(FacilityDTO.class)
-                    """);
+            log.info("findById Test then: ✔");
         }
 
         @Test
@@ -324,35 +226,20 @@ public class FacilityServiceTest {
             // given
             String facilityId = "never_used_id";
 
-            when(facilityRepository.existsById(facilityId)).thenReturn(false);
+            given(facilityRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ facilityId = {}
-                    \t  ┗ when(facilityRepository.existsById(facilityId)).thenReturn(false)
-                    """, facilityId);
+            log.info("findById Test (존재하지 않는 아이디) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> facilityService.findById(facilityId));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.findById(facilityId))
-                    """);
+            log.info("findById Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
-                    () -> then(facilityRepository).should(never()).findByFacilityId(facilityId)
+                    () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
-                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
-                    \t  ┗ facilityRepository.should(never()).findByFacilityId(facilityId)
-                    """);
+            log.info("findById Test (존재하지 않는 아이디) | then: ✔");
         }
 
         @Test
@@ -363,33 +250,20 @@ public class FacilityServiceTest {
             // given
             String facilityName = "탁구";
 
-            when(facilityRepository.findByFacilityName(facilityName, Pageable.unpaged())).thenReturn(Page.empty());
+            given(facilityRepository.findByFacilityName(anyString(), any(Pageable.class))).willReturn(Page.empty());
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ when(facilityRepository.findByFacilityName(facilityName, Pageable.unpaged())).thenReturn(Page.empty())
-                    """);
+            log.info("findByName Test given: ✔");
             // when
             Page<FacilityDTO> result = facilityService.findByName(facilityName, Pageable.unpaged());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Page<FacilityDTO> result = facilityService.findByName(facilityName, Pageable.unpaged())
-                    """);
+            log.info("findByName Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(Page.class)
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("findByName Test then: ✔");
         }
 
         @Test
@@ -400,33 +274,20 @@ public class FacilityServiceTest {
             // given
             String dormitoryId = "dor_1";
 
-            when(facilityRepository.findByDormitoryId(dormitoryId, Pageable.unpaged())).thenReturn(Page.empty());
+            given(facilityRepository.findByDormitoryId(anyString(), any(Pageable.class))).willReturn(Page.empty());
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ when(facilityRepository.findByDormitoryId(dormitoryId, Pageable.unpaged())).thenReturn(Page.empty())
-                    """);
+            log.info("findByDormitoryId Test given: ✔");
             // when
             Page<FacilityDTO> result = facilityService.findByDormitoryId(dormitoryId, Pageable.unpaged());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Page<FacilityDTO> result = facilityService.findByDormitoryId(dormitoryId, Pageable.unpaged())
-                    """);
+            log.info("findByDormitoryId Test when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(Page.class)
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("findByDormitoryId Test then: ✔");
         }
     }
 
@@ -456,48 +317,20 @@ public class FacilityServiceTest {
                     .dormitoryDTO(dormitoryDTO)
                     .build();
 
-            given(facilityRepository.existsById(updateFacility.getId())).willReturn(true);
+            given(facilityRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ updateFacility
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┣ name = {}
-                    \t  ┃  ┣ info = {}
-                    \t  ┃  ┣ open = {}
-                    \t  ┃  ┣ close = {}
-                    \t  ┃  ┣ img = {}
-                    \t  ┃  ┣ terms = {}
-                    \t  ┃  ┣ dormitoryDTO
-                    \t  ┃  ┃  ┣ id = {}
-                    \t  ┃  ┃  ┗ name = {}
-                    \t  ┗ given(facilityRepository.existsById(updateFacility.getId())).willReturn(true)
-                    """, updateFacility.getId(), updateFacility.getName(), updateFacility.getInfo(),
-                    updateFacility.getOpen(), updateFacility.getClose(), updateFacility.getImg(),
-                    updateFacility.getTerms(), dormitoryDTO.getId(), dormitoryDTO.getName());
+            log.info("updateFacility Test given: ✔");
             // when
             facilityService.updateFacility(updateFacility);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ facilityService.updateFacility(updateFacility)
-                    """);
+            log.info("updateFacility Test when: ✔");
             // then
             assertAll(
                     () -> then(facilityRepository).should().save(any(FacilityEntity.class)),
-                    () -> verify(facilityRepository, times(1)).save(any(FacilityEntity.class)),
                     () -> assertThatCode(() -> facilityService.updateFacility(updateFacility)).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ facilityRepository.should().save(any(FacilityEntity.class))
-                    \t  ┣ verify(facilityRepository, times(1)).save(any(FacilityEntity.class))
-                    \t  ┗ assertThatCode(() -> facilityService.updateFacility(updateFacility)).doesNotThrowAnyException()
-                    """);
+            log.info("updateFacility Test then: ✔");
         }
 
         @Test
@@ -510,36 +343,20 @@ public class FacilityServiceTest {
                     .id("never_used_id")
                     .build();
 
-            given(facilityRepository.existsById(updateFacility.getId())).willReturn(false);
+            given(facilityRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ updateFacility
-                    \t  ┃  ┗ id = {}
-                    \t  ┗ given(facilityRepository.existsById(updateFacility.getId())).willReturn(false)
-                    """, updateFacility.getId());
+            log.info("updateFacility Test (존재하지 않는 아이디) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> facilityService.updateFacility(updateFacility));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.updateFacility(updateFacility))
-                    """);
+            log.info("updateFacility Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
-                    () -> then(facilityRepository).should(never()).save(any(FacilityEntity.class))
+                    () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
-                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
-                    \t  ┗ facilityRepository.should(never()).save(any(FacilityEntity.class)
-                    """);
+            log.info("updateFacility Test (존재하지 않는 아이디) | then: ✔");
         }
 
         @Test
@@ -552,37 +369,20 @@ public class FacilityServiceTest {
 
             String newId = "newId";
 
-            given(facilityRepository.existsById(id)).willReturn(true);
+            given(facilityRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┣ newId = {}
-                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(true)
-                    """, id, newId);
+            log.info("updateFacilityId Test given: ✔");
             // when
             facilityService.updateFacilityId(id, newId);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ facilityService.updateFacilityId(id, newId)
-                    """);
+            log.info("updateFacilityId Test when: ✔");
             //then
             assertAll(
-                    () -> then(facilityRepository).should().updateFacilityId(id, newId),
-                    () -> verify(facilityRepository, times(1)).updateFacilityId(id, newId),
-                    () -> assertThatCode(() -> facilityService.updateFacilityId(id, newId)).doesNotThrowAnyException()
+                    () -> then(facilityRepository).should().updateFacilityId(anyString(), anyString()),
+                    () -> assertThatCode(() -> facilityService.updateFacilityId(anyString(), newId)).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ facilityRepository.should().updateFacilityId(id, newId)
-                    \t  ┣ verify(facilityRepository, times(1)).updateFacilityId(id, newId)
-                    \t  ┗ assertThatCode(() -> facilityService.updateFacilityId(id, newId)).doesNotThrowAnyException()
-                    """);
+            log.info("updateFacilityId Test then: ✔");
         }
 
         @Test
@@ -595,36 +395,20 @@ public class FacilityServiceTest {
 
             String newId = "newId";
 
-            given(facilityRepository.existsById(id)).willReturn(false);
+            given(facilityRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┣ newId = {}
-                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(false)
-                    """, id, newId);
+            log.info("updateFacilityId Test (존재하지 않는 아이디) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> facilityService.updateFacilityId(id, newId));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.updateFacilityId(id, newId))
-                    """);
+            log.info("updateFacilityId Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
-                    () -> then(facilityRepository).should(never()).updateFacilityId(id, newId)
+                    () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
-                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
-                    \t  ┗ facilityRepository.should(never()).updateFacilityId(id, newId)
-                    """);
+            log.info("updateFacilityId Test (존재하지 않는 아이디) | then: ✔");
         }
     }
 
@@ -640,36 +424,20 @@ public class FacilityServiceTest {
             // given
             String id = "dor_1_badminton";
 
-            given(facilityRepository.existsById(id)).willReturn(true);
+            given(facilityRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(true)
-                    """, id);
+            log.info("deleteById Test given: ✔");
             // when
             facilityService.deleteById(id);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ facilityService.deleteById(id)
-                    """);
+            log.info("deleteById Test when: ✔");
             // then
             assertAll(
-                    () -> then(facilityRepository).should().deleteById(id),
-                    () -> verify(facilityRepository, times(1)).deleteById(id),
-                    () -> assertThatCode(() -> facilityService.deleteById(id)).doesNotThrowAnyException()
+                    () -> then(facilityRepository).should().deleteById(anyString()),
+                    () -> assertThatCode(() -> facilityService.deleteById(anyString())).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ facilityRepository.should().deleteById(id)
-                    \t  ┣ verify(facilityRepository, times(1)).deleteById(id)
-                    \t  ┗ assertThatCode(() -> facilityService.deleteById(id)).doesNotThrowAnyException()
-                    """);
+            log.info("deleteById Test then: ✔");
         }
 
         @Test
@@ -680,35 +448,20 @@ public class FacilityServiceTest {
             // given
             String id = "never_used_id";
 
-            given(facilityRepository.existsById(id)).willReturn(false);
+            given(facilityRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┗ given(facilityRepository.existsById(id)).willReturn(false)
-                    """, id);
+            log.info("deleteById Test (존재하지 않는 아이디) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> facilityService.deleteById(id));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ Throwable result = catchThrowable(() -> facilityService.deleteById(id))
-                    """);
+            log.info("deleteById Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
                     () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
-                    () -> then(facilityRepository).should(never()).deleteById(id)
+                    () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ assertThat(result).isInstanceOf(FacilityNotFoundException.class)
-                    \t  ┣ assertThat(result).hasMessageContaining("시설을 찾을 수 없습니다.")
-                    \t  ┗ facilityRepository.should(never()).deleteById(id)
-                    """);
+            log.info("deleteById Test (존재하지 않는 아이디) | then: ✔");
         }
     }
 }

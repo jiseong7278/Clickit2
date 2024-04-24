@@ -38,24 +38,15 @@ public class FacilityRepositoryTest {
             // given
             String id = "dor_1_badminton";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id +"\n");
+            log.info("existsById test given: ✔");
             // when
             Boolean result = facilityRepository.existsById(id);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Boolean result = facilityRepository.existsById(id)
-                    """);
+            log.info("existsById test when: ✔");
             // then
             assertThat(result).isTrue();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isTrue()
-                    """);
+            log.info("existsById test then: ✔");
         }
 
         @Test
@@ -66,24 +57,15 @@ public class FacilityRepositoryTest {
             // given
             String id = "fac_100";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id +"\n");
+            log.info("existsById test - False | given: ✔");
             // when
             Boolean result = facilityRepository.existsById(id);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Boolean result = facilityRepository.existsById(id)
-                    """);
+            log.info("existsById test - False | when: ✔");
             // then
             assertThat(result).isFalse();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isFalse()
-                    """);
+            log.info("existsById test - False | then: ✔");
         }
     }
 
@@ -112,37 +94,17 @@ public class FacilityRepositoryTest {
                     .dormitoryEntity(dormitoryEntity)
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ facilityEntity" +
-                    "\n\t\t  ┗ id: " + facilityEntity.getId() +
-                    "\n\t\t  ┗ name: " + facilityEntity.getName() +
-                    "\n\t\t  ┗ info: " + facilityEntity.getInfo() +
-                    "\n\t\t  ┗ open: " + facilityEntity.getOpen() +
-                    "\n\t\t  ┗ close: " + facilityEntity.getClose() +
-                    "\n\t\t  ┗ capacity: " + facilityEntity.getCapacity() +
-                    "\n\t\t  ┗ terms: " + facilityEntity.getTerms() +
-                    "\n\t\t  ┗ dormitoryEntity " +
-                    "\n\t\t\t  ┗ id: " + facilityEntity.getDormitoryEntity().getId() + "\n");
+            log.info("create test given: ✔");
             // when
             FacilityEntity result = facilityRepository.save(facilityEntity);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ FacilityEntity result = facilityRepository.save(facilityEntity)
-                    """);
+            log.info("create test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(facilityEntity.getId());
             assertThat(result.getName()).isEqualTo(facilityEntity.getName());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(facilityEntity.getId())
-                    \t  ┗ assertThat(result.getName()).isEqualTo(facilityEntity.getName())
-                    """);
+            log.info("create test then: ✔");
         }
     }
 
@@ -157,26 +119,17 @@ public class FacilityRepositoryTest {
             log.info("getAll test");
             // given
 
+            log.info("getAll test given: ✔");
             // when
             Page<FacilityEntity> result = facilityRepository.findAll(Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<FacilityEntity> result = facilityRepository.findAll(Pageable.unpaged())
-                    """);
+            log.info("getAll test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThatIterable(result).isNotEmpty();
             assertThat(result).isInstanceOf(Page.class);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThatIterable(result).isNotEmpty()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("getAll test then: ✔");
         }
 
         @Test
@@ -187,24 +140,15 @@ public class FacilityRepositoryTest {
             // given
             String id = "dor_1_badminton";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id + "\n");
+            log.info("findById test given: ✔");
             // when
             FacilityEntity result = facilityRepository.findByFacilityId(id);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ FacilityEntity result = facilityRepository.findByFacilityId(id)
-                    """);
+            log.info("findById test when: ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    """);
+            log.info("findById test then: ✔");
         }
 
         @Test
@@ -215,26 +159,16 @@ public class FacilityRepositoryTest {
             // given
             String name = "탁구장";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ name: " + name + "\n");
+            log.info("findByName test given: ✔");
             // when
             Page<FacilityEntity> result = facilityRepository.findByFacilityName(name, Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<FacilityEntity> result = facilityRepository.findByFacilityName(name)
-                    """);
+            log.info("findByName test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result).isInstanceOf(Page.class);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("findByName test then: ✔");
         }
 
         @Test
@@ -245,26 +179,16 @@ public class FacilityRepositoryTest {
             // given
             String dormitoryId = "dor_1";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ dormitoryId: " + dormitoryId + "\n");
+            log.info("findByDormitoryId test given: ✔");
             // when
             Page<FacilityEntity> result = facilityRepository.findByDormitoryId(dormitoryId, Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<FacilityEntity> result = facilityRepository.findByDormitoryId(dormitoryId, Pageable.unpaged())
-                    """);
+            log.info("findByDormitoryId test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result).isInstanceOf(Page.class);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class)
-                    """);
+            log.info("findByDormitoryId test then: ✔");
         }
     }
 
@@ -293,49 +217,18 @@ public class FacilityRepositoryTest {
                     .dormitoryEntity(originalFacility.getDormitoryEntity())
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ FacilityEntity originalFacility" +
-                    "\n\t\t  ┗ id: " + originalFacility.getId() +
-                    "\n\t\t  ┗ name: " + originalFacility.getName() +
-                    "\n\t\t  ┗ info: " + originalFacility.getInfo() +
-                    "\n\t\t  ┗ open: " + originalFacility.getOpen() +
-                    "\n\t\t  ┗ close: " + originalFacility.getClose() +
-                    "\n\t\t  ┗ capacity: " + originalFacility.getCapacity() +
-                    "\n\t\t  ┗ terms: " + originalFacility.getTerms() +
-                    "\n\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t  ┗ id: " + originalFacility.getDormitoryEntity().getId() +
-                    "\n\t  ┗ FacilityEntity updateFacility" +
-                    "\n\t\t  ┗ id: " + updateFacility.getId() +
-                    "\n\t\t  ┗ name: " + updateFacility.getName() +
-                    "\n\t\t  ┗ info: " + updateFacility.getInfo() +
-                    "\n\t\t  ┗ open: " + updateFacility.getOpen() +
-                    "\n\t\t  ┗ close: " + updateFacility.getClose() +
-                    "\n\t\t  ┗ capacity: " + updateFacility.getCapacity() +
-                    "\n\t\t  ┗ terms: " + updateFacility.getTerms() +
-                    "\n\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t  ┗ id: " + updateFacility.getDormitoryEntity().getId() + "\n");
+            log.info("update test given: ✔");
             // when
             FacilityEntity result = facilityRepository.save(updateFacility);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ FacilityEntity result = facilityRepository.save(updateFacility)
-                    """);
+            log.info("update test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(updateFacility.getId());
             assertThat(result.getName()).isEqualTo(updateFacility.getName());
             assertThat(result.getName()).isNotEqualTo(originalFacility.getName());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(updateFacility.getId())
-                    \t  ┗ assertThat(result.getName()).isEqualTo(updateFacility.getName())
-                    \t  ┗ assertThat(result.getName()).isNotEqualTo(originalFacility.getName())
-                    """);
+            log.info("update test then: ✔");
         }
 
         @Test
@@ -351,32 +244,19 @@ public class FacilityRepositoryTest {
             String id = "dor_1_badminton";
             String newId = "new_fac_id";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ FacilityEntity originalFacility" +
-                    "\n\t\t  ┗ id: " + originalFacility.getId() +
-                    "\n\t  ┗ id: " + id +
-                    "\n\t  ┗ newId: " + newId + "\n");
+            log.info("updateFacilityId test given: ✔");
             // when
             facilityRepository.updateFacilityId(id, newId);
 
+            log.info("updateFacilityId test when: ✔");
+            // then
             FacilityEntity result = facilityRepository.findByFacilityId(newId);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ facilityRepository.updateFacilityId(id, newId)
-                    \t  ┗ FacilityEntity result = facilityRepository.findByFacilityId(newId)
-                    """);
-            // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(newId);
+            assertThat(result.getId()).isNotEqualTo(originalFacility.getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(newId)
-                    """);
+            log.info("updateFacilityId test then: ✔");
         }
     }
 
@@ -392,27 +272,17 @@ public class FacilityRepositoryTest {
             // given
             String id = "dor_1_badminton";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id + "\n");
+            log.info("deleteById test given: ✔");
             // when
             facilityRepository.deleteById(id);
 
+            log.info("deleteById test when: ✔");
+            // then
             FacilityEntity result = facilityRepository.findByFacilityId(id);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ facilityRepository.deleteById(id)
-                    \t  ┗ FacilityEntity result = facilityRepository.findByFacilityId(id)
-                    """);
-            // then
             assertThat(result).isNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNull()
-                    """);
+            log.info("deleteById test then: ✔");
         }
     }
 }
