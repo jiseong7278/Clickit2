@@ -37,7 +37,7 @@ public class FacilityController {
 
     @GetMapping("${facility.getAll}")
     public ResponseEntity<Object> getAll(@PageableDefault(direction = Sort.Direction.ASC,
-    sort = "name", size=10, page=0) Pageable pageable){
+    sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(facilityService.getAll(pageable));
     }
 
@@ -48,13 +48,13 @@ public class FacilityController {
 
     @GetMapping("${facility.findByName}")
     public ResponseEntity<Page<FacilityDTO>> findByName(@RequestParam("name") String name,
-                                           @PageableDefault(direction = Sort.Direction.ASC, sort = "name", size=10, page=0) Pageable pageable){
+                                           @PageableDefault(direction = Sort.Direction.ASC, sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(facilityService.findByName(name, pageable));
     }
 
     @GetMapping("${facility.findByDormitoryId}")
     public ResponseEntity<Object> findByDormitoryId(@RequestParam("dormitoryId") String dormitoryId,
-                                                    @PageableDefault(direction = Sort.Direction.ASC, sort = "name", size=10, page=0) Pageable pageable){
+                                                    @PageableDefault(direction = Sort.Direction.ASC, sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(facilityService.findByDormitoryId(dormitoryId, pageable));
     }
 
@@ -64,7 +64,7 @@ public class FacilityController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("${facility.deleteById}")
+    @DeleteMapping("${facility.delete}")
     public ResponseEntity<Object> deleteFacility(@RequestParam("id") String id){
         facilityService.deleteById(id);
         return ResponseEntity.ok().build();

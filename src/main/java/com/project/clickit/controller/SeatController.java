@@ -79,7 +79,7 @@ public class SeatController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("${seat.deleteById}")
+    @DeleteMapping("${seat.delete}")
     public ResponseEntity<Object> deleteSeat(@RequestParam("id") String id){
         seatService.deleteById(id);
         return ResponseEntity.ok().build();

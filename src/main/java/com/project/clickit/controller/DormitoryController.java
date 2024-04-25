@@ -58,7 +58,7 @@ public class DormitoryController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("${dormitory.deleteById}")
+    @DeleteMapping("${dormitory.delete}")
     public ResponseEntity<Object> deleteById(@RequestParam("id") String id){
         dormitoryService.deleteById(id);
         return ResponseEntity.ok().build();
