@@ -22,8 +22,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+
 
 @Slf4j
 @DisplayName("SeatService Test")
@@ -47,30 +46,17 @@ public class SeatServiceTest {
             // given
             String id = "ping1_1";
 
-            given(seatRepository.existsById(id)).willReturn(true);
+            given(seatRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┗ given(seatRepository.existsById(id)).willReturn(true);
-                    """, id);
+            log.info("isExist Test given: ✔");
             // when
             Boolean result = seatService.isExist(id);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = seatService.isExist(id);
-                    """);
+            log.info("isExist Test when: ✔");
             // then
             assertThat(result).isTrue();
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isTrue();
-                    """);
+            log.info("isExist Test then: ✔");
         }
 
         @Test
@@ -81,30 +67,17 @@ public class SeatServiceTest {
             // given
             String id = "ping10_10";
 
-            given(seatRepository.existsById(id)).willReturn(false);
+            given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┗ given(seatRepository.existsById(id)).willReturn(false);
-                    """, id);
+            log.info("isExist Test(Not Exist) | given: ✔");
             // when
             Boolean result = seatService.isExist(id);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = seatService.isExist(id);
-                    """);
+            log.info("isExist Test(Not Exist) | when: ✔");
             // then
             assertThat(result).isFalse();
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isFalse();
-                    """);
+            log.info("isExist Test(Not Exist) | then: ✔");
         }
     }
 
@@ -131,39 +104,20 @@ public class SeatServiceTest {
                     .facilityDTO(facilityDTO)
                     .build();
 
-            given(seatRepository.existsById(seatDTO.getId())).willReturn(false);
+            given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ SeatDTO
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┣ name = {}
-                    \t  ┃  ┣ time = {}
-                    \t  ┃  ┣ isEmpty = {}
-                    \t  ┃  ┗ facilityId = {}
-                    \t  ┗ given(seatRepository.existsById(seatDTO.getId())).willReturn(false);
-                    """, seatDTO.getId(), seatDTO.getName(), seatDTO.getTime(), seatDTO.getIsEmpty(), seatDTO.getFacilityDTO().getId());
+            log.info("create Test given: ✔");
             // when
             seatService.createSeat(seatDTO);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ seatService.createSeat(seatDTO);
-                    """);
+            log.info("create Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).save(any(SeatEntity.class)),
+                    () -> then(seatRepository).should().save(any(SeatEntity.class)),
                     () -> assertThatCode(() -> seatService.createSeat(seatDTO)).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).save(any(SeatEntity.class));
-                    \t  ┗ assertThatCode(() -> seatService.createSeat(seatDTO)).doesNotThrowAnyException();
-                    """);
+            log.info("create Test then: ✔");
         }
 
         @Test
@@ -174,30 +128,17 @@ public class SeatServiceTest {
             // given
             String id = "bad1_1";
 
-            given(seatRepository.existsById(id)).willReturn(true);
+            given(seatRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┗ given(seatRepository.existsById(id)).willReturn(true);
-                    """, id);
+            log.info("create Test(DuplicatedIdException) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> seatService.createSeat(SeatDTO.builder().id(id).build()));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.createSeat(SeatDTO.builder().id(id).build()));
-                    """);
+            log.info("create Test(DuplicatedIdException) | when: ✔");
             // then
             assertThat(result).isInstanceOf(DuplicatedIdException.class);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(DuplicatedIdException.class);
-                    """);
+            log.info("create Test(DuplicatedIdException) | then: ✔");
         }
 
         @Test
@@ -229,52 +170,20 @@ public class SeatServiceTest {
 
             List<SeatDTO> dormitoryDTOList = List.of(seatDTO1, seatDTO2);
 
-            given(seatRepository.existsById(seatDTO1.getId())).willReturn(false);
-            given(seatRepository.existsById(seatDTO2.getId())).willReturn(false);
+            given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ List<SeatDTO>
-                    \t  ┃  ┣ SeatDTO1
-                    \t  ┃  ┃  ┣ id = {}
-                    \t  ┃  ┃  ┣ name = {}
-                    \t  ┃  ┃  ┣ time = {}
-                    \t  ┃  ┃  ┣ isEmpty = {}
-                    \t  ┃  ┃  ┗ facilityDTO
-                    \t  ┃  ┃     ┣ id = {}
-                    \t  ┃  ┃     ┗ name = {}
-                    \t  ┃  ┗ SeatDTO2
-                    \t  ┃     ┣ id = {}
-                    \t  ┃     ┣ name = {}
-                    \t  ┃     ┣ time = {}
-                    \t  ┃     ┣ isEmpty = {}
-                    \t  ┃     ┗ facilityDTO
-                    \t  ┃        ┣ id = {}
-                    \t  ┃        ┗ name = {}
-                    \t  ┗ given(seatRepository.existsById(seatDTO1.getId())).willReturn(false);
-                    """, seatDTO1.getId(), seatDTO1.getName(), seatDTO1.getTime(), seatDTO1.getIsEmpty(), seatDTO1.getFacilityDTO().getId(), seatDTO1.getFacilityDTO().getName(),
-                            seatDTO2.getId(), seatDTO2.getName(), seatDTO2.getTime(), seatDTO2.getIsEmpty(), seatDTO2.getFacilityDTO().getId(), seatDTO2.getFacilityDTO().getName());
+            log.info("createList Test given: ✔");
             // when
             seatService.createList(dormitoryDTOList);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ seatService.createList(dormitoryDTOList);
-                    """);
+            log.info("createList Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).saveAll(any()),
+                    () -> then(seatRepository).should().saveAll(anyList()),
                     () -> assertThatCode(() -> seatService.createList(dormitoryDTOList)).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).saveAll(any());
-                    \t  ┗ assertThatCode(() -> seatService.createList(dormitoryDTOList)).doesNotThrowAnyException();
-                    """);
+            log.info("createList Test then: ✔");
         }
 
         @Test
@@ -306,47 +215,17 @@ public class SeatServiceTest {
 
             List<SeatDTO> dormitoryDTOList = List.of(seatDTO1, seatDTO2);
 
-            given(seatRepository.existsById(seatDTO1.getId())).willReturn(true);
+            given(seatRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-
-                            \tgiven
-                            \t  ┣ List<SeatDTO>
-                            \t  ┃  ┣ SeatDTO1
-                            \t  ┃  ┃  ┣ id = {}
-                            \t  ┃  ┃  ┣ name = {}
-                            \t  ┃  ┃  ┣ time = {}
-                            \t  ┃  ┃  ┣ isEmpty = {}
-                            \t  ┃  ┃  ┗ facilityDTO
-                            \t  ┃  ┃     ┣ id = {}
-                            \t  ┃  ┃     ┗ name = {}
-                            \t  ┃  ┗ SeatDTO2
-                            \t  ┃     ┣ id = {}
-                            \t  ┃     ┣ name = {}
-                            \t  ┃     ┣ time = {}
-                            \t  ┃     ┣ isEmpty = {}
-                            \t  ┃     ┗ facilityDTO
-                            \t  ┃        ┣ id = {}
-                            \t  ┃        ┗ name = {}
-                            \t  ┗ given(seatRepository.existsById(seatDTO1.getId())).willReturn(true);
-                            """, seatDTO1.getId(), seatDTO1.getName(), seatDTO1.getTime(), seatDTO1.getIsEmpty(), seatDTO1.getFacilityDTO().getId(), seatDTO1.getFacilityDTO().getName(),
-                    seatDTO2.getId(), seatDTO2.getName(), seatDTO2.getTime(), seatDTO2.getIsEmpty(), seatDTO2.getFacilityDTO().getId(), seatDTO2.getFacilityDTO().getName());
+            log.info("createList Test(DuplicatedIdException) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> seatService.createList(dormitoryDTOList));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.createList(dormitoryDTOList));
-                    """);
+            log.info("createList Test(DuplicatedIdException) | when: ✔");
             // then
             assertThat(result).isInstanceOf(DuplicatedIdException.class);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(DuplicatedIdException.class);
-                    """);
+            log.info("createList Test(DuplicatedIdException) | then: ✔");
         }
     }
 
@@ -362,36 +241,21 @@ public class SeatServiceTest {
             // given
             Page<SeatEntity> seatEntityPage = Page.empty();
 
-            given(seatRepository.findAll(Pageable.unpaged())).willReturn(seatEntityPage);
+            given(seatRepository.findAll(any(Pageable.class))).willReturn(seatEntityPage);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ Page<SeatEntity> seatEntityPage = Page.empty();
-                    \t  ┗ given(seatRepository.findAll(Pageable.unpaged())).willReturn(seatEntityPage);
-                    """);
+            log.info("getAll Test given: ✔");
             // when
             Page<SeatDTO> result = seatService.getAll(Pageable.unpaged());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = seatService.getAll(Pageable.unpaged());
-                    """);
+            log.info("getAll Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).findAll(Pageable.unpaged()),
+                    () -> then(seatRepository).should().findAll(any(Pageable.class)),
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(Page.class)
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).findAll(Pageable.unpaged());
-                    \t  ┣ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class);
-                    """);
+            log.info("getAll Test then: ✔");
         }
 
         @Test
@@ -406,36 +270,19 @@ public class SeatServiceTest {
             given(seatRepository.existsById(anyString())).willReturn(true);
             given(seatRepository.findBySeatId(anyString())).willReturn(seatEntity);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ given(seatRepository.existsById(id)).willReturn(true);
-                    \t  ┗ given(seatRepository.findBySeatId(id)).willReturn(any(SeatEntity.class));
-                    """);
+            log.info("findById Test given: ✔");
             // when
             SeatDTO result = seatService.findById(anyString());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = seatService.findById(id);
-                    """);
+            log.info("findById Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).existsById(anyString()),
-                    () -> verify(seatRepository, times(1)).findBySeatId(anyString()),
+                    () -> then(seatRepository).should().existsById(anyString()),
+                    () -> then(seatRepository).should().findBySeatId(anyString()),
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(SeatDTO.class)
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).existsById(anyString());
-                    \t  ┣ verify(seatRepository, times(1)).findBySeatId(anyString());
-                    \t  ┣ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result).isInstanceOf(SeatDTO.class);
-                    """);
         }
 
         @Test
@@ -446,27 +293,15 @@ public class SeatServiceTest {
             // given
             given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(false);
-                    """);
+            log.info("findById Test(Not Exist) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> seatService.findById(anyString()));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.findById(anyString());
-                    """);
+            log.info("findById Test(Not Exist) | when: ✔");
             // then
             assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(Exception.class);
-                    """);
+            log.info("findById Test(Not Exist) | then: ✔");
         }
 
         @Test
@@ -479,37 +314,21 @@ public class SeatServiceTest {
 
             Page<SeatEntity> seatEntityPage = Page.empty();
 
-            given(seatRepository.findByFacilityId(id, Pageable.unpaged())).willReturn(seatEntityPage);
+            given(seatRepository.findByFacilityId(anyString(), any(Pageable.class))).willReturn(seatEntityPage);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ id = {}
-                    \t  ┣ Page<SeatEntity> seatEntityPage = Page.empty();
-                    \t  ┗ given(seatRepository.findByFacilityId(id, Pageable.unpaged())).willReturn(seatEntityPage);
-                    """, id);
+            log.info("findByFacilityId Test given: ✔");
             // when
             Page<SeatDTO> result = seatService.findByFacilityId(id, Pageable.unpaged());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = seatService.findByFacilityId(id, Pageable.unpaged());
-                    """);
+            log.info("findByFacilityId Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).findByFacilityId(id, Pageable.unpaged()),
+                    () -> then(seatRepository).should().findByFacilityId(id, Pageable.unpaged()),
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result).isInstanceOf(Page.class)
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).findByFacilityId(id, Pageable.unpaged());
-                    \t  ┣ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result).isInstanceOf(Page.class);
-                    """);
+            log.info("findByFacilityId Test then: ✔");
         }
     }
 
@@ -536,41 +355,20 @@ public class SeatServiceTest {
                     .facilityDTO(facilityDTO)
                     .build();
 
-            given(seatRepository.existsById(seatDTO.getId())).willReturn(true);
+            given(seatRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ SeatDTO
-                    \t  ┃  ┣ id = {}
-                    \t  ┃  ┣ name = {}
-                    \t  ┃  ┣ time = {}
-                    \t  ┃  ┣ isEmpty = {}
-                    \t  ┃  ┗ facilityDTO
-                    \t  ┃     ┣ id = {}
-                    \t  ┃     ┗ name = {}
-                    \t  ┗ given(seatRepository.existsById(seatDTO.getId())).willReturn(true);
-                    """, seatDTO.getId(), seatDTO.getName(), seatDTO.getTime(), seatDTO.getIsEmpty(), seatDTO.getFacilityDTO().getId(), seatDTO.getFacilityDTO().getName());
+            log.info("updateSeat Test given: ✔");
             // when
             seatService.updateSeat(seatDTO);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ seatService.updateSeat(seatDTO);
-                    """);
+            log.info("updateSeat Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).save(any(SeatEntity.class)),
+                    () -> then(seatRepository).should().save(any(SeatEntity.class)),
                     () -> assertThatCode(() -> seatService.updateSeat(seatDTO)).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).save(any(SeatEntity.class));
-                    \t  ┗ assertThatCode(() -> seatService.updateSeat(seatDTO)).doesNotThrowAnyException();
-                    """);
+            log.info("updateSeat Test then: ✔");
         }
 
         @Test
@@ -580,34 +378,20 @@ public class SeatServiceTest {
             log.info("updateSeat Test(Not Exist)");
             // given
             SeatDTO seatDTO = SeatDTO.builder()
-                            .id(anyString())
+                            .id("test")
                             .build();
 
-            given(seatRepository.existsById(seatDTO.getId())).willReturn(false);
+            given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ SeatDTO
-                    \t  ┃  ┗ id = anyString();
-                    \t  ┗ given(seatRepository.existsById(seatDTO.getId())).willReturn(false);
-                    """);
+            log.info("updateSeat Test(Not Exist) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> seatService.updateSeat(seatDTO));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.updateSeat(seatDTO));
-                    """);
+            log.info("updateSeat Test(Not Exist) | when: ✔");
             // then
             assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(ObjectNotFoundException.class);
-                    """);
+            log.info("updateSeat Test(Not Exist) | then: ✔");
         }
 
         @Test
@@ -616,36 +400,22 @@ public class SeatServiceTest {
         void updateSeatFacilityTest(){
             log.info("updateSeatFacility Test");
             // given
-            String seatId = anyString();
+            String seatId = "test";
 
-            given(seatRepository.existsById(seatId)).willReturn(true);
+            given(seatRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ seatId = anyString();
-                    \t  ┗ given(seatRepository.existsById(seatId)).willReturn(true);
-                    """);
+            log.info("updateSeatFacility Test given: ✔");
             // when
             seatService.updateSeatFacility(seatId, anyString());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ seatService.updateSeatFacility(seatId, anyString());
-                    """);
+            log.info("updateSeatFacility Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).updateSeatFacility(anyString(), anyString()),
+                    () -> then(seatRepository).should().updateSeatFacility(anyString(), anyString()),
                     () -> assertThatCode(() -> seatService.updateSeatFacility(seatId, anyString())).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).updateSeatFacility(anyString(), anyString());
-                    \t  ┗ assertThatCode(() -> seatService.updateSeatFacility(seatId, anyString())).doesNotThrowAnyException();
-                    """);
+            log.info("updateSeatFacility Test then: ✔");
         }
 
         @Test
@@ -654,32 +424,19 @@ public class SeatServiceTest {
         void updateSeatFacilityTestWithNotExist(){
             log.info("updateSeatFacility Test(Not Exist)");
             // given
-            String seatId = anyString();
+            String seatId = "test";
 
-            given(seatRepository.existsById(seatId)).willReturn(false);
+            given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┣ seatId = anyString();
-                    \t  ┗ given(seatRepository.existsById(seatId)).willReturn(false);
-                    """);
+            log.info("updateSeatFacility Test(Not Exist) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> seatService.updateSeatFacility(seatId, anyString()));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.updateSeatFacility(seatId, anyString()));
-                    """);
+            log.info("updateSeatFacility Test(Not Exist) | when: ✔");
             // then
             assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(ObjectNotFoundException.class);
-                    """);
+            log.info("updateSeatFacility Test(Not Exist) | then: ✔");
         }
 
         @Test
@@ -690,31 +447,18 @@ public class SeatServiceTest {
             // given
             given(seatRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(true);
-                    """);
+            log.info("updateSeatIsEmpty Test given: ✔");
             // when
             seatService.updateSeatIsEmpty(anyString(), true);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ seatService.updateSeatIsEmpty(anyString(), true);
-                    """);
+            log.info("updateSeatIsEmpty Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).updateSeatIsEmpty(anyString(), anyBoolean()),
+                    () -> then(seatRepository).should().updateSeatIsEmpty(anyString(), anyBoolean()),
                     () -> assertThatCode(() -> seatService.updateSeatIsEmpty(anyString(), true)).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).updateSeatIsEmpty(anyString(), anyBoolean());
-                    \t  ┗ assertThatCode(() -> seatService.updateSeatIsEmpty(anyString(), true)).doesNotThrowAnyException();
-                    """);
+            log.info("updateSeatIsEmpty Test then: ✔");
         }
 
         @Test
@@ -725,27 +469,15 @@ public class SeatServiceTest {
             // given
             given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(false);
-                    """);
+            log.info("updateSeatIsEmpty Test(Not Exist) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> seatService.updateSeatIsEmpty(anyString(), true));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.updateSeatIsEmpty(anyString(), true);
-                    """);
+            log.info("updateSeatIsEmpty Test(Not Exist) | when: ✔");
             // then
             assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(ObjectNotFoundException.class);
-                    """);
+            log.info("updateSeatIsEmpty Test(Not Exist) | then: ✔");
         }
     }
 
@@ -761,31 +493,18 @@ public class SeatServiceTest {
             // given
             given(seatRepository.existsById(anyString())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(true);
-                    """);
+            log.info("deleteById Test given: ✔");
             // when
             seatService.deleteById(anyString());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ seatService.deleteById(anyString());
-                    """);
+            log.info("deleteById Test when: ✔");
             // then
             assertAll(
-                    () -> verify(seatRepository, times(1)).deleteById(anyString()),
+                    () -> then(seatRepository).should().deleteById(anyString()),
                     () -> assertThatCode(() -> seatService.deleteById(anyString())).doesNotThrowAnyException()
             );
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┣ verify(seatRepository, times(1)).deleteById(anyString());
-                    \t  ┗ assertThatCode(() -> seatService.deleteById(anyString())).doesNotThrowAnyException();
-                    """);
+            log.info("deleteById Test then: ✔");
         }
 
         @Test
@@ -796,27 +515,15 @@ public class SeatServiceTest {
             // given
             given(seatRepository.existsById(anyString())).willReturn(false);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ given(seatRepository.existsById(anyString())).willReturn(false);
-                    """);
+            log.info("deleteById Test(Not Exist) | given: ✔");
             // when
             Throwable result = catchThrowable(() -> seatService.deleteById(anyString()));
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = catchThrowable(() -> seatService.deleteById(anyString());
-                    """);
+            log.info("deleteById Test(Not Exist) | when: ✔");
             // then
             assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isInstanceOf(ObjectNotFoundException.class);
-                    """);
+            log.info("deleteById Test(Not Exist) | then: ✔");
         }
     }
 }

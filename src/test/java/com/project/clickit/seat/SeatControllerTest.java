@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -105,7 +104,7 @@ public class SeatControllerTest {
             // given
             SeatDTO seatDTO = mock(SeatDTO.class);
 
-            doNothing().when(seatService).createSeat(any(SeatDTO.class));
+            willDoNothing().given(seatService).createSeat(any(SeatDTO.class));
 
             log.info("createSeat Test - ok | given: ✔");
             // when & then
@@ -126,7 +125,7 @@ public class SeatControllerTest {
             // given
             SeatDTO seatDTO = mock(SeatDTO.class);
 
-            doThrow(new DuplicatedIdException()).when(seatService).createSeat(any(SeatDTO.class));
+            willThrow(new DuplicatedIdException()).given(seatService).createSeat(any(SeatDTO.class));
 
             log.info("createSeat Test - badRequest | given: ✔");
             // when & then
@@ -150,7 +149,7 @@ public class SeatControllerTest {
 
             List<SeatDTO> seatDTOList = List.of(seatDTO1, seatDTO2);
 
-            doNothing().when(seatService).createList(anyList());
+            willDoNothing().given(seatService).createList(anyList());
 
             log.info("createList Test - ok | given: ✔");
             // when & then
@@ -174,7 +173,7 @@ public class SeatControllerTest {
 
             List<SeatDTO> seatDTOList = List.of(seatDTO1, seatDTO2);
 
-            doThrow(new DuplicatedIdException()).when(seatService).createList(anyList());
+            willThrow(new DuplicatedIdException()).given(seatService).createList(anyList());
 
             log.info("createList Test - badRequest | given: ✔");
             // when & then
@@ -295,7 +294,7 @@ public class SeatControllerTest {
             // given
             SeatDTO seatDTO = mock(SeatDTO.class);
 
-            doNothing().when(seatService).updateSeat(any(SeatDTO.class));
+            willDoNothing().given(seatService).updateSeat(any(SeatDTO.class));
 
             log.info("updateSeat Test - ok | given: ✔");
             // when & then
@@ -316,7 +315,7 @@ public class SeatControllerTest {
             // given
             SeatDTO seatDTO = mock(SeatDTO.class);
 
-            doThrow(new ObjectNotFoundException()).when(seatService).updateSeat(any(SeatDTO.class));
+            willThrow(new ObjectNotFoundException()).given(seatService).updateSeat(any(SeatDTO.class));
 
             log.info("updateSeat Test - notFound | given: ✔");
             // when & then
@@ -338,7 +337,7 @@ public class SeatControllerTest {
             String id = "A1";
             String facilityId = "A";
 
-            doNothing().when(seatService).updateSeatFacility(anyString(), anyString());
+            willDoNothing().given(seatService).updateSeatFacility(anyString(), anyString());
 
             log.info("updateSeatFacility Test - ok | given: ✔");
             // when & then
@@ -361,7 +360,7 @@ public class SeatControllerTest {
             String id = "A1";
             String facilityId = "A";
 
-            doThrow(new ObjectNotFoundException()).when(seatService).updateSeatFacility(anyString(), anyString());
+            willThrow(new ObjectNotFoundException()).given(seatService).updateSeatFacility(anyString(), anyString());
 
             log.info("updateSeatFacility Test - notFound | given: ✔");
             // when & then
@@ -384,7 +383,7 @@ public class SeatControllerTest {
             String id = "A1";
             boolean isEmpty = true;
 
-            doNothing().when(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
+            willDoNothing().given(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
 
             log.info("updateSeatIsEmpty Test - ok | given: ✔");
             // when & then
@@ -407,7 +406,7 @@ public class SeatControllerTest {
             String id = "A1";
             boolean isEmpty = true;
 
-            doThrow(new ObjectNotFoundException()).when(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
+            willThrow(new ObjectNotFoundException()).given(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
 
             log.info("updateSeatIsEmpty Test - notFound | given: ✔");
             // when & then
@@ -434,7 +433,7 @@ public class SeatControllerTest {
             // given
             String id = "A1";
 
-            doNothing().when(seatService).deleteById(anyString());
+            willDoNothing().given(seatService).deleteById(anyString());
 
             log.info("deleteSeat Test - ok | given: ✔");
             // when & then
@@ -455,7 +454,7 @@ public class SeatControllerTest {
             // given
             String id = "A1";
 
-            doThrow(new ObjectNotFoundException()).when(seatService).deleteById(anyString());
+            willThrow(new ObjectNotFoundException()).given(seatService).deleteById(anyString());
 
             log.info("deleteSeat Test - notFound | given: ✔");
             // when & then

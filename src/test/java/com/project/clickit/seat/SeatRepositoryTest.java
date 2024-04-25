@@ -9,6 +9,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -38,21 +40,15 @@ public class SeatRepositoryTest {
             // given
             String id = "bad1_1";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id);
+            log.info("existsById Test given: ✔");
             // when
             Boolean result = seatRepository.existsById(id);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ result: " + result);
+            log.info("existsById Test when: ✔");
             // then
             assertThat(result).isTrue();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isTrue()
-                    """);
+            log.info("existsById Test then: ✔");
         }
 
         @Test
@@ -63,21 +59,15 @@ public class SeatRepositoryTest {
             // given
             String id = "bad1_2";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id);
+            log.info("existsById Test - False | given: ✔");
             // when
             Boolean result = seatRepository.existsById(id);
 
-            log.info("\n\twhen" +
-                    "\n\t  ┗ result: " + result);
+            log.info("existsById Test - False | when: ✔");
             // then
             assertThat(result).isFalse();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isFalse()
-                    """);
+            log.info("existsById Test - False | then: ✔");
         }
     }
 
@@ -103,22 +93,11 @@ public class SeatRepositoryTest {
                     .facilityEntity(facilityEntity)
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ SeatEntity" +
-                    "\n\t    ┗ id: " + seatEntity.getId() +
-                    "\n\t    ┗ name: " + seatEntity.getName() +
-                    "\n\t    ┗ time: " + seatEntity.getTime() +
-                    "\n\t    ┗ isEmpty: " + seatEntity.getIsEmpty() +
-                    "\n\t    ┗ facilityEntity" +
-                    "\n\t      ┗ id: " + seatEntity.getFacilityEntity().getId() +"\n");
+            log.info("Create Test given: ✔");
             // when
             SeatEntity result = seatRepository.save(seatEntity);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ SeatEntity result = seatRepository.save(seatEntity)
-                    """);
+            log.info("Create Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(seatEntity.getId());
@@ -127,16 +106,7 @@ public class SeatRepositoryTest {
             assertThat(result.getIsEmpty()).isEqualTo(seatEntity.getIsEmpty());
             assertThat(result.getFacilityEntity().getId()).isEqualTo(seatEntity.getFacilityEntity().getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(seatEntity.getId())
-                    \t  ┗ assertThat(result.getName()).isEqualTo(seatEntity.getName())
-                    \t  ┗ assertThat(result.getTime()).isEqualTo(seatEntity.getTime())
-                    \t  ┗ assertThat(result.getIsEmpty()).isEqualTo(seatEntity.getIsEmpty())
-                    \t  ┗ assertThat(result.getFacilityEntity().getId()).isEqualTo(seatEntity.getFacilityEntity().getId())
-                    """);
+            log.info("Create Test then: ✔");
         }
 
         @Test
@@ -167,30 +137,11 @@ public class SeatRepositoryTest {
 
             List<SeatEntity> seatEntityList = List.of(seatEntity1, seatEntity2);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ SeatEntityList" +
-                    "\n\t    ┗ SeatEntity1" +
-                    "\n\t      ┗ id: " + seatEntity1.getId() +
-                    "\n\t      ┗ name: " + seatEntity1.getName() +
-                    "\n\t      ┗ time: " + seatEntity1.getTime() +
-                    "\n\t      ┗ isEmpty: " + seatEntity1.getIsEmpty() +
-                    "\n\t      ┗ facilityEntity" +
-                    "\n\t        ┗ id: " + seatEntity1.getFacilityEntity().getId() +
-                    "\n\t    ┗ SeatEntity2" +
-                    "\n\t      ┗ id: " + seatEntity2.getId() +
-                    "\n\t      ┗ name: " + seatEntity2.getName() +
-                    "\n\t      ┗ time: " + seatEntity2.getTime() +
-                    "\n\t      ┗ isEmpty: " + seatEntity2.getIsEmpty() +
-                    "\n\t      ┗ facilityEntity" +
-                    "\n\t        ┗ id: " + seatEntity2.getFacilityEntity().getId() +"\n");
+            log.info("CreateList Test given: ✔");
             // when
             List<SeatEntity> result = seatRepository.saveAll(seatEntityList);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ List<SeatEntity> result = seatRepository.saveAll(seatEntityList)
-                    """);
+            log.info("CreateList Test when: ✔");
             // then
             assertThatIterable(result).hasSize(2);
             assertThat(result.get(0).getId()).isEqualTo(seatEntity1.getId());
@@ -204,21 +155,7 @@ public class SeatRepositoryTest {
             assertThat(result.get(1).getIsEmpty()).isEqualTo(seatEntity2.getIsEmpty());
             assertThat(result.get(1).getFacilityEntity().getId()).isEqualTo(seatEntity2.getFacilityEntity().getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThatIterable(result).hasSize(2)
-                    \t  ┗ assertThat(result.get(0).getId()).isEqualTo(seatEntity1.getId())
-                    \t  ┗ assertThat(result.get(0).getName()).isEqualTo(seatEntity1.getName())
-                    \t  ┗ assertThat(result.get(0).getTime()).isEqualTo(seatEntity1.getTime())
-                    \t  ┗ assertThat(result.get(0).getIsEmpty()).isEqualTo(seatEntity1.getIsEmpty())
-                    \t  ┗ assertThat(result.get(0).getFacilityEntity().getId()).isEqualTo(seatEntity1.getFacilityEntity().getId())
-                    \t  ┗ assertThat(result.get(1).getId()).isEqualTo(seatEntity2.getId())
-                    \t  ┗ assertThat(result.get(1).getName()).isEqualTo(seatEntity2.getName())
-                    \t  ┗ assertThat(result.get(1).getTime()).isEqualTo(seatEntity2.getTime())
-                    \t  ┗ assertThat(result.get(1).getIsEmpty()).isEqualTo(seatEntity2.getIsEmpty())
-                    \t  ┗ assertThat(result.get(1).getFacilityEntity().getId()).isEqualTo(seatEntity2.getFacilityEntity().getId())
-                    """);
+            log.info("CreateList Test then: ✔");
         }
     }
 
@@ -233,16 +170,36 @@ public class SeatRepositoryTest {
             log.info("getAll Test");
             // given
 
+            log.info("getAll Test given: ✔");
             // when
+            Page<SeatEntity> result = seatRepository.findAll(Pageable.unpaged());
 
+            log.info("getAll Test when: ✔");
             // then
+            assertThat(result).isNotNull();
+            assertThat(result).isNotEmpty();
+
+            log.info("getAll Test then: ✔");
         }
 
         @Test
         @Order(2)
         @DisplayName("findById Test")
         void findByIdTest(){
+            log.info("findById Test");
+            // given
+            String id = "bad1_1";
 
+            log.info("findById Test given: ✔");
+            // when
+            SeatEntity result = seatRepository.findBySeatId(id);
+
+            log.info("findById Test when: ✔");
+            // then
+            assertThat(result).isNotNull();
+            assertThat(result.getId()).isEqualTo(id);
+
+            log.info("findById Test then: ✔");
         }
 
         @Test
@@ -251,10 +208,18 @@ public class SeatRepositoryTest {
         void findByFacilityIdTest(){
             log.info("findByFacilityId Test");
             // given
+            String facilityId = "dor_1_badminton";
 
+            log.info("findByFacilityId Test given: ✔");
             // when
+            Page<SeatEntity> result = seatRepository.findByFacilityId(facilityId, Pageable.unpaged());
 
+            log.info("findByFacilityId Test when: ✔");
             // then
+            assertThat(result).isNotNull();
+            assertThat(result).isNotEmpty();
+
+            log.info("findByFacilityId Test then: ✔");
         }
     }
 
@@ -280,21 +245,7 @@ public class SeatRepositoryTest {
                     .facilityEntity(originalSeat.getFacilityEntity())
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalSeat" +
-                    "\n\t    ┗ id: " + originalSeat.getId() +
-                    "\n\t    ┗ name: " + originalSeat.getName() +
-                    "\n\t    ┗ time: " + originalSeat.getTime() +
-                    "\n\t    ┗ isEmpty: " + originalSeat.getIsEmpty() +
-                    "\n\t    ┗ facilityEntity" +
-                    "\n\t      ┗ id: " + originalSeat.getFacilityEntity().getId() +
-                    "\n\t  ┗ updateSeat" +
-                    "\n\t    ┗ id: " + updateSeat.getId() +
-                    "\n\t    ┗ name: " + updateSeat.getName() +
-                    "\n\t    ┗ time: " + updateSeat.getTime() +
-                    "\n\t    ┗ isEmpty: " + updateSeat.getIsEmpty() +
-                    "\n\t    ┗ facilityEntity" +
-                    "\n\t      ┗ id: " + updateSeat.getFacilityEntity().getId() +"\n");
+            log.info("updateSeat Test given: ✔");
             // when
             SeatEntity result = seatRepository.save(updateSeat);
 
@@ -302,11 +253,7 @@ public class SeatRepositoryTest {
 
             entityManager.clear();
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ SeatEntity result = seatRepository.save(updateSeat)
-                    """);
+            log.info("updateSeat Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(updateSeat.getId());
@@ -317,18 +264,7 @@ public class SeatRepositoryTest {
             assertThat(result.getTime()).isNotEqualTo(originalSeat.getTime());
             assertThat(result.getIsEmpty()).isNotEqualTo(originalSeat.getIsEmpty());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(updateSeat.getId())
-                    \t  ┗ assertThat(result.getName()).isEqualTo(updateSeat.getName())
-                    \t  ┗ assertThat(result.getTime()).isEqualTo(updateSeat.getTime())
-                    \t  ┗ assertThat(result.getIsEmpty()).isEqualTo(updateSeat.getIsEmpty())
-                    \t  ┗ assertThat(result.getFacilityEntity().getId()).isEqualTo(updateSeat.getFacilityEntity().getId())
-                    \t  ┗ assertThat(result.getTime()).isNotEqualTo(originalSeat.getTime())
-                    \t  ┗ assertThat(result.getIsEmpty()).isNotEqualTo(originalSeat.getIsEmpty())
-                    """);
+            log.info("updateSeat Test then: ✔");
         }
 
         @Test
@@ -344,16 +280,7 @@ public class SeatRepositoryTest {
 
             entityManager.clear();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ facilityId: " + facilityId +
-                    "\n\t  ┗ seatId: " + seatId +
-                    "\n\t  ┗ originalSeat" +
-                    "\n\t    ┗ id: " + originalSeat.getId() +
-                    "\n\t    ┗ name: " + originalSeat.getName() +
-                    "\n\t    ┗ time: " + originalSeat.getTime() +
-                    "\n\t    ┗ isEmpty: " + originalSeat.getIsEmpty() +
-                    "\n\t    ┗ facilityEntity" +
-                    "\n\t      ┗ id: " + originalSeat.getFacilityEntity().getId() +"\n");
+            log.info("updateSeatFacility Test given: ✔");
             // when
             seatRepository.updateSeatFacility(seatId, facilityId);
 
@@ -363,12 +290,7 @@ public class SeatRepositoryTest {
 
             SeatEntity result = seatRepository.findBySeatId(seatId);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ seatRepository.updateSeatFacility(seatId, facilityId)
-                    \t  ┗ SeatEntity result = seatRepository.findBySeatId(seatId)
-                    """);
+            log.info("updateSeatFacility Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(originalSeat.getId());
@@ -377,16 +299,7 @@ public class SeatRepositoryTest {
             assertThat(result.getIsEmpty()).isEqualTo(originalSeat.getIsEmpty());
             assertThat(result.getFacilityEntity().getId()).isEqualTo(facilityId);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(originalSeat.getId())
-                    \t  ┗ assertThat(result.getName()).isEqualTo(originalSeat.getName())
-                    \t  ┗ assertThat(result.getTime()).isEqualTo(originalSeat.getTime())
-                    \t  ┗ assertThat(result.getIsEmpty()).isEqualTo(originalSeat.getIsEmpty())
-                    \t  ┗ assertThat(result.getFacilityEntity().getId()).isEqualTo(facilityId)
-                    """);
+            log.info("updateSeatFacility Test then: ✔");
         }
 
         @Test
@@ -402,16 +315,7 @@ public class SeatRepositoryTest {
 
             entityManager.clear();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ seatId: " + seatId +
-                    "\n\t  ┗ isEmpty: " + isEmpty +
-                    "\n\t  ┗ originalSeat" +
-                    "\n\t    ┗ id: " + originalSeat.getId() +
-                    "\n\t    ┗ name: " + originalSeat.getName() +
-                    "\n\t    ┗ time: " + originalSeat.getTime() +
-                    "\n\t    ┗ isEmpty: " + originalSeat.getIsEmpty() +
-                    "\n\t    ┗ facilityEntity" +
-                    "\n\t      ┗ id: " + originalSeat.getFacilityEntity().getId() +"\n");
+            log.info("updateSeatIsEmpty Test given: ✔");
             // when
             seatRepository.updateSeatIsEmpty(seatId, isEmpty);
 
@@ -421,12 +325,7 @@ public class SeatRepositoryTest {
 
             SeatEntity result = seatRepository.findBySeatId(seatId);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ seatRepository.updateSeatIsEmpty(seatId, isEmpty)
-                    \t  ┗ SeatEntity result = seatRepository.findBySeatId(seatId)
-                    """);
+            log.info("updateSeatIsEmpty Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(originalSeat.getId());
@@ -435,16 +334,7 @@ public class SeatRepositoryTest {
             assertThat(result.getIsEmpty()).isEqualTo(isEmpty);
             assertThat(result.getFacilityEntity().getId()).isEqualTo(originalSeat.getFacilityEntity().getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getId()).isEqualTo(originalSeat.getId())
-                    \t  ┗ assertThat(result.getName()).isEqualTo(originalSeat.getName())
-                    \t  ┗ assertThat(result.getTime()).isEqualTo(originalSeat.getTime())
-                    \t  ┗ assertThat(result.getIsEmpty()).isEqualTo(isEmpty)
-                    \t  ┗ assertThat(result.getFacilityEntity().getId()).isEqualTo(originalSeat.getFacilityEntity().getId())
-                    """);
+            log.info("updateSeatIsEmpty Test then: ✔");
         }
     }
 
@@ -460,42 +350,17 @@ public class SeatRepositoryTest {
             // given
             String id = "bad1_1";
 
-            SeatEntity originalSeat = seatRepository.findBySeatId(id);
-
-            entityManager.clear();
-
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id: " + id +
-                    "\n\t  ┗ originalSeat" +
-                    "\n\t    ┗ id: " + originalSeat.getId() +
-                    "\n\t    ┗ name: " + originalSeat.getName() +
-                    "\n\t    ┗ time: " + originalSeat.getTime() +
-                    "\n\t    ┗ isEmpty: " + originalSeat.getIsEmpty() +
-                    "\n\t    ┗ facilityEntity" +
-                    "\n\t      ┗ id: " + originalSeat.getFacilityEntity().getId() +"\n");
+            log.info("deleteById Test given: ✔");
             // when
             seatRepository.deleteById(id);
 
-            entityManager.flush();
-
-            entityManager.clear();
-
             SeatEntity result = seatRepository.findBySeatId(id);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ seatRepository.deleteById(id)
-                    \t  ┗ SeatEntity result = seatRepository.findBySeatId(id)
-                    """);
+            log.info("deleteById Test when: ✔");
             // then
             assertThat(result).isNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNull()
-                    """);
+            log.info("deleteById Test then: ✔");
         }
     }
 }
