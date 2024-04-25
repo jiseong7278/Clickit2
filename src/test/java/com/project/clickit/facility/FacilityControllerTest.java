@@ -335,7 +335,7 @@ public class FacilityControllerTest {
 
             log.info("delete Test given: ✔");
             // when & then
-            mvc.perform(delete("/facility/deleteById")
+            mvc.perform(delete("/facility/delete")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))
@@ -360,7 +360,7 @@ public class FacilityControllerTest {
 
             log.info("delete Test - Failed given: ✔");
             // when & then
-            mvc.perform(delete("/facility/deleteById")
+            mvc.perform(delete("/facility/delete")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))

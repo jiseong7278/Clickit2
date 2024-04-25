@@ -3,7 +3,7 @@ package com.project.clickit.service;
 import com.project.clickit.dto.NoticeDTO;
 import com.project.clickit.entity.NoticeEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.common.ObjectNotFoundException;
+import com.project.clickit.exceptions.notice.NoticeNotFoundException;
 import com.project.clickit.repository.NoticeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,7 +60,7 @@ public class NoticeService {
      */
     @Transactional
     public NoticeDTO findByNoticeNum(Integer num) {
-        if (!isExist(num)) throw new ObjectNotFoundException();
+        if (!isExist(num)) throw new NoticeNotFoundException();
         return noticeRepository.findByNum(num).toDTO();
     }
 
@@ -83,7 +83,7 @@ public class NoticeService {
      */
     @Transactional
     public void updateNotice(NoticeDTO noticeDTO) {
-        if(!isExist(noticeDTO.getNum())) throw new ObjectNotFoundException();
+        if(!isExist(noticeDTO.getNum())) throw new NoticeNotFoundException();
         noticeRepository.save(noticeDTO.toEntity());
     }
 
@@ -95,7 +95,7 @@ public class NoticeService {
      */
     @Transactional
     public void deleteNotice(Integer num) {
-        if(!isExist(num)) throw new ObjectNotFoundException();
+        if(!isExist(num)) throw new NoticeNotFoundException();
         noticeRepository.deleteById(num);
     }
 

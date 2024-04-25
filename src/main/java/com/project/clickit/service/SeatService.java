@@ -3,7 +3,7 @@ package com.project.clickit.service;
 import com.project.clickit.dto.SeatDTO;
 import com.project.clickit.entity.SeatEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.common.ObjectNotFoundException;
+import com.project.clickit.exceptions.seat.SeatNotFoundException;
 import com.project.clickit.repository.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -80,7 +80,7 @@ public class SeatService {
      */
     @Transactional
     public SeatDTO findById(String id) {
-        if (!isExist(id)) throw new ObjectNotFoundException();
+        if (!isExist(id)) throw new SeatNotFoundException();
         return seatRepository.findBySeatId(id).toDTO();
     }
 
@@ -103,7 +103,7 @@ public class SeatService {
      */
     @Transactional
     public void updateSeat(SeatDTO seatDTO) {
-        if(!isExist(seatDTO.getId())) throw new ObjectNotFoundException();
+        if(!isExist(seatDTO.getId())) throw new SeatNotFoundException();
         seatRepository.save(seatDTO.toEntity());
     }
 
@@ -114,7 +114,7 @@ public class SeatService {
      */
     @Transactional
     public void updateSeatFacility(String seatId, String facilityId) {
-        if(!isExist(seatId)) throw new ObjectNotFoundException();
+        if(!isExist(seatId)) throw new SeatNotFoundException();
         seatRepository.updateSeatFacility(seatId, facilityId);
     }
 
@@ -125,7 +125,7 @@ public class SeatService {
      */
     @Transactional
     public void updateSeatIsEmpty(String seatId, Boolean isEmpty) {
-        if(!isExist(seatId)) throw new ObjectNotFoundException();
+        if(!isExist(seatId)) throw new SeatNotFoundException();
         seatRepository.updateSeatIsEmpty(seatId, isEmpty);
     }
 
@@ -137,7 +137,7 @@ public class SeatService {
      */
     @Transactional
     public void deleteById(String id) {
-        if(!isExist(id)) throw new ObjectNotFoundException();
+        if(!isExist(id)) throw new SeatNotFoundException();
         seatRepository.deleteById(id);
     }
 

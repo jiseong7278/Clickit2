@@ -5,7 +5,7 @@ import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.MemberController;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.login.MemberNotFoundException;
+import com.project.clickit.exceptions.member.MemberNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.MemberService;
 import lombok.extern.slf4j.Slf4j;

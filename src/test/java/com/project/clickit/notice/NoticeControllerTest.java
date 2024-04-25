@@ -5,7 +5,7 @@ import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.NoticeController;
 import com.project.clickit.dto.NoticeDTO;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.common.ObjectNotFoundException;
+import com.project.clickit.exceptions.notice.NoticeNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
@@ -144,7 +144,7 @@ public class NoticeControllerTest {
             // given
             int num = 1;
 
-            willThrow(new ObjectNotFoundException()).given(noticeService).findByNoticeNum(anyInt());
+            willThrow(new NoticeNotFoundException()).given(noticeService).findByNoticeNum(anyInt());
 
             log.info("findByNoticeNum Test - NoticeNotFoundException given: ✔");
             // when & then
@@ -199,7 +199,7 @@ public class NoticeControllerTest {
 
             log.info("update Test given: ✔");
             // when & then
-            mvc.perform(put("/notice/updateNotice")
+            mvc.perform(put("/notice/update")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(objectMapper.writeValueAsString(noticeDTO)))
@@ -210,23 +210,23 @@ public class NoticeControllerTest {
 
         @Test
         @Order(2)
-        @DisplayName("update Test - ObjectNotFoundException")
-        void updateTestObjectNotFoundException() throws Exception {
-            log.info("update Test - ObjectNotFoundException");
+        @DisplayName("update Test - NoticeNotFoundException")
+        void updateTestNoticeNotFoundException() throws Exception {
+            log.info("update Test - NoticeNotFoundException");
             // given
             NoticeDTO noticeDTO = mock(NoticeDTO.class);
 
-            willThrow(new ObjectNotFoundException()).given(noticeService).updateNotice(any(NoticeDTO.class));
+            willThrow(new NoticeNotFoundException()).given(noticeService).updateNotice(any(NoticeDTO.class));
 
-            log.info("update Test - ObjectNotFoundException given: ✔");
+            log.info("update Test - NoticeNotFoundException given: ✔");
             // when & then
-            mvc.perform(put("/notice/updateNotice")
+            mvc.perform(put("/notice/update")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(objectMapper.writeValueAsString(noticeDTO)))
                     .andExpect(status().isBadRequest());
 
-            log.info("update Test - ObjectNotFoundException when & then: ✔");
+            log.info("update Test - NoticeNotFoundException when & then: ✔");
         }
     }
 
@@ -246,7 +246,7 @@ public class NoticeControllerTest {
 
             log.info("delete Test given: ✔");
             // when & then
-            mvc.perform(delete("/notice/deleteNotice")
+            mvc.perform(delete("/notice/delete")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("num", String.valueOf(num)))
@@ -257,23 +257,23 @@ public class NoticeControllerTest {
 
         @Test
         @Order(2)
-        @DisplayName("delete Test - ObjectNotFoundException")
-        void deleteTestObjectNotFoundException() throws Exception {
-            log.info("delete Test - ObjectNotFoundException");
+        @DisplayName("delete Test - NoticeNotFoundException")
+        void deleteTestNoticeNotFoundException() throws Exception {
+            log.info("delete Test - NoticeNotFoundException");
             // given
             int num = 1;
 
-            willThrow(new ObjectNotFoundException()).given(noticeService).deleteNotice(anyInt());
+            willThrow(new NoticeNotFoundException()).given(noticeService).deleteNotice(anyInt());
 
-            log.info("delete Test - ObjectNotFoundException given: ✔");
+            log.info("delete Test - NoticeNotFoundException given: ✔");
             // when & then
-            mvc.perform(delete("/notice/deleteNotice")
+            mvc.perform(delete("/notice/delete")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("num", String.valueOf(num)))
                     .andExpect(status().isBadRequest());
 
-            log.info("delete Test - ObjectNotFoundException when & then: ✔");
+            log.info("delete Test - NoticeNotFoundException when & then: ✔");
         }
     }
 }

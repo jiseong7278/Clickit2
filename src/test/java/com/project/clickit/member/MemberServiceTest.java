@@ -4,7 +4,7 @@ import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.login.MemberNotFoundException;
+import com.project.clickit.exceptions.member.MemberNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.service.MemberService;
 import lombok.extern.slf4j.Slf4j;

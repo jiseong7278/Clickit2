@@ -266,7 +266,7 @@ public class DormitoryControllerTest {
 
             log.info("update Test given: ✔");
             // when & then
-            mvc.perform(put("/dormitory/updateDormitoryName")
+            mvc.perform(put("/dormitory/update")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(requestBody))
@@ -291,7 +291,7 @@ public class DormitoryControllerTest {
 
             log.info("update Test - Failed given: ✔");
             // when & then
-            mvc.perform(put("/dormitory/updateDormitoryName")
+            mvc.perform(put("/dormitory/update")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(requestBody))
@@ -317,7 +317,7 @@ public class DormitoryControllerTest {
 
             log.info("deleteById Test given: ✔");
             // when & then
-            mvc.perform(delete("/dormitory/deleteById")
+            mvc.perform(delete("/dormitory/delete")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))
@@ -342,7 +342,7 @@ public class DormitoryControllerTest {
 
             log.info("deleteById Test - Failed given: ✔");
             // when & then
-            mvc.perform(delete("/dormitory/deleteById")
+            mvc.perform(delete("/dormitory/delete")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .param("id", id))

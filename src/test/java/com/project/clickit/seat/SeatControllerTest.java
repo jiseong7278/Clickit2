@@ -5,7 +5,7 @@ import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.SeatController;
 import com.project.clickit.dto.SeatDTO;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.common.ObjectNotFoundException;
+import com.project.clickit.exceptions.seat.SeatNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.SeatService;
 import lombok.extern.slf4j.Slf4j;
@@ -236,15 +236,15 @@ public class SeatControllerTest {
 
         @Test
         @Order(3)
-        @DisplayName("findById Test - notFound")
+        @DisplayName("findById Test - SeatNotFoundException")
         void findByIdTestNotFound() throws Exception {
-            log.info("findById Test - notFound");
+            log.info("findById Test - SeatNotFoundException");
             // given
             String id = "A1";
 
-            given(seatService.findById(anyString())).willThrow(new ObjectNotFoundException());
+            given(seatService.findById(anyString())).willThrow(new SeatNotFoundException());
 
-            log.info("findById Test - notFound | given: ✔");
+            log.info("findById Test - SeatNotFoundException | given: ✔");
             // when & then
             mvc.perform(get("/seat/findById")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -252,7 +252,7 @@ public class SeatControllerTest {
                     .param("id", id))
                     .andExpect(status().isBadRequest());
 
-            log.info("findById Test - notFound | when & then: ✔");
+            log.info("findById Test - SeatNotFoundException | when & then: ✔");
         }
 
         @Test
@@ -309,15 +309,15 @@ public class SeatControllerTest {
 
         @Test
         @Order(2)
-        @DisplayName("updateSeat Test - notFound")
+        @DisplayName("updateSeat Test - SeatNotFoundException")
         void updateSeatTestNotFound() throws Exception {
-            log.info("updateSeat Test - notFound");
+            log.info("updateSeat Test - SeatNotFoundException");
             // given
             SeatDTO seatDTO = mock(SeatDTO.class);
 
-            willThrow(new ObjectNotFoundException()).given(seatService).updateSeat(any(SeatDTO.class));
+            willThrow(new SeatNotFoundException()).given(seatService).updateSeat(any(SeatDTO.class));
 
-            log.info("updateSeat Test - notFound | given: ✔");
+            log.info("updateSeat Test - SeatNotFoundException | given: ✔");
             // when & then
             mvc.perform(put("/seat/update")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -325,7 +325,7 @@ public class SeatControllerTest {
                             .content(objectMapper.writeValueAsString(seatDTO)))
                     .andExpect(status().isBadRequest());
 
-            log.info("updateSeat Test - notFound | when & then: ✔");
+            log.info("updateSeat Test - SeatNotFoundException | when & then: ✔");
         }
 
         @Test
@@ -353,16 +353,16 @@ public class SeatControllerTest {
 
         @Test
         @Order(4)
-        @DisplayName("updateSeatFacility Test - notFound")
+        @DisplayName("updateSeatFacility Test - SeatNotFoundException")
         void updateSeatFacilityTestNotFound() throws Exception {
-            log.info("updateSeatFacility Test - notFound");
+            log.info("updateSeatFacility Test - SeatNotFoundException");
             // given
             String id = "A1";
             String facilityId = "A";
 
-            willThrow(new ObjectNotFoundException()).given(seatService).updateSeatFacility(anyString(), anyString());
+            willThrow(new SeatNotFoundException()).given(seatService).updateSeatFacility(anyString(), anyString());
 
-            log.info("updateSeatFacility Test - notFound | given: ✔");
+            log.info("updateSeatFacility Test - SeatNotFoundException | given: ✔");
             // when & then
             mvc.perform(put("/seat/updateSeatFacility")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -371,7 +371,7 @@ public class SeatControllerTest {
                             .param("facilityId", facilityId))
                     .andExpect(status().isBadRequest());
 
-            log.info("updateSeatFacility Test - notFound | when & then: ✔");
+            log.info("updateSeatFacility Test - SeatNotFoundException | when & then: ✔");
         }
 
         @Test
@@ -399,16 +399,16 @@ public class SeatControllerTest {
 
         @Test
         @Order(6)
-        @DisplayName("updateSeatIsEmpty Test - notFound")
+        @DisplayName("updateSeatIsEmpty Test - SeatNotFoundException")
         void updateSeatIsEmptyTestNotFound() throws Exception {
-            log.info("updateSeatIsEmpty Test - notFound");
+            log.info("updateSeatIsEmpty Test - SeatNotFoundException");
             // given
             String id = "A1";
             boolean isEmpty = true;
 
-            willThrow(new ObjectNotFoundException()).given(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
+            willThrow(new SeatNotFoundException()).given(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
 
-            log.info("updateSeatIsEmpty Test - notFound | given: ✔");
+            log.info("updateSeatIsEmpty Test - SeatNotFoundException | given: ✔");
             // when & then
             mvc.perform(put("/seat/updateIsEmpty")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -417,7 +417,7 @@ public class SeatControllerTest {
                             .param("isEmpty", String.valueOf(isEmpty)))
                     .andExpect(status().isBadRequest());
 
-            log.info("updateSeatIsEmpty Test - notFound | when & then: ✔");
+            log.info("updateSeatIsEmpty Test - SeatNotFoundException | when & then: ✔");
         }
     }
 
@@ -437,7 +437,7 @@ public class SeatControllerTest {
 
             log.info("deleteSeat Test - ok | given: ✔");
             // when & then
-            mvc.perform(delete("/seat/deleteById")
+            mvc.perform(delete("/seat/delete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .characterEncoding("UTF-8")
                             .param("id", id))
@@ -448,23 +448,23 @@ public class SeatControllerTest {
 
         @Test
         @Order(2)
-        @DisplayName("deleteSeat Test - notFound")
+        @DisplayName("deleteSeat Test - SeatNotFoundException")
         void deleteSeatTestNotFound() throws Exception {
-            log.info("deleteSeat Test - notFound");
+            log.info("deleteSeat Test - SeatNotFoundException");
             // given
             String id = "A1";
 
-            willThrow(new ObjectNotFoundException()).given(seatService).deleteById(anyString());
+            willThrow(new SeatNotFoundException()).given(seatService).deleteById(anyString());
 
-            log.info("deleteSeat Test - notFound | given: ✔");
+            log.info("deleteSeat Test - SeatNotFoundException | given: ✔");
             // when & then
-            mvc.perform(delete("/seat/deleteById")
+            mvc.perform(delete("/seat/delete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .characterEncoding("UTF-8")
                             .param("id", id))
                     .andExpect(status().isBadRequest());
 
-            log.info("deleteSeat Test - notFound | when & then: ✔");
+            log.info("deleteSeat Test - SeatNotFoundException | when & then: ✔");
         }
     }
 }

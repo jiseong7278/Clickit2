@@ -1,7 +1,7 @@
 package com.project.clickit.service;
 
 import com.project.clickit.entity.MemberEntity;
-import com.project.clickit.exceptions.login.MemberNotFoundException;
+import com.project.clickit.exceptions.member.MemberNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;

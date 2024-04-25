@@ -2,7 +2,7 @@ package com.project.clickit.service;
 
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.login.MemberNotFoundException;
+import com.project.clickit.exceptions.member.MemberNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.entity.MemberEntity;
