@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MailSendFailedException extends RuntimeException{
+public class SignInFailedException extends RuntimeException{
     private ErrorCode errorCode;
 }

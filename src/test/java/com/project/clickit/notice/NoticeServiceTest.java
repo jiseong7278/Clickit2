@@ -5,7 +5,7 @@ import com.project.clickit.dto.NoticeDTO;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.entity.NoticeEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.notice.NoticeNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.NoticeRepository;
 import com.project.clickit.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
@@ -207,7 +207,7 @@ public class NoticeServiceTest {
 
             log.info("NoticeService - findByNoticeNum_NotFound | when - ✔");
             // then
-            assertThat(result).isInstanceOf(NoticeNotFoundException.class);
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
             log.info("NoticeService - findByNoticeNum_NotFound | then - ✔");
         }
@@ -284,7 +284,7 @@ public class NoticeServiceTest {
 
             log.info("NoticeService Test - NoticeNotFoundException | when - ✔");
             // then
-            assertThat(result).isInstanceOf(NoticeNotFoundException.class);
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
             log.info("NoticeService Test - NoticeNotFoundException | then - ✔");
         }
@@ -331,7 +331,7 @@ public class NoticeServiceTest {
 
             log.info("NoticeService Test - deleteNotice_NotFound | when - ✔");
             // then
-            assertThat(result).isInstanceOf(NoticeNotFoundException.class);
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
             log.info("NoticeService Test - deleteNotice_NotFound | then - ✔");
         }

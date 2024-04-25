@@ -1,12 +1,11 @@
 package com.project.clickit.util;
 
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.login.MailSendFailedException;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +19,7 @@ public class EmailUtil {
             MimeMessage message = createEmailForm(to, subject, text);
             javaMailSender.send(message);
         }catch (Exception e) {
-            e.printStackTrace();
-            throw new MailSendFailedException();
+            throw new MailSendFailedException(ErrorCode.MAIL_SEND_FAILED);
         }
     }
 

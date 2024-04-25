@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.ReservationController;
 import com.project.clickit.dto.ReservationDTO;
+import com.project.clickit.exceptions.ErrorCode;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.exceptions.reservation.DuplicatedReservationException;
-import com.project.clickit.exceptions.reservation.ReservationNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.ReservationService;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +79,7 @@ public class ReservationControllerTest {
             // given
             ReservationDTO reservationDTO = mock(ReservationDTO.class);
 
-            willThrow(new DuplicatedReservationException()).given(reservationService).create(any(ReservationDTO.class));
+            willThrow(new DuplicatedReservationException(ErrorCode.DUPLICATED_RESERVATION)).given(reservationService).create(any(ReservationDTO.class));
 
             log.info("create test - bad request | given: ✔");
             // when & then
@@ -259,7 +260,7 @@ public class ReservationControllerTest {
             // given
             ReservationDTO reservationDTO = mock(ReservationDTO.class);
 
-            willThrow(new ReservationNotFoundException()).given(reservationService).update(any(ReservationDTO.class));
+            willThrow(new ObjectNotFoundException(ErrorCode.RESERVATION_NOT_FOUND)).given(reservationService).update(any(ReservationDTO.class));
 
             log.info("update test - badRequest | given: ✔");
             // when & then
@@ -307,7 +308,7 @@ public class ReservationControllerTest {
 
             List<ReservationDTO> reservationDTOList = List.of(reservationDTO1, reservationDTO2);
 
-            willThrow(new ReservationNotFoundException()).given(reservationService).updateStatus(any(), any());
+            willThrow(new ObjectNotFoundException(ErrorCode.RESERVATION_NOT_FOUND)).given(reservationService).updateStatus(any(), any());
 
             log.info("updateStatus test - badRequest | given: ✔");
             // when & then
@@ -354,7 +355,7 @@ public class ReservationControllerTest {
             // given
             int num = 1;
 
-            willThrow(new ReservationNotFoundException()).given(reservationService).delete(anyInt());
+            willThrow(new ObjectNotFoundException(ErrorCode.RESERVATION_NOT_FOUND)).given(reservationService).delete(anyInt());
 
             log.info("delete test - badRequest | given: ✔");
             // when & then

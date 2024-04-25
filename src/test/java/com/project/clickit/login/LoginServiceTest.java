@@ -7,7 +7,7 @@ import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.InvalidIdException;
-import com.project.clickit.exceptions.login.InvalidPasswordException;
+import com.project.clickit.exceptions.login.SignInFailedException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.service.LoginService;
@@ -259,7 +259,7 @@ public class LoginServiceTest {
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result).isInstanceOf(InvalidIdException.class)
+                    () -> assertThat(result).isInstanceOf(SignInFailedException.class)
             );
 
             log.info("signIn Test (아이디가 존재하지 않음) then: ✔");
@@ -291,7 +291,7 @@ public class LoginServiceTest {
             // then
             assertAll(
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result).isInstanceOf(InvalidPasswordException.class)
+                    () -> assertThat(result).isInstanceOf(SignInFailedException.class)
             );
 
             log.info("signIn Test (비밀번호가 일치하지 않음) then: ✔");

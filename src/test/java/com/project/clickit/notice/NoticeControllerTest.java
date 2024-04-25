@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.NoticeController;
 import com.project.clickit.dto.NoticeDTO;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.notice.NoticeNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +77,7 @@ public class NoticeControllerTest {
             // given
             NoticeDTO noticeDTO = mock(NoticeDTO.class);
 
-            willThrow(new DuplicatedIdException()).given(noticeService).createNotice(any(NoticeDTO.class));
+            willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID)).given(noticeService).createNotice(any(NoticeDTO.class));
 
             log.info("create Test - duplicatedIdException given: ✔");
             // when & then
@@ -144,7 +145,7 @@ public class NoticeControllerTest {
             // given
             int num = 1;
 
-            willThrow(new NoticeNotFoundException()).given(noticeService).findByNoticeNum(anyInt());
+            willThrow(new ObjectNotFoundException(ErrorCode.NOTICE_NOT_FOUND)).given(noticeService).findByNoticeNum(anyInt());
 
             log.info("findByNoticeNum Test - NoticeNotFoundException given: ✔");
             // when & then
@@ -216,7 +217,7 @@ public class NoticeControllerTest {
             // given
             NoticeDTO noticeDTO = mock(NoticeDTO.class);
 
-            willThrow(new NoticeNotFoundException()).given(noticeService).updateNotice(any(NoticeDTO.class));
+            willThrow(new ObjectNotFoundException(ErrorCode.NOTICE_NOT_FOUND)).given(noticeService).updateNotice(any(NoticeDTO.class));
 
             log.info("update Test - NoticeNotFoundException given: ✔");
             // when & then
@@ -263,7 +264,7 @@ public class NoticeControllerTest {
             // given
             int num = 1;
 
-            willThrow(new NoticeNotFoundException()).given(noticeService).deleteNotice(anyInt());
+            willThrow(new ObjectNotFoundException(ErrorCode.NOTICE_NOT_FOUND)).given(noticeService).deleteNotice(anyInt());
 
             log.info("delete Test - NoticeNotFoundException given: ✔");
             // when & then

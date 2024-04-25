@@ -2,8 +2,9 @@ package com.project.clickit.service;
 
 import com.project.clickit.dto.FacilityDTO;
 import com.project.clickit.entity.FacilityEntity;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.facility.FacilityNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.FacilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,7 +41,7 @@ public class FacilityService {
     @Transactional
     public void createFacility(FacilityDTO facilityDTO) {
         if(isExist(facilityDTO.getId())){
-            throw new DuplicatedIdException();
+            throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
         }
         facilityRepository.save(facilityDTO.toEntity());
     }
@@ -64,7 +65,7 @@ public class FacilityService {
     @Transactional
     public FacilityDTO findById(String id) {
         if (!isExist(id)) {
-            throw new FacilityNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND);
         }
         return facilityRepository.findByFacilityId(id).toDTO();
     }
@@ -98,7 +99,7 @@ public class FacilityService {
     @Transactional
     public void updateFacility(FacilityDTO facilityDTO) {
         if(!isExist(facilityDTO.getId())){
-            throw new FacilityNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND);
         }
         facilityRepository.save(facilityDTO.toEntity());
     }
@@ -110,7 +111,7 @@ public class FacilityService {
     @Transactional
     public void updateFacilityId(String id, String newId) {
         if(!isExist(id)){
-            throw new FacilityNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND);
         }
         facilityRepository.updateFacilityId(id, newId);
     }
@@ -124,7 +125,7 @@ public class FacilityService {
     @Transactional
     public void deleteById(String id) {
         if(!isExist(id)){
-            throw new FacilityNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND);
         }
         facilityRepository.deleteById(id);
     }

@@ -1,8 +1,9 @@
 package com.project.clickit.service;
 
 import com.project.clickit.dto.MemberDTO;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.member.MemberNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.entity.MemberEntity;
@@ -47,7 +48,7 @@ public class MemberService {
      */
     @Transactional
     public void create(MemberDTO memberDTO) {
-        if (isExist(memberDTO.getId())) throw new DuplicatedIdException();
+        if (isExist(memberDTO.getId())) throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
 
         MemberEntity memberEntity = memberDTO.toEntity();
         memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
@@ -63,7 +64,7 @@ public class MemberService {
     public void createList(List<MemberDTO> MemberDTOList) {
         for(MemberDTO memberDTO : MemberDTOList){
             if (isExist(memberDTO.getId())) {
-                throw new DuplicatedIdException();
+                throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
             }
         }
         memberRepository.saveAll(toEntityList(MemberDTOList));
@@ -88,7 +89,7 @@ public class MemberService {
      */
     @Transactional
     public MemberDTO findByMemberId(String id) {
-        if (!isExist(id)) throw new MemberNotFoundException();
+        if (!isExist(id)) throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         return memberRepository.findById(id).toDTO();
     }
 
@@ -122,7 +123,7 @@ public class MemberService {
     @Transactional
     public void update(MemberDTO memberDTO){
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!isExist(memberId)) throw new MemberNotFoundException();
+        if (!isExist(memberId)) throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         MemberEntity memberEntity = memberDTO.toEntity();
         memberEntity.setId(memberId);
         memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
@@ -136,7 +137,7 @@ public class MemberService {
     @Transactional
     public void updateMemberForStaff(MemberDTO memberDTO){
         if (!isExist(memberDTO.getId()))
-            throw new MemberNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         memberRepository.updateMemberForStaff(memberDTO.getId(),
                 passwordEncoder.encode(memberDTO.getPassword()),
                 memberDTO.getName(),
@@ -154,7 +155,7 @@ public class MemberService {
     @Transactional
     public void updatePassword(String password) {
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!isExist(memberId)) throw new MemberNotFoundException();
+        if (!isExist(memberId)) throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         memberRepository.updatePassword(memberId, passwordEncoder.encode(password));
     }
 
@@ -165,7 +166,7 @@ public class MemberService {
      */
     @Transactional
     public void updateRefreshToken(String id, String refreshToken) {
-        if (!isExist(id)) throw new MemberNotFoundException();
+        if (!isExist(id)) throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         memberRepository.updateRefreshToken(id, refreshToken);
     }
 
@@ -177,7 +178,7 @@ public class MemberService {
     @Transactional
     public void deleteById(String id) {
         if (!isExist(id))
-            throw new MemberNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         memberRepository.deleteById(id);
     }
 

@@ -3,15 +3,10 @@ package com.project.clickit.exceptions;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.InvalidIdException;
 import com.project.clickit.exceptions.common.ObjectNotFoundException;
-import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
-import com.project.clickit.exceptions.facility.FacilityNotFoundException;
+import com.project.clickit.exceptions.image.*;
 import com.project.clickit.exceptions.jwt.*;
 import com.project.clickit.exceptions.login.*;
-import com.project.clickit.exceptions.member.MemberNotFoundException;
-import com.project.clickit.exceptions.notice.NoticeNotFoundException;
 import com.project.clickit.exceptions.reservation.DuplicatedReservationException;
-import com.project.clickit.exceptions.reservation.ReservationNotFoundException;
-import com.project.clickit.exceptions.seat.SeatNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,92 +23,17 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(ObjectNotFoundException.class)
-    public ResponseEntity<String> handleObjectNotFoundException(){
-        return ResponseEntity.status(ErrorCode.OBJECT_NOT_FOUND.getHttpStatus()).body(ErrorCode.OBJECT_NOT_FOUND.getMessage());
-    }
-
-    // jwt
-
-    /**
-     * 토큰이 존재하지 않을 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(TokenNotFoundException.class)
-    public ResponseEntity<String> handleTokenNotFoundException(){
-        return ResponseEntity.status(ErrorCode.TOKEN_NOT_FOUND.getHttpStatus()).body(ErrorCode.TOKEN_NOT_FOUND.getMessage());
+    public ResponseEntity<String> handleObjectNotFoundException(ObjectNotFoundException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 
     /**
-     * 유효하지 않은 발급자일 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(InvalidIssuerException.class)
-    public ResponseEntity<String> handleInvalidIssuerException(){
-        return ResponseEntity.status(ErrorCode.INVALID_ISSUER.getHttpStatus()).body(ErrorCode.INVALID_ISSUER.getMessage());
-    }
-
-    /**
-     * 유효하지 않은 시그니처일 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(InvalidSignatureException.class)
-    public ResponseEntity<String> handleInvalidSignatureException(){
-        return ResponseEntity.status(ErrorCode.INVALID_SIGNATURE_TOKEN.getHttpStatus()).body(ErrorCode.INVALID_SIGNATURE_TOKEN.getMessage());
-    }
-
-    /**
-     * 토큰이 만료되었을 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(ExpiredTokenException.class)
-    public ResponseEntity<String> handleExpiredTokenException(){
-        return ResponseEntity.status(ErrorCode.EXPIRED_TOKEN.getHttpStatus()).body(ErrorCode.EXPIRED_TOKEN.getMessage());
-    }
-
-    /**
-     * 지원하지 않는 토큰일 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(UnsupportedTokenException.class)
-    public ResponseEntity<String> handleUnsupportedTokenException(){
-        return ResponseEntity.status(ErrorCode.UNSUPPORTED_TOKEN.getHttpStatus()).body(ErrorCode.UNSUPPORTED_TOKEN.getMessage());
-    }
-
-    /**
-     * 토큰이 잘못되었을 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(IllegalTokenException.class)
-    public ResponseEntity<String> handleIllegalTokenException(){
-        return ResponseEntity.status(ErrorCode.ILLEGAL_TOKEN.getHttpStatus()).body(ErrorCode.ILLEGAL_TOKEN.getMessage());
-    }
-
-    /**
-     * 예상치 못한 토큰 예외 발생 시
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(UnexpectedTokenException.class)
-    public ResponseEntity<String> handleUnexpectedTokenException(){
-        return ResponseEntity.status(ErrorCode.UNEXPECTED_TOKEN_ERROR.getHttpStatus()).body(ErrorCode.UNEXPECTED_TOKEN_ERROR.getMessage());
-    }
-
-    // login
-    /**
-     * 동시에 회원가입을 시도할 경우 발생하는 예외
-     * @return 409 Conflict
-     */
-    @ExceptionHandler(ConcurrentlySignUpException.class)
-    public ResponseEntity<String> handleConcurrentlySignUpException(){
-        return ResponseEntity.status(ErrorCode.CONCURRENTLY_SIGNUP.getHttpStatus()).body(ErrorCode.CONCURRENTLY_SIGNUP.getMessage());
-    }
-
-    /**
-     * 이미 가입된 아이디일 경우 발생하는 예외
+     * 해당 아이디가 이미 존재하는 경우 발생하는 예외
      * @return 400 Bad Request
      */
     @ExceptionHandler(DuplicatedIdException.class)
-    public ResponseEntity<String> handleDuplicatedIdException(){
-        return ResponseEntity.status(ErrorCode.DUPLICATED_ID.getHttpStatus()).body(ErrorCode.DUPLICATED_ID.getMessage());
+    public ResponseEntity<String> handleDuplicatedIdException(DuplicatedIdException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 
     /**
@@ -121,26 +41,39 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(InvalidIdException.class)
-    public ResponseEntity<String> handleInvalidIdException(){
-        return ResponseEntity.status(ErrorCode.INVALID_ID.getHttpStatus()).body(ErrorCode.INVALID_ID.getMessage());
+    public ResponseEntity<String> handleInvalidIdException(InvalidIdException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
+    }
+
+
+    // jwt
+    /**
+     * 토큰 예외 발생 시
+     * @return 400 Bad Request
+     */
+    @ExceptionHandler(JWTException.class)
+    public ResponseEntity<String> handleJWTException(JWTException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
+    }
+
+
+    // login
+    /**
+     * 동시에 회원가입을 시도할 경우 발생하는 예외
+     * @return 409 Conflict
+     */
+    @ExceptionHandler(ConcurrentlySignUpException.class)
+    public ResponseEntity<String> handleConcurrentlySignUpException(ConcurrentlySignUpException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 
     /**
-     * 비밀번호가 일치하지 않을 경우 발생하는 예외
+     * 로그인에 실패했을 경우 발생하는 예외
      * @return 400 Bad Request
      */
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<String> handleInvalidPasswordException(){
-        return ResponseEntity.status(ErrorCode.INVALID_PASSWORD.getHttpStatus()).body(ErrorCode.INVALID_PASSWORD.getMessage());
-    }
-
-    /**
-     * 회원이 존재하지 않을 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<String> handleMemberNotFoundException(){
-        return ResponseEntity.status(ErrorCode.MEMBER_NOT_FOUND.getHttpStatus()).body(ErrorCode.MEMBER_NOT_FOUND.getMessage());
+    @ExceptionHandler(SignInFailedException.class)
+    public ResponseEntity<String> handleSignInFailedException(SignInFailedException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 
     /**
@@ -148,42 +81,10 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(MailSendFailedException.class)
-    public ResponseEntity<String> handleMailSendFailedException(){
-        return ResponseEntity.status(ErrorCode.MAIL_SEND_FAILED.getHttpStatus()).body(ErrorCode.MAIL_SEND_FAILED.getMessage());
+    public ResponseEntity<String> handleMailSendFailedException(MailSendFailedException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 
-    // member
-
-
-    // dormitory
-    /**
-     * 기숙사가 존재하지 않을 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(DormitoryNotFoundException.class)
-    public ResponseEntity<String> handleDormitoryNotFoundException(){
-        return ResponseEntity.status(ErrorCode.DORMITORY_NOT_FOUND.getHttpStatus()).body(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
-    }
-
-    // facility
-    /**
-     * 시설이 존재하지 않을 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(FacilityNotFoundException.class)
-    public ResponseEntity<String> handleFacilityNotFoundException(){
-        return ResponseEntity.status(ErrorCode.FACILITY_NOT_FOUND.getHttpStatus()).body(ErrorCode.FACILITY_NOT_FOUND.getMessage());
-    }
-
-    // notice
-    /**
-     * 공지사항이 존재하지 않을 경우 발생하는 예외
-     * @return 400 Bad Request
-     */
-    @ExceptionHandler(NoticeNotFoundException.class)
-    public ResponseEntity<String> handleNoticeNotFoundException(){
-        return ResponseEntity.status(ErrorCode.NOTICE_NOT_FOUND.getHttpStatus()).body(ErrorCode.NOTICE_NOT_FOUND.getMessage());
-    }
 
     // reservation
     /**
@@ -191,29 +92,27 @@ public class ControllerExceptionHandler extends RuntimeException{
      * @return 400 Bad Request
      */
     @ExceptionHandler(DuplicatedReservationException.class)
-    public ResponseEntity<String> handleDuplicatedReservationException(){
-        return ResponseEntity.status(ErrorCode.DUPLICATED_RESERVATION.getHttpStatus()).body(ErrorCode.DUPLICATED_RESERVATION.getMessage());
+    public ResponseEntity<String> handleDuplicatedReservationException(DuplicatedReservationException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 
-    // seat
+
+    // image
     /**
-     * 좌석이 존재하지 않을 경우 발생하는 예외
+     * S3 이미지 업로드 중 오류가 발생했을 경우 발생하는 예외
      * @return 400 Bad Request
      */
-    @ExceptionHandler(SeatNotFoundException.class)
-    public ResponseEntity<String> handleSeatNotFoundException(){
-        return ResponseEntity.status(ErrorCode.SEAT_NOT_FOUND.getHttpStatus()).body(ErrorCode.SEAT_NOT_FOUND.getMessage());
+    @ExceptionHandler(S3ImageException.class)
+    public ResponseEntity<String> handleS3ImageException(S3ImageException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 
+
+    // access denied
     /**
-     * 예약이 존재하지 않을 경우 발생하는 예외
-     * @return 400 Bad Request
+     * 접근 권한이 없을 경우 발생하는 예외
+     * @return 403 Forbidden
      */
-    @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity<String> handleReservationNotFoundException(){
-        return ResponseEntity.status(ErrorCode.RESERVATION_NOT_FOUND.getHttpStatus()).body(ErrorCode.RESERVATION_NOT_FOUND.getMessage());
-    }
-
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDeniedException(){
         return ResponseEntity.status(ErrorCode.ACCESS_DENIED.getHttpStatus()).body(ErrorCode.ACCESS_DENIED.getMessage());

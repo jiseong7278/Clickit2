@@ -2,8 +2,9 @@ package com.project.clickit.service;
 
 import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.entity.DormitoryEntity;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.DormitoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +45,7 @@ public class DormitoryService {
     @Transactional
     public void createDormitory(DormitoryDTO dormitoryDTO) {
         if(isExist(dormitoryDTO.getId())){
-            throw new DuplicatedIdException();
+            throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
         }
         dormitoryRepository.save(dormitoryDTO.toEntity());
     }
@@ -67,7 +68,7 @@ public class DormitoryService {
      */
     @Transactional
     public DormitoryDTO findById(String id) {
-        if (!isExist(id)) throw new DormitoryNotFoundException();
+        if (!isExist(id)) throw new ObjectNotFoundException(ErrorCode.DORMITORY_NOT_FOUND);
         return dormitoryRepository.findByDormitoryId(id).toDTO();
     }
 
@@ -90,7 +91,7 @@ public class DormitoryService {
     @Transactional
     public void updateDormitory(DormitoryDTO dormitoryDTO) {
         if(!isExist(dormitoryDTO.getId())){
-            throw new DormitoryNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.DORMITORY_NOT_FOUND);
         }
         dormitoryRepository.save(dormitoryDTO.toEntity());
     }
@@ -104,7 +105,7 @@ public class DormitoryService {
     @Transactional
     public void deleteById(String id) {
         if(!isExist(id)){
-            throw new DormitoryNotFoundException();
+            throw new ObjectNotFoundException(ErrorCode.DORMITORY_NOT_FOUND);
         }
         dormitoryRepository.deleteById(id);
     }

@@ -1,5 +1,6 @@
 package com.project.clickit.jwt;
 
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.jwt.*;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
@@ -139,21 +140,21 @@ public class JwtProvider{
      * @return boolean
      */
     public boolean validateToken(String token){
-        if(token == null || token.isEmpty()) throw new TokenNotFoundException();
+        if(token == null || token.isEmpty()) throw new JWTException(ErrorCode.TOKEN_NOT_FOUND);
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            if(!claims.getBody().getIssuer().equals(issuer)) throw new InvalidIssuerException();
+            if(!claims.getBody().getIssuer().equals(issuer)) throw new JWTException(ErrorCode.INVALID_ISSUER);
             return true;
         }catch (SignatureException e){
-            throw new InvalidSignatureException();
+            throw new JWTException(ErrorCode.INVALID_SIGNATURE_TOKEN);
         }catch(ExpiredJwtException e){
-            throw new ExpiredTokenException();
+            throw new JWTException(ErrorCode.EXPIRED_TOKEN);
         }catch(UnsupportedJwtException e){
-            throw new UnsupportedTokenException();
+            throw new JWTException(ErrorCode.UNSUPPORTED_TOKEN);
         }catch(IllegalArgumentException e){
-            throw new IllegalTokenException();
+            throw new JWTException(ErrorCode.ILLEGAL_TOKEN);
         }catch(Exception e){
-            throw new UnexpectedTokenException();
+            throw new JWTException(ErrorCode.UNEXPECTED_TOKEN_ERROR);
         }
     }
 

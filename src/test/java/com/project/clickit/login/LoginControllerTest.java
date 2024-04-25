@@ -7,9 +7,11 @@ import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.InvalidIdException;
-import com.project.clickit.exceptions.jwt.IllegalTokenException;
+import com.project.clickit.exceptions.jwt.JWTException;
+import com.project.clickit.exceptions.login.SignInFailedException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +26,8 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -154,7 +155,7 @@ public class LoginControllerTest {
             MemberDTO memberDTO = mock(MemberDTO.class);
 
             given(loginService.isExist(anyString())).willReturn(true);
-            given(loginService.signUp(any(MemberDTO.class), anyString())).willThrow(DuplicatedIdException.class);
+            given(loginService.signUp(any(MemberDTO.class), anyString())).willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID));
 
             log.info("signUp Test - badRequest | given: ✔");
             // when
@@ -200,15 +201,15 @@ public class LoginControllerTest {
 
         @Test
         @Order(2)
-        @DisplayName("signIn Test(InvalidIdException) - badRequest")
+        @DisplayName("signIn Test(Invalid Id) - badRequest")
         void signInTestFalse() throws Exception{
-            log.info("signIn Test(InvalidIdException) - badRequest");
+            log.info("signIn Test(Invalid Id) - badRequest");
             // given
             LoginDTO loginDTO = mock(LoginDTO.class);
 
-            given(loginService.signIn(any(LoginDTO.class))).willThrow(InvalidIdException.class);
+            given(loginService.signIn(any(LoginDTO.class))).willThrow(new SignInFailedException(ErrorCode.SIGN_IN_FAILED));
 
-            log.info("signIn Test(InvalidIdException) - badRequest | given: ✔");
+            log.info("signIn Test(Invalid Id) - badRequest | given: ✔");
             // when
             mvc.perform(post("/login/signIn")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -216,20 +217,20 @@ public class LoginControllerTest {
                     .content(objectMapper.writeValueAsString(loginDTO)))
                     .andExpect(status().isBadRequest());
 
-            log.info("signIn Test(InvalidIdException) - badRequest | when: ✔");
+            log.info("signIn Test(Invalid Id) - badRequest | when: ✔");
         }
 
         @Test
         @Order(3)
-        @DisplayName("signIn Test(InvalidPasswordExcpetion) - badRequest")
+        @DisplayName("signIn Test(Invalid Password) - badRequest")
         void signInTestFalse2() throws Exception{
-            log.info("signIn Test(InvalidPasswordExcpetion) - badRequest");
+            log.info("signIn Test(Invalid Password) - badRequest");
             // given
             LoginDTO loginDTO = mock(LoginDTO.class);
 
-            given(loginService.signIn(any(LoginDTO.class))).willThrow(InvalidIdException.class);
+            given(loginService.signIn(any(LoginDTO.class))).willThrow(new SignInFailedException(ErrorCode.SIGN_IN_FAILED));
 
-            log.info("signIn Test(InvalidPasswordExcpetion) - badRequest | given: ✔");
+            log.info("signIn Test(Invalid Password) - badRequest | given: ✔");
             // when
             mvc.perform(post("/login/signIn")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -237,7 +238,7 @@ public class LoginControllerTest {
                     .content(objectMapper.writeValueAsString(loginDTO)))
                     .andExpect(status().isBadRequest());
 
-            log.info("signIn Test(InvalidPasswordExcpetion) - badRequest | when: ✔");
+            log.info("signIn Test(Invalid Password) - badRequest | when: ✔");
         }
     }
 
@@ -253,7 +254,7 @@ public class LoginControllerTest {
             // given
             String id = "test";
 
-            doNothing().when(loginService).sendVerifyCodeBySMS(anyString());
+            willDoNothing().given(loginService).sendVerifyCodeBySMS(anyString());
 
             log.info("sendVerifyCode Test - SMS | given: ✔");
             // when & then
@@ -268,13 +269,34 @@ public class LoginControllerTest {
 
         @Test
         @Order(2)
+        @DisplayName("sendVerifyCode Test(올바르지 않은 아이디) - SMS")
+        void sendVerifyCodeTestSMSFalse() throws Exception{
+            log.info("sendVerifyCode Test(올바르지 않은 아이디) - SMS");
+            // given
+            String id = "test";
+
+            willThrow(new InvalidIdException(ErrorCode.INVALID_ID)).given(loginService).sendVerifyCodeBySMS(anyString());
+
+            log.info("sendVerifyCode Test(올바르지 않은 아이디) - SMS | given: ✔");
+            // when & then
+            mvc.perform(post("/login/sendVerifyBySMS")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
+                    .andExpect(status().isBadRequest());
+
+            log.info("sendVerifyCode Test(올바르지 않은 아이디) - SMS | when & then: ✔");
+        }
+
+        @Test
+        @Order(3)
         @DisplayName("sendVerifyCode Test - Email")
         void sendVerifyCodeTestEmail() throws Exception{
             log.info("sendVerifyCode Test - Email");
             // given
             String id = "test";
 
-            doNothing().when(loginService).sendVerifyCodeByEmail(anyString());
+            willDoNothing().given(loginService).sendVerifyCodeByEmail(anyString());
 
             log.info("sendVerifyCode Test - Email | given: ✔");
             // when & then
@@ -285,6 +307,27 @@ public class LoginControllerTest {
                     .andExpect(status().isOk());
 
             log.info("sendVerifyCode Test - Email | when & then: ✔");
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("sendVerifyCode Test(올바르지 않은 아이디) - Email")
+        void sendVerifyCodeTestEmailFalse() throws Exception{
+            log.info("sendVerifyCode Test(올바르지 않은 아이디) - Email");
+            // given
+            String id = "test";
+
+            willThrow(new InvalidIdException(ErrorCode.INVALID_ID)).given(loginService).sendVerifyCodeByEmail(anyString());
+
+            log.info("sendVerifyCode Test(올바르지 않은 아이디) - Email | given: ✔");
+            // when & then
+            mvc.perform(post("/login/sendVerifyByEmail")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("id", id))
+                    .andExpect(status().isBadRequest());
+
+            log.info("sendVerifyCode Test(올바르지 않은 아이디) - Email | when & then: ✔");
         }
     }
 
@@ -420,7 +463,7 @@ public class LoginControllerTest {
 
             // 여러가지 Exception이 있지만 IllegalTokenException을 사용
             // 나중에 다른 Exception으로 변경하여 테스트 진행
-            doThrow(IllegalTokenException.class).when(loginService).logout(anyString());
+            willThrow(JWTException.class).given(loginService).logout(anyString());
 
             log.info("logout Test - badRequest | given: ✔");
             // when

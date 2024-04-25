@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.SeatController;
 import com.project.clickit.dto.SeatDTO;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.seat.SeatNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.SeatService;
 import lombok.extern.slf4j.Slf4j;
@@ -125,7 +126,7 @@ public class SeatControllerTest {
             // given
             SeatDTO seatDTO = mock(SeatDTO.class);
 
-            willThrow(new DuplicatedIdException()).given(seatService).createSeat(any(SeatDTO.class));
+            willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID)).given(seatService).createSeat(any(SeatDTO.class));
 
             log.info("createSeat Test - badRequest | given: ✔");
             // when & then
@@ -173,7 +174,7 @@ public class SeatControllerTest {
 
             List<SeatDTO> seatDTOList = List.of(seatDTO1, seatDTO2);
 
-            willThrow(new DuplicatedIdException()).given(seatService).createList(anyList());
+            willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID)).given(seatService).createList(anyList());
 
             log.info("createList Test - badRequest | given: ✔");
             // when & then
@@ -242,7 +243,7 @@ public class SeatControllerTest {
             // given
             String id = "A1";
 
-            given(seatService.findById(anyString())).willThrow(new SeatNotFoundException());
+            given(seatService.findById(anyString())).willThrow(new ObjectNotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
             log.info("findById Test - SeatNotFoundException | given: ✔");
             // when & then
@@ -315,7 +316,7 @@ public class SeatControllerTest {
             // given
             SeatDTO seatDTO = mock(SeatDTO.class);
 
-            willThrow(new SeatNotFoundException()).given(seatService).updateSeat(any(SeatDTO.class));
+            willThrow(new ObjectNotFoundException(ErrorCode.SEAT_NOT_FOUND)).given(seatService).updateSeat(any(SeatDTO.class));
 
             log.info("updateSeat Test - SeatNotFoundException | given: ✔");
             // when & then
@@ -360,7 +361,7 @@ public class SeatControllerTest {
             String id = "A1";
             String facilityId = "A";
 
-            willThrow(new SeatNotFoundException()).given(seatService).updateSeatFacility(anyString(), anyString());
+            willThrow(new ObjectNotFoundException(ErrorCode.SEAT_NOT_FOUND)).given(seatService).updateSeatFacility(anyString(), anyString());
 
             log.info("updateSeatFacility Test - SeatNotFoundException | given: ✔");
             // when & then
@@ -406,7 +407,7 @@ public class SeatControllerTest {
             String id = "A1";
             boolean isEmpty = true;
 
-            willThrow(new SeatNotFoundException()).given(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
+            willThrow(new ObjectNotFoundException(ErrorCode.SEAT_NOT_FOUND)).given(seatService).updateSeatIsEmpty(anyString(), anyBoolean());
 
             log.info("updateSeatIsEmpty Test - SeatNotFoundException | given: ✔");
             // when & then
@@ -454,7 +455,7 @@ public class SeatControllerTest {
             // given
             String id = "A1";
 
-            willThrow(new SeatNotFoundException()).given(seatService).deleteById(anyString());
+            willThrow(new ObjectNotFoundException(ErrorCode.SEAT_NOT_FOUND)).given(seatService).deleteById(anyString());
 
             log.info("deleteSeat Test - SeatNotFoundException | given: ✔");
             // when & then

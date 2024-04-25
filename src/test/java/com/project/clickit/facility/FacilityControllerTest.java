@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.FacilityController;
 import com.project.clickit.dto.FacilityDTO;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.facility.FacilityNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.FacilityService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,9 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -119,7 +119,7 @@ public class FacilityControllerTest {
                     .content(requestBody))
                     .andExpect(status().isOk());
 
-            verify(facilityService, times(1)).createFacility(any());
+            then(facilityService).should().createFacility(any());
 
             log.info("create Test when & then: ✔");
         }
@@ -136,7 +136,7 @@ public class FacilityControllerTest {
 
             given(facilityService.isExist(anyString())).willReturn(true);
 
-            doThrow(new DuplicatedIdException()).when(facilityService).createFacility(any());
+            willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID)).given(facilityService).createFacility(any());
 
             log.info("create Test - Failed given: ✔");
             // when & then
@@ -204,7 +204,7 @@ public class FacilityControllerTest {
 
             given(facilityService.isExist(id)).willReturn(false);
 
-            doThrow(new FacilityNotFoundException()).when(facilityService).findById(anyString());
+            willThrow(new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND)).given(facilityService).findById(anyString());
 
             log.info("findById Test - Failed given: ✔");
             // when & then
@@ -288,7 +288,7 @@ public class FacilityControllerTest {
                     .content(requestBody))
                     .andExpect(status().isOk());
 
-            verify(facilityService, times(1)).updateFacility(any());
+            then(facilityService).should().updateFacility(any());
 
             log.info("update Test when & then: ✔");
         }
@@ -305,7 +305,7 @@ public class FacilityControllerTest {
 
             given(facilityService.isExist(anyString())).willReturn(false);
 
-            doThrow(new FacilityNotFoundException()).when(facilityService).updateFacility(any());
+            willThrow(new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND)).given(facilityService).updateFacility(any());
 
             log.info("update Test - Failed given: ✔");
             // when & then
@@ -341,7 +341,7 @@ public class FacilityControllerTest {
                     .param("id", id))
                     .andExpect(status().isOk());
 
-            verify(facilityService, times(1)).deleteById(anyString());
+            then(facilityService).should().deleteById(anyString());
 
             log.info("delete Test when & then: ✔");
         }
@@ -356,7 +356,7 @@ public class FacilityControllerTest {
 
             given(facilityService.isExist(id)).willReturn(false);
 
-            doThrow(new FacilityNotFoundException()).when(facilityService).deleteById(anyString());
+            willThrow(new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND)).given(facilityService).deleteById(anyString());
 
             log.info("delete Test - Failed given: ✔");
             // when & then

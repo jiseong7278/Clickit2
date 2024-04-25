@@ -4,10 +4,11 @@ import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.entity.MemberEntity;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.login.ConcurrentlySignUpException;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.InvalidIdException;
-import com.project.clickit.exceptions.login.InvalidPasswordException;
+import com.project.clickit.exceptions.login.SignInFailedException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.util.EmailUtil;
@@ -78,12 +79,12 @@ public class LoginService {
         ReentrantLock lock = lockMap.computeIfAbsent(memberDTO.getId(), key -> new ReentrantLock());
 
         if(!lock.tryLock()){
-            throw new ConcurrentlySignUpException();
+            throw new ConcurrentlySignUpException(ErrorCode.CONCURRENTLY_SIGNUP);
         }
 
         try{
             if (isExist(memberDTO.getId())) {
-                throw new DuplicatedIdException();
+                throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
             }else{
                 MemberEntity memberEntity = memberDTO.toEntity();
                 memberEntity.setType(role);
@@ -115,11 +116,11 @@ public class LoginService {
      */
     @Transactional
     public TokenDTO signIn(LoginDTO loginDTO){
-        if (!isExist(loginDTO.getId())) throw new InvalidIdException();
+        if (!isExist(loginDTO.getId())) throw new SignInFailedException(ErrorCode.SIGN_IN_FAILED);
 
         MemberEntity memberEntity = memberRepository.findById(loginDTO.getId());
 
-        if (!passwordEncoder.matches(loginDTO.getPassword(), memberEntity.getPassword())) throw new InvalidPasswordException();
+        if (!passwordEncoder.matches(loginDTO.getPassword(), memberEntity.getPassword())) throw new SignInFailedException(ErrorCode.SIGN_IN_FAILED);
 
         String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
         String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
@@ -142,7 +143,7 @@ public class LoginService {
      */
     @Transactional
     public void sendVerifyCodeBySMS(String id){
-        if(!isExist(id)) throw new InvalidIdException();
+        if(!isExist(id)) throw new InvalidIdException(ErrorCode.INVALID_ID);
 
         MemberEntity memberEntity = memberRepository.findById(id);
         memberEntity.setPhone(memberEntity.getPhone().replaceAll("-", ""));
@@ -160,7 +161,7 @@ public class LoginService {
      */
     @Transactional
     public void sendVerifyCodeByEmail(String id){
-        if(!isExist(id)) throw new InvalidIdException();
+        if(!isExist(id)) throw new InvalidIdException(ErrorCode.INVALID_ID);
 
         MemberEntity memberEntity = memberRepository.findById(id);
 

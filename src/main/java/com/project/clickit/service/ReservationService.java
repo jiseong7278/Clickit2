@@ -2,8 +2,9 @@ package com.project.clickit.service;
 
 import com.project.clickit.dto.ReservationDTO;
 import com.project.clickit.entity.ReservationEntity;
+import com.project.clickit.exceptions.ErrorCode;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.exceptions.reservation.DuplicatedReservationException;
-import com.project.clickit.exceptions.reservation.ReservationNotFoundException;
 import com.project.clickit.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,7 @@ public class ReservationService {
     public void create(ReservationDTO reservationDTO){
         Page<ReservationEntity> reservationEntities = reservationRepository.findBySeatEntityIdAndToday(reservationDTO.getSeatId(), Pageable.unpaged());
         if(!reservationEntities.isEmpty()&&isDuplicatedReservation(reservationEntities)){
-            throw new DuplicatedReservationException();
+            throw new DuplicatedReservationException(ErrorCode.DUPLICATED_RESERVATION);
         }
         reservationRepository.save(reservationDTO.toEntity());
     }
@@ -77,7 +78,7 @@ public class ReservationService {
     // ========== Update ========== //
     @Transactional
     public void update(ReservationDTO reservationDTO){
-        if (!reservationRepository.existsByNum(reservationDTO.getNum())) throw new ReservationNotFoundException();
+        if (!reservationRepository.existsByNum(reservationDTO.getNum())) throw new ObjectNotFoundException(ErrorCode.RESERVATION_NOT_FOUND);
         reservationRepository.save(reservationDTO.toEntity());
     }
 
@@ -92,7 +93,7 @@ public class ReservationService {
         Page<ReservationEntity> reservationEntity = reservationRepository.findByMemberEntityIdAndToday(
                 SecurityContextHolder.getContext().getAuthentication().getName(),
                 Pageable.unpaged());
-        if(reservationEntity.isEmpty() || !hasReservation(reservationEntity, num)) throw new ReservationNotFoundException();
+        if(reservationEntity.isEmpty() || !hasReservation(reservationEntity, num)) throw new ObjectNotFoundException(ErrorCode.RESERVATION_NOT_FOUND);
         reservationRepository.updateReservationStatus(num, status);
     }
 
@@ -100,7 +101,7 @@ public class ReservationService {
     // ========== Delete ========== //
     @Transactional
     public void delete(Integer num){
-        if (!reservationRepository.existsByNum(num)) throw new ReservationNotFoundException();
+        if (!reservationRepository.existsByNum(num)) throw new ObjectNotFoundException(ErrorCode.RESERVATION_NOT_FOUND);
         reservationRepository.deleteByNum(num);
     }
 

@@ -4,7 +4,7 @@ import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.member.MemberNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -510,7 +510,7 @@ public class MemberServiceTest {
             log.info("update Test(존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> assertThat(exception).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(memberRepository).shouldHaveNoMoreInteractions()
             );
 
@@ -586,7 +586,7 @@ public class MemberServiceTest {
             log.info("updateMemberForStaff Test(존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> assertThat(exception).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(memberRepository).should(never()).updateMemberForStaff(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
             );
 
@@ -646,7 +646,7 @@ public class MemberServiceTest {
             log.info("updatePassword Test(존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> assertThat(exception).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(memberRepository).should(never()).updatePassword(id, password)
             );
 
@@ -696,7 +696,7 @@ public class MemberServiceTest {
             log.info("updateRefreshToken Test(존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> assertThat(exception).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(memberRepository).should(never()).updateRefreshToken(id, refreshToken)
             );
 
@@ -749,7 +749,7 @@ public class MemberServiceTest {
             log.info("deleteById Test(존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(exception).isInstanceOf(MemberNotFoundException.class),
+                    () -> assertThat(exception).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(memberRepository).shouldHaveNoMoreInteractions()
             );
 

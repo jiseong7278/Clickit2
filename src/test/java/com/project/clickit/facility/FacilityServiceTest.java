@@ -5,7 +5,7 @@ import com.project.clickit.dto.FacilityDTO;
 import com.project.clickit.entity.DormitoryEntity;
 import com.project.clickit.entity.FacilityEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.facility.FacilityNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.FacilityRepository;
 import com.project.clickit.service.FacilityService;
 import lombok.extern.slf4j.Slf4j;
@@ -153,7 +153,6 @@ public class FacilityServiceTest {
             // then
             assertAll(
                     () -> assertThat(result).isInstanceOf(DuplicatedIdException.class),
-                    () -> assertThat(result).hasMessageContaining("이미 존재하는 아이디입니다."),
                     () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
@@ -235,7 +234,7 @@ public class FacilityServiceTest {
             log.info("findById Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> assertThat(result).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
@@ -352,7 +351,7 @@ public class FacilityServiceTest {
             log.info("updateFacility Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> assertThat(result).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
@@ -404,7 +403,7 @@ public class FacilityServiceTest {
             log.info("updateFacilityId Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> assertThat(result).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 
@@ -457,7 +456,7 @@ public class FacilityServiceTest {
             log.info("deleteById Test (존재하지 않는 아이디) | when: ✔");
             // then
             assertAll(
-                    () -> assertThat(result).isInstanceOf(FacilityNotFoundException.class),
+                    () -> assertThat(result).isInstanceOf(ObjectNotFoundException.class),
                     () -> then(facilityRepository).shouldHaveNoMoreInteractions()
             );
 

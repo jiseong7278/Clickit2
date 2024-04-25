@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.MemberController;
 import com.project.clickit.dto.MemberDTO;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.member.MemberNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +80,7 @@ public class MemberControllerTest {
             // given
             MemberDTO memberDTO = mock(MemberDTO.class);
 
-            willThrow(new DuplicatedIdException()).given(memberService).create(any(MemberDTO.class));
+            willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID)).given(memberService).create(any(MemberDTO.class));
 
             log.info("create Test - duplicated id | given: ✔");
             // when & then
@@ -127,7 +128,7 @@ public class MemberControllerTest {
 
             List<MemberDTO> memberDTOList = List.of(memberDTO1, memberDTO2);
 
-            willThrow(new DuplicatedIdException()).given(memberService).createList(anyList());
+            willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID)).given(memberService).createList(anyList());
 
             log.info("createList Test - duplicated id | given: ✔");
             // when & then
@@ -197,7 +198,7 @@ public class MemberControllerTest {
             // given
             String id = "test";
 
-            given(memberService.findByMemberId(any())).willThrow(new MemberNotFoundException());
+            given(memberService.findByMemberId(any())).willThrow(new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
             log.info("findByMemberId Test - MemberNotFoundException | given: ✔");
             // when & then
@@ -315,7 +316,7 @@ public class MemberControllerTest {
             // given
             String password = "password";
 
-            willThrow(new MemberNotFoundException()).given(memberService).updatePassword(any());
+            willThrow(new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND)).given(memberService).updatePassword(any());
 
             log.info("updatePassword Test - MemberNotFoundException | given: ✔");
             // when & then
@@ -357,7 +358,7 @@ public class MemberControllerTest {
             // given
             MemberDTO memberDTO = mock(MemberDTO.class);
 
-            willThrow(new MemberNotFoundException()).given(memberService).updateMemberForStaff(any(MemberDTO.class));
+            willThrow(new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND)).given(memberService).updateMemberForStaff(any(MemberDTO.class));
 
             log.info("updateMemberForStaff Test - MemberNotFoundException | given: ✔");
             // when & then
@@ -402,7 +403,7 @@ public class MemberControllerTest {
             String id = "test";
             String refreshToken = "refreshToken";
 
-            willThrow(new MemberNotFoundException()).given(memberService).updateRefreshToken(any(), any());
+            willThrow(new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND)).given(memberService).updateRefreshToken(any(), any());
 
             log.info("updateRefreshToken Test - MemberNotFoundException | given: ✔");
             // when & then
@@ -450,7 +451,7 @@ public class MemberControllerTest {
             // given
             String id = "test";
 
-            willThrow(new MemberNotFoundException()).given(memberService).deleteById(any());
+            willThrow(new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND)).given(memberService).deleteById(any());
 
             log.info("deleteById Test - MemberNotFoundException | given: ✔");
             // when & then

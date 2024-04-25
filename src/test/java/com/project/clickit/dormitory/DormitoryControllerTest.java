@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.clickit.configs.SecurityConfig;
 import com.project.clickit.controller.DormitoryController;
 import com.project.clickit.dto.DormitoryDTO;
+import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.DormitoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -141,7 +142,7 @@ public class DormitoryControllerTest {
 
             given(dormitoryService.isExist(anyString())).willReturn(true);
 
-            doThrow(new DuplicatedIdException()).when(dormitoryService).createDormitory(any());
+            doThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID)).when(dormitoryService).createDormitory(any());
 
             log.info("create Test - Failed given: ✔");
             // when
@@ -213,7 +214,7 @@ public class DormitoryControllerTest {
 
             given(dormitoryService.isExist(id)).willReturn(false);
 
-            doThrow(new DuplicatedIdException()).when(dormitoryService).findById(anyString());
+            willThrow(new ObjectNotFoundException(ErrorCode.DORMITORY_NOT_FOUND)).given(dormitoryService).findById(anyString());
 
             log.info("findById Test - Failed given: ✔");
             // when & then
@@ -287,7 +288,7 @@ public class DormitoryControllerTest {
 
             String requestBody = objectMapper.writeValueAsString(dormitoryDTO);
 
-            doThrow(new DormitoryNotFoundException()).when(dormitoryService).updateDormitory(any());
+            willThrow(new ObjectNotFoundException(ErrorCode.DORMITORY_NOT_FOUND)).given(dormitoryService).updateDormitory(any());
 
             log.info("update Test - Failed given: ✔");
             // when & then
@@ -338,7 +339,7 @@ public class DormitoryControllerTest {
 
             given(dormitoryService.isExist(id)).willReturn(false);
 
-            doThrow(new DormitoryNotFoundException()).when(dormitoryService).deleteById(anyString());
+            doThrow(new ObjectNotFoundException(ErrorCode.DORMITORY_NOT_FOUND)).when(dormitoryService).deleteById(anyString());
 
             log.info("deleteById Test - Failed given: ✔");
             // when & then

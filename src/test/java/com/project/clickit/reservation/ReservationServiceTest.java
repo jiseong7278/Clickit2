@@ -4,8 +4,8 @@ import com.project.clickit.dto.ReservationDTO;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.entity.ReservationEntity;
 import com.project.clickit.entity.SeatEntity;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.exceptions.reservation.DuplicatedReservationException;
-import com.project.clickit.exceptions.reservation.ReservationNotFoundException;
 import com.project.clickit.repository.ReservationRepository;
 import com.project.clickit.service.ReservationService;
 import lombok.extern.slf4j.Slf4j;
@@ -420,7 +420,7 @@ public class ReservationServiceTest {
             log.info("delete Test - ThrowException when: ✓");
             // then
             assertAll(
-                    ()->assertThat(result).isInstanceOf(ReservationNotFoundException.class),
+                    ()->assertThat(result).isInstanceOf(ObjectNotFoundException.class),
                     ()->then(reservationRepository).should().existsByNum(anyInt()),
                     ()->then(reservationRepository).shouldHaveNoMoreInteractions()
             );

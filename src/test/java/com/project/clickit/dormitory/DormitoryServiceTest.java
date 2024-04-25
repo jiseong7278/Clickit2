@@ -2,9 +2,8 @@ package com.project.clickit.dormitory;
 
 import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.entity.DormitoryEntity;
-import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.dormitory.DormitoryNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.DormitoryRepository;
 import com.project.clickit.service.DormitoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -128,8 +127,7 @@ public class DormitoryServiceTest {
 
             log.info("Create Test(중복된 아이디) | when: ✔");
             // then
-            assertThat(result).isInstanceOf(DuplicatedIdException.class)
-                    .hasMessage("이미 존재하는 아이디입니다.");
+            assertThat(result).isInstanceOf(DuplicatedIdException.class);
 
             log.info("Create Test(중복된 아이디) | then: ✔");
         }
@@ -263,8 +261,7 @@ public class DormitoryServiceTest {
 
             log.info("updateDormitoryName Test(존재하지 않는 기숙사) | when: ✔");
             // then
-            assertThat(result).isInstanceOf(DormitoryNotFoundException.class)
-                    .hasMessage(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
             log.info("updateDormitoryName Test(존재하지 않는 기숙사) | then: ✔");
         }
@@ -310,8 +307,7 @@ public class DormitoryServiceTest {
 
             log.info("deleteById Test (존재하지 않는 기숙사) | when: ✔");
             // then
-            assertThat(result).isInstanceOf(DormitoryNotFoundException.class)
-                    .hasMessage(ErrorCode.DORMITORY_NOT_FOUND.getMessage());
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
             log.info("deleteById Test (존재하지 않는 기숙사) | then: ✔");
         }
