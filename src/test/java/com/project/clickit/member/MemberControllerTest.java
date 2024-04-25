@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,7 +58,7 @@ public class MemberControllerTest {
             // given
             MemberDTO memberDTO = mock(MemberDTO.class);
 
-            doNothing().when(memberService).create(any(MemberDTO.class));
+            willDoNothing().given(memberService).create(any(MemberDTO.class));
 
             log.info("create Test given: ✔");
             // when & then
@@ -80,7 +79,7 @@ public class MemberControllerTest {
             // given
             MemberDTO memberDTO = mock(MemberDTO.class);
 
-            doThrow(new DuplicatedIdException()).when(memberService).create(any(MemberDTO.class));
+            willThrow(new DuplicatedIdException()).given(memberService).create(any(MemberDTO.class));
 
             log.info("create Test - duplicated id | given: ✔");
             // when & then
@@ -104,7 +103,7 @@ public class MemberControllerTest {
 
             List<MemberDTO> memberDTOList = List.of(memberDTO1, memberDTO2);
 
-            doNothing().when(memberService).createList(anyList());
+            willDoNothing().given(memberService).createList(anyList());
 
             log.info("createList Test given: ✔");
             // when & then
@@ -128,7 +127,7 @@ public class MemberControllerTest {
 
             List<MemberDTO> memberDTOList = List.of(memberDTO1, memberDTO2);
 
-            doThrow(new DuplicatedIdException()).when(memberService).createList(anyList());
+            willThrow(new DuplicatedIdException()).given(memberService).createList(anyList());
 
             log.info("createList Test - duplicated id | given: ✔");
             // when & then
@@ -274,7 +273,7 @@ public class MemberControllerTest {
             // given
             MemberDTO memberDTO = mock(MemberDTO.class);
 
-            doNothing().when(memberService).update(any(MemberDTO.class));
+            willDoNothing().given(memberService).update(any(MemberDTO.class));
 
             log.info("updateMember Test given: ✔");
             // when & then
@@ -293,11 +292,9 @@ public class MemberControllerTest {
         void updatePasswordTest() throws Exception{
             log.info("updatePassword Test");
             // given
-            // securityContextHolder 사용하도록 변경
-            String id = "test";
             String password = "password";
 
-            doNothing().when(memberService).updatePassword(any());
+            willDoNothing().given(memberService).updatePassword(any());
 
             log.info("updatePassword Test given: ✔");
             // when & then
@@ -316,11 +313,9 @@ public class MemberControllerTest {
         void updatePasswordTestMemberNotFoundException() throws Exception{
             log.info("updatePassword Test - MemberNotFoundException");
             // given
-            // SecurityContextHolder 사용하도록 변경
-            String id = "test";
             String password = "password";
 
-            doThrow(new MemberNotFoundException()).when(memberService).updatePassword(any());
+            willThrow(new MemberNotFoundException()).given(memberService).updatePassword(any());
 
             log.info("updatePassword Test - MemberNotFoundException | given: ✔");
             // when & then
@@ -341,7 +336,7 @@ public class MemberControllerTest {
             // given
             MemberDTO memberDTO = mock(MemberDTO.class);
 
-            doNothing().when(memberService).updateMemberForStaff(any(MemberDTO.class));
+            willDoNothing().given(memberService).updateMemberForStaff(any(MemberDTO.class));
 
             log.info("updateMemberForStaff Test given: ✔");
             // when & then
@@ -362,7 +357,7 @@ public class MemberControllerTest {
             // given
             MemberDTO memberDTO = mock(MemberDTO.class);
 
-            doThrow(new MemberNotFoundException()).when(memberService).updateMemberForStaff(any(MemberDTO.class));
+            willThrow(new MemberNotFoundException()).given(memberService).updateMemberForStaff(any(MemberDTO.class));
 
             log.info("updateMemberForStaff Test - MemberNotFoundException | given: ✔");
             // when & then
@@ -384,7 +379,7 @@ public class MemberControllerTest {
             String id = "test";
             String refreshToken = "refreshToken";
 
-            doNothing().when(memberService).updateRefreshToken(any(), any());
+            willDoNothing().given(memberService).updateRefreshToken(any(), any());
 
             log.info("updateRefreshToken Test given: ✔");
             // when & then
@@ -407,7 +402,7 @@ public class MemberControllerTest {
             String id = "test";
             String refreshToken = "refreshToken";
 
-            doThrow(new MemberNotFoundException()).when(memberService).updateRefreshToken(any(), any());
+            willThrow(new MemberNotFoundException()).given(memberService).updateRefreshToken(any(), any());
 
             log.info("updateRefreshToken Test - MemberNotFoundException | given: ✔");
             // when & then
@@ -434,7 +429,7 @@ public class MemberControllerTest {
             // given
             String id = "test";
 
-            doNothing().when(memberService).deleteById(any());
+            willDoNothing().given(memberService).deleteById(any());
 
             log.info("deleteById Test given: ✔");
             // when & then
@@ -455,7 +450,7 @@ public class MemberControllerTest {
             // given
             String id = "test";
 
-            doThrow(new MemberNotFoundException()).when(memberService).deleteById(any());
+            willThrow(new MemberNotFoundException()).given(memberService).deleteById(any());
 
             log.info("deleteById Test - MemberNotFoundException | given: ✔");
             // when & then

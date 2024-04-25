@@ -9,6 +9,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -37,24 +39,15 @@ public class MemberRepositoryTest {
             // given
             String id = "test_member_id";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id = " + id + "\n");
+            log.info("existsById test given: ✔");
             // when
             Boolean result = memberRepository.existsById(id);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = memberRepository.existsById(id);
-                    """);
+            log.info("existsById test when: ✔");
             // then
             assertThat(result).isTrue();
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isTrue();
-                    """);
+            log.info("existsById test then: ✔");
         }
 
         @Test
@@ -65,24 +58,15 @@ public class MemberRepositoryTest {
             // given
             String id = "test_member_id_false";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id = " + id + "\n");
+            log.info("existsById test False given: ✔");
             // when
             Boolean result = memberRepository.existsById(id);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = memberRepository.existsById(id);
-                    """);
+            log.info("existsById test False when: ✔");
             // then
             assertThat(result).isFalse();
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isFalse();
-                    """);
+            log.info("existsById test False then: ✔");
         }
     }
 
@@ -111,37 +95,17 @@ public class MemberRepositoryTest {
                     .dormitoryEntity(dormitoryEntity)
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ memberEntity" +
-                    "\n\t\t  ┗ id = " + memberEntity.getId() +
-                    "\n\t\t  ┗ password = " + memberEntity.getPassword() +
-                    "\n\t\t  ┗ name = " + memberEntity.getName() +
-                    "\n\t\t  ┗ email = " + memberEntity.getEmail() +
-                    "\n\t\t  ┗ phone = " + memberEntity.getPhone() +
-                    "\n\t\t  ┗ studentNum = " + memberEntity.getStudentNum() +
-                    "\n\t\t  ┗ type = " + memberEntity.getType() +
-                    "\n\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t  ┗ id = " + memberEntity.getDormitoryEntity().getId() + "\n");
+            log.info("save test given: ✔");
             // when
             MemberEntity result = memberRepository.save(memberEntity);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = memberRepository.save(memberEntity);
-                    """);
+            log.info("save test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(memberEntity.getId());
             assertThat(result.getPassword()).isEqualTo(memberEntity.getPassword());
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result.getId()).isEqualTo(memberEntity.getId());
-                    \t  ┗ assertThat(result.getPassword()).isEqualTo(memberEntity.getPassword());
-                    """);
+            log.info("save test then: ✔");
         }
 
         @Test
@@ -177,36 +141,12 @@ public class MemberRepositoryTest {
                             .build()
             );
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ memberEntityList" +
-                    "\n\t\t  ┗ memberEntity1" +
-                    "\n\t\t\t  ┗ id = " + memberEntityList.get(0).getId() +
-                    "\n\t\t\t  ┗ password = " + memberEntityList.get(0).getPassword() +
-                    "\n\t\t\t  ┗ name = " + memberEntityList.get(0).getName() +
-                    "\n\t\t\t  ┗ email = " + memberEntityList.get(0).getEmail() +
-                    "\n\t\t\t  ┗ phone = " + memberEntityList.get(0).getPhone() +
-                    "\n\t\t\t  ┗ studentNum = " + memberEntityList.get(0).getStudentNum() +
-                    "\n\t\t\t  ┗ type = " + memberEntityList.get(0).getType() +
-                    "\n\t\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t\t  ┗ id = " + memberEntityList.get(0).getDormitoryEntity().getId() +
-                    "\n\t\t  ┗ memberEntity2" +
-                    "\n\t\t\t  ┗ id = " + memberEntityList.get(1).getId() +
-                    "\n\t\t\t  ┗ password = " + memberEntityList.get(1).getPassword() +
-                    "\n\t\t\t  ┗ name = " + memberEntityList.get(1).getName() +
-                    "\n\t\t\t  ┗ email = " + memberEntityList.get(1).getEmail() +
-                    "\n\t\t\t  ┗ phone = " + memberEntityList.get(1).getPhone() +
-                    "\n\t\t\t  ┗ studentNum = " + memberEntityList.get(1).getStudentNum() +
-                    "\n\t\t\t  ┗ type = " + memberEntityList.get(1).getType() +
-                    "\n\t\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t\t  ┗ id = " + memberEntityList.get(1).getDormitoryEntity().getId() + "\n");
+
+            log.info("saveAll test given: ✔");
             // when
             List<MemberEntity> result = memberRepository.saveAll(memberEntityList);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = memberRepository.saveAll(memberEntityList);
-                    """);
+            log.info("saveAll test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.size()).isEqualTo(memberEntityList.size());
@@ -215,16 +155,7 @@ public class MemberRepositoryTest {
             assertThat(result.get(1).getId()).isEqualTo(memberEntityList.get(1).getId());
             assertThat(result.get(1).getPassword()).isEqualTo(memberEntityList.get(1).getPassword());
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result.size()).isEqualTo(memberEntityList.size());
-                    \t  ┗ assertThat(result.get(0).getId()).isEqualTo(memberEntityList.get(0).getId());
-                    \t  ┗ assertThat(result.get(0).getPassword()).isEqualTo(memberEntityList.get(0).getPassword());
-                    \t  ┗ assertThat(result.get(1).getId()).isEqualTo(memberEntityList.get(1).getId());
-                    \t  ┗ assertThat(result.get(1).getPassword()).isEqualTo(memberEntityList.get(1).getPassword());
-                    """);
+            log.info("saveAll test then: ✔");
         }
     }
 
@@ -239,23 +170,15 @@ public class MemberRepositoryTest {
             log.info("findAll test");
             // given
 
-            log.info("\n\tgiven\n");
+            log.info("findAll test given: ✔");
             // when
-            List<MemberEntity> result = memberRepository.findAll();
+            Page<MemberEntity> result = memberRepository.findAll(Pageable.unpaged());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = memberRepository.findAll();
-                    """);
+            log.info("findAll test when: ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    """);
+            log.info("findAll test then: ✔");
         }
 
         @Test
@@ -266,26 +189,16 @@ public class MemberRepositoryTest {
             // given
             String id = "test_member_id";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id = " + id + "\n");
+            log.info("findById Test given: ✔");
             // when
             MemberEntity result = memberRepository.findById(id);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = memberRepository.findById(id).orElse(null);
-                    """);
+            log.info("findById Test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(id);
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result.getId()).isEqualTo(id);
-                    """);
+            log.info("findById Test then: ✔");
         }
 
         @Test
@@ -294,34 +207,36 @@ public class MemberRepositoryTest {
         void findByMemberNameTest(){
             log.info("findByMemberName Test");
             // given
+            String name = "test";
 
+            log.info("findByMemberName Test given: ✔");
             // when
+            Page<MemberEntity> result = memberRepository.findByMemberName(name, Pageable.unpaged());
 
+            log.info("findByMemberName Test when: ✔");
             // then
+            assertThat(result).isNotNull();
+
+            log.info("findByMemberName Test then: ✔");
         }
 
         @Test
         @Order(4)
-        @DisplayName("findPasswordByMemberId Test")
-        void findPasswordByMemberIdTest(){
-            log.info("findPasswordByMemberId Test");
-            // given
-
-            // when
-
-            // then
-        }
-
-        @Test
-        @Order(5)
         @DisplayName("findByDormitoryId Test")
         void findByDormitoryIdTest(){
             log.info("findByDormitoryId Test");
             // given
+            String dormitoryId = "dor_1";
 
+            log.info("findByDormitoryId Test given: ✔");
             // when
+            Page<MemberEntity> result = memberRepository.findByDormitoryId(dormitoryId, Pageable.unpaged());
 
+            log.info("findByDormitoryId Test when: ✔");
             // then
+            assertThat(result).isNotNull();
+
+            log.info("findByDormitoryId Test then: ✔");
         }
     }
 
@@ -337,14 +252,6 @@ public class MemberRepositoryTest {
             // given
             MemberEntity originalMemberEntity = memberRepository.findById("test2");
 
-            // findById로 가져온 MemberEntity를 영속성 컨텍스트에 저장
-            // save 시 isNew로 판단하여 insert가 아닌 update 쿼리가 실행되도록 함
-            // update 과정에서 merge가 실행되는데 이 때 영속성 컨텍스트에 있는 originalMemberEntity도 변경됨
-            // 결과적으로 then에서 originalMemberEntity의 값이 변경되어 있음 -> isNotEqualTo에서 오류 발생되는 원인
-//            String originalName = originalMemberEntity.getName();
-//            String originalEmail = originalMemberEntity.getEmail();
-//            String originalPhone = originalMemberEntity.getPhone();
-
             entityManager.clear();
 
             MemberEntity memberEntity = MemberEntity.builder()
@@ -358,35 +265,11 @@ public class MemberRepositoryTest {
                     .dormitoryEntity(originalMemberEntity.getDormitoryEntity())
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalMemberEntity" +
-                    "\n\t\t  ┗ id = " + originalMemberEntity.getId() +
-                    "\n\t\t  ┗ password = " + originalMemberEntity.getPassword() +
-                    "\n\t\t  ┗ name = " + originalMemberEntity.getName() +
-                    "\n\t\t  ┗ email = " + originalMemberEntity.getEmail() +
-                    "\n\t\t  ┗ phone = " + originalMemberEntity.getPhone() +
-                    "\n\t\t  ┗ studentNum = " + originalMemberEntity.getStudentNum() +
-                    "\n\t\t  ┗ type = " + originalMemberEntity.getType() +
-                    "\n\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t  ┗ id = " + originalMemberEntity.getDormitoryEntity().getId() +
-                    "\n\t  ┗ memberEntity" +
-                    "\n\t\t  ┗ id = " + memberEntity.getId() +
-                    "\n\t\t  ┗ password = " + memberEntity.getPassword() +
-                    "\n\t\t  ┗ name = " + memberEntity.getName() +
-                    "\n\t\t  ┗ email = " + memberEntity.getEmail() +
-                    "\n\t\t  ┗ phone = " + memberEntity.getPhone() +
-                    "\n\t\t  ┗ studentNum = " + memberEntity.getStudentNum() +
-                    "\n\t\t  ┗ type = " + memberEntity.getType() +
-                    "\n\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t  ┗ id = " + memberEntity.getDormitoryEntity().getId() + "\n");
+            log.info("update test given: ✔");
             // when
             MemberEntity result = memberRepository.save(memberEntity);
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ result = memberRepository.save(memberEntity);
-                    """);
+            log.info("update test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(originalMemberEntity.getId());
@@ -395,16 +278,7 @@ public class MemberRepositoryTest {
             assertThat(result.getEmail()).isNotEqualTo(originalMemberEntity.getEmail());
             assertThat(result.getPhone()).isNotEqualTo(originalMemberEntity.getPhone());
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result.getId()).isEqualTo(originalMemberEntity.getId());
-                    \t  ┗ assertThat(result.getPassword()).isEqualTo(originalMemberEntity.getPassword());
-                    \t  ┗ assertThat(result.getName()).isNotEqualTo(originalMemberEntity.getName());
-                    \t  ┗ assertThat(result.getEmail()).isNotEqualTo(originalMemberEntity.getEmail());
-                    \t  ┗ assertThat(result.getPhone()).isNotEqualTo(originalMemberEntity.getPhone());
-                    """);
+            log.info("update test then: ✔");
         }
 
         @Test
@@ -439,27 +313,7 @@ public class MemberRepositoryTest {
                     .dormitoryEntity(originalMemberEntity.getDormitoryEntity())
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalMemberEntity" +
-                    "\n\t\t  ┗ id = " + originalMemberEntity.getId() +
-                    "\n\t\t  ┗ password = " + originalMemberEntity.getPassword() +
-                    "\n\t\t  ┗ name = " + originalMemberEntity.getName() +
-                    "\n\t\t  ┗ email = " + originalMemberEntity.getEmail() +
-                    "\n\t\t  ┗ phone = " + originalMemberEntity.getPhone() +
-                    "\n\t\t  ┗ studentNum = " + originalMemberEntity.getStudentNum() +
-                    "\n\t\t  ┗ type = " + originalMemberEntity.getType() +
-                    "\n\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t  ┗ id = " + originalMemberEntity.getDormitoryEntity().getId() +
-                    "\n\t  ┗ updateMemberEntity" +
-                    "\n\t\t  ┗ id = " + updateMemberEntity.getId() +
-                    "\n\t\t  ┗ password = " + updateMemberEntity.getPassword() +
-                    "\n\t\t  ┗ name = " + updateMemberEntity.getName() +
-                    "\n\t\t  ┗ email = " + updateMemberEntity.getEmail() +
-                    "\n\t\t  ┗ phone = " + updateMemberEntity.getPhone() +
-                    "\n\t\t  ┗ studentNum = " + updateMemberEntity.getStudentNum() +
-                    "\n\t\t  ┗ type = " + updateMemberEntity.getType() +
-                    "\n\t\t  ┗ dormitoryEntity" +
-                    "\n\t\t\t  ┗ id = " + updateMemberEntity.getDormitoryEntity().getId() + "\n");
+            log.info("updateMemberForStaff test given: ✔");
             // when
             memberRepository.updateMemberForStaff(updateMemberEntity.getId(),
                     updateMemberEntity.getPassword(),
@@ -472,18 +326,7 @@ public class MemberRepositoryTest {
 
             MemberEntity result = memberRepository.findById(updateMemberEntity.getId());
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ memberRepository.updateMemberForStaff(updateMemberEntity.getId(),
-                    \t\t  updateMemberEntity.getPassword(),
-                    \t\t  updateMemberEntity.getName(),
-                    \t\t  updateMemberEntity.getEmail(),
-                    \t\t  updateMemberEntity.getPhone(),
-                    \t\t  updateMemberEntity.getStudentNum(),
-                    \t\t  updateMemberEntity.getType(),
-                    \t\t  updateMemberEntity.getDormitoryEntity().getId());
-                    """);
+            log.info("updateMemberForStaff test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(originalMemberEntity.getId());
@@ -491,15 +334,7 @@ public class MemberRepositoryTest {
             assertThat(result.getName()).isNotEqualTo(originalMemberEntity.getName());
             assertThat(result.getEmail()).isNotEqualTo(originalMemberEntity.getEmail());
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result.getId()).isEqualTo(originalMemberEntity.getId());
-                    \t  ┗ assertThat(result.getPassword()).isEqualTo(originalMemberEntity.getPassword());
-                    \t  ┗ assertThat(result.getName()).isNotEqualTo(originalMemberEntity.getName());
-                    \t  ┗ assertThat(result.getEmail()).isNotEqualTo(originalMemberEntity.getEmail());
-                    """);
+            log.info("updateMemberForStaff test then: ✔");
         }
 
         @Test
@@ -514,36 +349,21 @@ public class MemberRepositoryTest {
 
             String updatePassword = "update_password";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalMemberEntity" +
-                    "\n\t\t  ┗ id = " + originalMemberEntity.getId() +
-                    "\n\t\t  ┗ password = " + originalMemberEntity.getPassword() +
-                    "\n\t  ┗ updatePassword = " + updatePassword + "\n");
+            log.info("updatePassword test given: ✔");
             // when
             memberRepository.updatePassword(originalMemberEntity.getId(), updatePassword);
 
-            String result = memberRepository.findPasswordByMemberId(originalMemberEntity.getId());
+            MemberEntity result = memberRepository.findById(originalMemberEntity.getId());
 
             entityManager.clear();
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ memberRepository.updatePassword(originalMemberEntity.getId(), updatePassword);
-                    \t  ┗ result = memberRepository.findPasswordByMemberId(originalMemberEntity.getId());
-                    """);
+            log.info("updatePassword test when: ✔");
             // then
             assertThat(result).isNotNull();
-            assertThat(result).isEqualTo(updatePassword);
-            assertThat(result).isNotEqualTo(originalMemberEntity.getPassword());
+            assertThat(result.getPassword()).isEqualTo(updatePassword);
+            assertThat(result.getPassword()).isNotEqualTo(originalMemberEntity.getPassword());
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result).isEqualTo(updatePassword);
-                    \t  ┗ assertThat(result).isNotEqualTo(originalMemberEntity.getPassword());
-                    """);
+            log.info("updatePassword test then: ✔");
         }
 
         @Test
@@ -558,11 +378,7 @@ public class MemberRepositoryTest {
 
             String updateRefreshToken = "update_refresh_token";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalMemberEntity" +
-                    "\n\t\t  ┗ id = " + originalMemberEntity.getId() +
-                    "\n\t\t  ┗ refreshToken = " + originalMemberEntity.getRefreshToken() +
-                    "\n\t  ┗ updateRefreshToken = " + updateRefreshToken + "\n");
+            log.info("updateRefreshToken test given: ✔");
             // when
             memberRepository.updateRefreshToken(originalMemberEntity.getId(), updateRefreshToken);
 
@@ -570,26 +386,14 @@ public class MemberRepositoryTest {
 
             entityManager.clear();
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ memberRepository.updateRefreshToken(originalMemberEntity.getId(), updateRefreshToken);
-                    \t  ┗ result = memberRepository.findById(originalMemberEntity.getId());
-                    """);
+            log.info("updateRefreshToken test when: ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(originalMemberEntity.getId());
             assertThat(result.getRefreshToken()).isEqualTo(updateRefreshToken);
             assertThat(result.getRefreshToken()).isNotEqualTo(originalMemberEntity.getRefreshToken());
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull();
-                    \t  ┗ assertThat(result.getId()).isEqualTo(originalMemberEntity.getId());
-                    \t  ┗ assertThat(result.getRefreshToken()).isEqualTo(updateRefreshToken);
-                    \t  ┗ assertThat(result.getRefreshToken()).isNotEqualTo(originalMemberEntity.getRefreshToken());
-                    """);
+            log.info("updateRefreshToken test then: ✔");
         }
     }
 
@@ -605,8 +409,7 @@ public class MemberRepositoryTest {
             // given
             String id = "test2";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id = " + id + "\n");
+            log.info("deleteById test given: ✔");
             // when
             memberRepository.deleteById(id);
 
@@ -614,20 +417,11 @@ public class MemberRepositoryTest {
 
             entityManager.clear();
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ memberRepository.deleteById(id);
-                    \t  ┗ result = memberRepository.findById(id);
-                    """);
+            log.info("deleteById test when: ✔");
             // then
             assertThat(result).isNull();
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNull();
-                    """);
+            log.info("deleteById test then: ✔");
         }
 
         @Test
@@ -638,8 +432,7 @@ public class MemberRepositoryTest {
             // given
             String id = "test2";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ id = " + id + "\n");
+            log.info("delete test given: ✔");
             // when
             memberRepository.delete(memberRepository.findById(id));
 
@@ -647,20 +440,11 @@ public class MemberRepositoryTest {
 
             entityManager.clear();
 
-            log.info("""
-                    
-                    \twhen
-                    \t  ┗ memberRepository.delete(memberRepository.findById(id));
-                    \t  ┗ result = memberRepository.findById(id);
-                    """);
+            log.info("delete test when: ✔");
             // then
             assertThat(result).isNull();
 
-            log.info("""
-                    
-                    \tthen
-                    \t  ┗ assertThat(result).isNull();
-                    """);
+            log.info("delete test then: ✔");
         }
     }
 }

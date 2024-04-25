@@ -19,11 +19,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     MemberEntity findById(@NonNull String id);
 
     // find by member name
-    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.id like %:memberId%")
-    Page<MemberEntity> findByMemberName(@Param("memberId") String memberId, Pageable pageable);
-
-    @Query("SELECT m.password FROM MemberEntity as m WHERE m.id = :memberId")
-    String findPasswordByMemberId(@Param("memberId") String memberId);
+    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.name like %:memberName%")
+    Page<MemberEntity> findByMemberName(@Param("memberName") String memberName, Pageable pageable);
 
     // find by dormitory id
     @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.dormitoryEntity.id = :dormitoryId")
