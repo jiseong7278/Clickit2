@@ -30,8 +30,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @Slf4j
 @DisplayName("ReservationService Test")
@@ -72,8 +70,8 @@ public class ReservationServiceTest {
             log.info("create Test when: ✓");
             // then
             assertAll(
-                    ()->verify(reservationRepository, times(1)).findBySeatEntityIdAndToday(anyString(), any()),
-                    ()->verify(reservationRepository, times(1)).save(any())
+                    ()->then(reservationRepository).should().findBySeatEntityIdAndToday(anyString(), any()),
+                    ()->then(reservationRepository).should().save(any())
             );
 
             log.info("create Test then: ✓");
@@ -110,8 +108,8 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isInstanceOf(DuplicatedReservationException.class),
-                    ()->verify(reservationRepository, times(1)).findBySeatEntityIdAndToday(anyString(), any()),
-                    ()->verifyNoMoreInteractions(reservationRepository)
+                    ()->then(reservationRepository).should().findBySeatEntityIdAndToday(anyString(), any()),
+                    ()->then(reservationRepository).shouldHaveNoMoreInteractions()
             );
 
             log.info("create Test - ThrowException then: ✓");
@@ -146,7 +144,7 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isNotNull(),
-                    ()->verify(reservationRepository, times(1)).findAll(Pageable.unpaged())
+                    ()->then(reservationRepository).should().findAll(Pageable.unpaged())
             );
 
             log.info("findAll Test then: ✓");
@@ -176,7 +174,7 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isNotNull(),
-                    ()->verify(reservationRepository, times(1)).findByMemberEntityId(anyString(), any())
+                    ()->then(reservationRepository).should().findByMemberEntityId(anyString(), any())
             );
 
             log.info("findByMemberId Test then: ✓");
@@ -210,7 +208,7 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isNotNull(),
-                    ()->verify(reservationRepository, times(1)).findByMemberEntityId(anyString(), any(Pageable.class))
+                    ()->then(reservationRepository).should().findByMemberEntityId(anyString(), any(Pageable.class))
             );
 
             log.info("findByMemberId Test - SecurityContextHolder then: ✓");
@@ -240,7 +238,7 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isNotNull(),
-                    ()->verify(reservationRepository, times(1)).findBySeatEntityIdAndToday(anyString(), any())
+                    ()->then(reservationRepository).should().findBySeatEntityIdAndToday(anyString(), any())
             );
 
             log.info("findBySeatIdAndToday Test then: ✓");
@@ -270,7 +268,7 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isNotNull(),
-                    ()->verify(reservationRepository, times(1)).findByMemberEntityIdAndToday(anyString(), any())
+                    ()->then(reservationRepository).should().findByMemberEntityIdAndToday(anyString(), any())
             );
 
             log.info("findByMemberIdAndToday Test then: ✓");
@@ -304,7 +302,7 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isNotNull(),
-                    ()->verify(reservationRepository, times(1)).findByMemberEntityIdAndToday(anyString(), any())
+                    ()->then(reservationRepository).should().findByMemberEntityIdAndToday(anyString(), any())
             );
 
             log.info("findByMemberIdAndToday Test - SecurityContextHolder then: ✓");
@@ -329,6 +327,7 @@ public class ReservationServiceTest {
                     .status("예약")
                     .build();
 
+            given(reservationRepository.existsByNum(anyInt())).willReturn(true);
             given(reservationRepository.save(any())).willReturn(mock(ReservationEntity.class));
 
             log.info("update Test given: ✓");
@@ -338,7 +337,7 @@ public class ReservationServiceTest {
             log.info("update Test when: ✓");
             // then
             assertAll(
-                    ()->verify(reservationRepository, times(1)).save(any())
+                    ()->then(reservationRepository).should().save(any())
             );
 
             log.info("update Test then: ✓");
@@ -372,8 +371,8 @@ public class ReservationServiceTest {
             log.info("updateStatus Test when: ✓");
             // then
             assertAll(
-                    ()->verify(reservationRepository, times(1)).findByMemberEntityIdAndToday(anyString(), any()),
-                    ()->verify(reservationRepository, times(1)).updateReservationStatus(anyInt(), anyString())
+                    ()->then(reservationRepository).should().findByMemberEntityIdAndToday(anyString(), any()),
+                    ()->then(reservationRepository).should().updateReservationStatus(anyInt(), anyString())
             );
 
             log.info("updateStatus Test then: ✓");
@@ -399,8 +398,8 @@ public class ReservationServiceTest {
             log.info("delete Test when: ✓");
             // then
             assertAll(
-                    ()->verify(reservationRepository, times(1)).existsByNum(anyInt()),
-                    ()->verify(reservationRepository, times(1)).deleteByNum(anyInt())
+                    ()->then(reservationRepository).should().existsByNum(anyInt()),
+                    ()->then(reservationRepository).should().deleteByNum(anyInt())
             );
 
             log.info("delete Test then: ✓");
@@ -422,8 +421,8 @@ public class ReservationServiceTest {
             // then
             assertAll(
                     ()->assertThat(result).isInstanceOf(ReservationNotFoundException.class),
-                    ()->verify(reservationRepository, times(1)).existsByNum(anyInt()),
-                    ()->verifyNoMoreInteractions(reservationRepository)
+                    ()->then(reservationRepository).should().existsByNum(anyInt()),
+                    ()->then(reservationRepository).shouldHaveNoMoreInteractions()
             );
 
             log.info("delete Test - ThrowException then: ✓");

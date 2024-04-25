@@ -22,10 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.when;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -58,7 +57,7 @@ public class ReservationControllerTest {
             // given
             ReservationDTO reservationDTO = mock(ReservationDTO.class);
 
-            doNothing().when(reservationService).create(any(ReservationDTO.class));
+            willDoNothing().given(reservationService).create(any(ReservationDTO.class));
 
             log.info("create test - ok | given: ✔");
             // when & then
@@ -79,7 +78,7 @@ public class ReservationControllerTest {
             // given
             ReservationDTO reservationDTO = mock(ReservationDTO.class);
 
-            doThrow(new DuplicatedReservationException()).when(reservationService).create(any(ReservationDTO.class));
+            willThrow(new DuplicatedReservationException()).given(reservationService).create(any(ReservationDTO.class));
 
             log.info("create test - bad request | given: ✔");
             // when & then
@@ -103,7 +102,7 @@ public class ReservationControllerTest {
         void getAllTest() throws Exception {
             log.info("getAll Test");
             // given
-            when(reservationService.findAll(any())).thenReturn(Page.empty());
+            given(reservationService.findAll(any())).willReturn(Page.empty());
 
             log.info("getAll test given: ✔");
             // when & then
@@ -125,7 +124,7 @@ public class ReservationControllerTest {
             // given
             String memberId = "test";
 
-            when(reservationService.findByMemberId(any(), any())).thenReturn(Page.empty());
+            given(reservationService.findByMemberId(any(), any())).willReturn(Page.empty());
 
             log.info("findByMemberId test given: ✔");
             // when & then
@@ -146,7 +145,7 @@ public class ReservationControllerTest {
         void findMyReservationTest() throws Exception{
             log.info("findMyReservation Test");
             // given
-            when(reservationService.findByMemberId(any())).thenReturn(Page.empty());
+            given(reservationService.findByMemberIdAndToday(any())).willReturn(Page.empty());
 
             log.info("findMyReservation test given: ✔");
             // when & then
@@ -168,7 +167,7 @@ public class ReservationControllerTest {
             // given
             String seatId = "test";
 
-            when(reservationService.findBySeatIdAndToday(any(), any())).thenReturn(Page.empty());
+            given(reservationService.findBySeatIdAndToday(any(), any())).willReturn(Page.empty());
 
             log.info("findBySeatIdAndToday test given: ✔");
             // when & then
@@ -191,7 +190,7 @@ public class ReservationControllerTest {
             // given
             String memberId = "test";
 
-            when(reservationService.findByMemberIdAndToday(any(), any())).thenReturn(Page.empty());
+            given(reservationService.findByMemberIdAndToday(any(), any())).willReturn(Page.empty());
 
             log.info("findByMemberIdAndToday test given: ✔");
             // when & then
@@ -212,7 +211,7 @@ public class ReservationControllerTest {
         void findMyReservationTodayTest() throws Exception{
             log.info("findMyReservationToday Test");
             // given
-            when(reservationService.findByMemberIdAndToday(any())).thenReturn(Page.empty());
+            given(reservationService.findByMemberIdAndToday(any())).willReturn(Page.empty());
 
             log.info("findMyReservationToday test given: ✔");
             // when & then
@@ -239,7 +238,7 @@ public class ReservationControllerTest {
             // given
             ReservationDTO reservationDTO = mock(ReservationDTO.class);
 
-            doNothing().when(reservationService).update(any(ReservationDTO.class));
+            willDoNothing().given(reservationService).update(any(ReservationDTO.class));
 
             log.info("update test - ok | given: ✔");
             // when & then
@@ -260,7 +259,7 @@ public class ReservationControllerTest {
             // given
             ReservationDTO reservationDTO = mock(ReservationDTO.class);
 
-            doThrow(new ReservationNotFoundException()).when(reservationService).update(any(ReservationDTO.class));
+            willThrow(new ReservationNotFoundException()).given(reservationService).update(any(ReservationDTO.class));
 
             log.info("update test - badRequest | given: ✔");
             // when & then
@@ -284,7 +283,7 @@ public class ReservationControllerTest {
 
             List<ReservationDTO> reservationDTOList = List.of(reservationDTO1, reservationDTO2);
 
-            doNothing().when(reservationService).updateStatus(any(), any());
+            willDoNothing().given(reservationService).updateStatus(any(), any());
 
             log.info("updateStatus test - ok | given: ✔");
             // when & then
@@ -308,7 +307,7 @@ public class ReservationControllerTest {
 
             List<ReservationDTO> reservationDTOList = List.of(reservationDTO1, reservationDTO2);
 
-            doThrow(new ReservationNotFoundException()).when(reservationService).updateStatus(any(), any());
+            willThrow(new ReservationNotFoundException()).given(reservationService).updateStatus(any(), any());
 
             log.info("updateStatus test - badRequest | given: ✔");
             // when & then
@@ -334,7 +333,7 @@ public class ReservationControllerTest {
             // given
             int num = 1;
 
-            doNothing().when(reservationService).delete(anyInt());
+            willDoNothing().given(reservationService).delete(anyInt());
 
             log.info("delete test - ok | given: ✔");
             // when & then
@@ -355,7 +354,7 @@ public class ReservationControllerTest {
             // given
             int num = 1;
 
-            doThrow(new ReservationNotFoundException()).when(reservationService).delete(anyInt());
+            willThrow(new ReservationNotFoundException()).given(reservationService).delete(anyInt());
 
             log.info("delete test - badRequest | given: ✔");
             // when & then
