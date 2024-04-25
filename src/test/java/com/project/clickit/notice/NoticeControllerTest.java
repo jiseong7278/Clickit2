@@ -6,7 +6,6 @@ import com.project.clickit.controller.NoticeController;
 import com.project.clickit.dto.NoticeDTO;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.ObjectNotFoundException;
-import com.project.clickit.exceptions.notice.NoticeNotFoundException;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,7 +55,7 @@ public class NoticeControllerTest {
             // given
             NoticeDTO noticeDTO = mock(NoticeDTO.class);
 
-            doNothing().when(noticeService).createNotice(any(NoticeDTO.class));
+            willDoNothing().given(noticeService).createNotice(any(NoticeDTO.class));
 
             log.info("create Test given: ✔");
             // when & then
@@ -78,7 +76,7 @@ public class NoticeControllerTest {
             // given
             NoticeDTO noticeDTO = mock(NoticeDTO.class);
 
-            doThrow(new DuplicatedIdException()).when(noticeService).createNotice(any(NoticeDTO.class));
+            willThrow(new DuplicatedIdException()).given(noticeService).createNotice(any(NoticeDTO.class));
 
             log.info("create Test - duplicatedIdException given: ✔");
             // when & then
@@ -125,7 +123,7 @@ public class NoticeControllerTest {
             // given
             int num = 1;
 
-            when(noticeService.findByNoticeNum(num)).thenReturn(mock(NoticeDTO.class));
+            given(noticeService.findByNoticeNum(num)).willReturn(mock(NoticeDTO.class));
 
             log.info("findByNoticeNum Test given: ✔");
             // when & then
@@ -146,9 +144,7 @@ public class NoticeControllerTest {
             // given
             int num = 1;
 
-            given(noticeService.isExist(anyInt())).willThrow(new NoticeNotFoundException());
-
-            doThrow(new ObjectNotFoundException()).when(noticeService).findByNoticeNum(anyInt());
+            willThrow(new ObjectNotFoundException()).given(noticeService).findByNoticeNum(anyInt());
 
             log.info("findByNoticeNum Test - NoticeNotFoundException given: ✔");
             // when & then
@@ -171,7 +167,7 @@ public class NoticeControllerTest {
             int page = 0;
             int size = 10;
 
-            when(noticeService.findNoticeByWriterId(anyString(), any())).thenReturn(Page.empty());
+            given(noticeService.findNoticeByWriterId(anyString(), any())).willReturn(Page.empty());
 
             log.info("findByWriterId Test given: ✔");
             // when & then
@@ -199,7 +195,7 @@ public class NoticeControllerTest {
             // given
             NoticeDTO noticeDTO = mock(NoticeDTO.class);
 
-            doNothing().when(noticeService).updateNotice(any(NoticeDTO.class));
+            willDoNothing().given(noticeService).updateNotice(any(NoticeDTO.class));
 
             log.info("update Test given: ✔");
             // when & then
@@ -220,7 +216,7 @@ public class NoticeControllerTest {
             // given
             NoticeDTO noticeDTO = mock(NoticeDTO.class);
 
-            doThrow(new ObjectNotFoundException()).when(noticeService).updateNotice(any(NoticeDTO.class));
+            willThrow(new ObjectNotFoundException()).given(noticeService).updateNotice(any(NoticeDTO.class));
 
             log.info("update Test - ObjectNotFoundException given: ✔");
             // when & then
@@ -246,7 +242,7 @@ public class NoticeControllerTest {
             // given
             int num = 1;
 
-            doNothing().when(noticeService).deleteNotice(anyInt());
+            willDoNothing().given(noticeService).deleteNotice(anyInt());
 
             log.info("delete Test given: ✔");
             // when & then
@@ -267,7 +263,7 @@ public class NoticeControllerTest {
             // given
             int num = 1;
 
-            doThrow(new ObjectNotFoundException()).when(noticeService).deleteNotice(anyInt());
+            willThrow(new ObjectNotFoundException()).given(noticeService).deleteNotice(anyInt());
 
             log.info("delete Test - ObjectNotFoundException given: ✔");
             // when & then

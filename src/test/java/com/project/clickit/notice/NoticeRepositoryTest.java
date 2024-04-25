@@ -35,24 +35,15 @@ public class NoticeRepositoryTest {
             // given
             Integer num = 1;
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ num : " + num + "\n");
+            log.info("isExist Test given - ✔");
             // when
             Boolean result = noticeRepository.existsByNum(num);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Boolean result = noticeRepository.existsByNum(num)
-                    """);
+            log.info("isExist Test when - ✔");
             // then
             assertThat(result).isTrue();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isTrue()
-                    """);
+            log.info("isExist Test then - ✔");
         }
 
         @Test
@@ -63,24 +54,15 @@ public class NoticeRepositoryTest {
             // given
             Integer num = 100;
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ num : " + num + "\n");
+            log.info("isExist Test - Not Exist | given - ✔");
             // when
             Boolean result = noticeRepository.existsByNum(num);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Boolean result = noticeRepository.existsByNum(num)
-                    """);
+            log.info("isExist Test - Not Exist | when - ✔");
             // then
             assertThat(result).isFalse();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isFalse()
-                    """);
+            log.info("isExist Test - Not Exist | then - ✔");
         }
     }
 
@@ -103,35 +85,18 @@ public class NoticeRepositoryTest {
                     .memberEntity(memberEntity)
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ NoticeEntity" +
-                    "\n\t\t  ┗ title: \"" + noticeEntity.getTitle()+ "\""+
-                    "\n\t\t  ┗ content: \"" + noticeEntity.getContent()+ "\""+
-                    "\n\t\t  ┗ date: \"" + noticeEntity.getDate()+ "\""+
-                    "\n\t\t  ┗ memberEntity" +
-                    "\n\t\t\t  ┗ id: " + memberEntity.getId() + "\n");
+            log.info("Create Notice Test given - ✔");
             // when
             NoticeEntity result = noticeRepository.save(noticeEntity);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ noticeRepository.save(noticeEntity)
-                    """);
+            log.info("Create Notice Test when - ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getTitle()).isEqualTo(noticeEntity.getTitle());
             assertThat(result.getContent()).isEqualTo(noticeEntity.getContent());
             assertThat(result.getMemberEntity().getId()).isEqualTo(noticeEntity.getMemberEntity().getId());
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    \t  ┗ assertThat(result.getTitle()).isEqualTo(noticeEntity.getTitle())
-                    \t  ┗ assertThat(result.getContent()).isEqualTo(noticeEntity.getContent())
-                    \t  ┗ assertThat(result.getMemberEntity().getId()).isEqualTo(noticeEntity.getMemberEntity().getId())
-                    """);
+            log.info("Create Notice Test then - ✔");
         }
     }
 
@@ -146,27 +111,15 @@ public class NoticeRepositoryTest {
             log.info("findAll Test");
             // given
 
-
-            log.info("""
-
-                    \tgiven
-                    """);
+            log.info("findAll Test given - ✔");
             // when
             Page<NoticeEntity> result = noticeRepository.findAll(Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<NoticeEntity> result = noticeRepository.findAll(Pageable.unpaged())
-                    """);
+            log.info("findAll Test when - ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    """);
+            log.info("findAll Test then - ✔");
         }
 
         @Test
@@ -177,24 +130,15 @@ public class NoticeRepositoryTest {
             // given
             Integer num = 1;
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ num : " + num + "\n");
+            log.info("findByNum Test given - ✔");
             // when
             NoticeEntity result = noticeRepository.findByNum(num);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ NoticeEntity result = noticeRepository.findByNum(num)
-                    """);
+            log.info("findByNum Test when - ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    """);
+            log.info("findByNum Test then - ✔");
         }
 
         @Test
@@ -205,24 +149,15 @@ public class NoticeRepositoryTest {
             // given
             String memberId = "test_member_id";
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ memberId : " + memberId + "\n");
+            log.info("findByWriterId Test given - ✔");
             // when
             Page<NoticeEntity> result = noticeRepository.findByWriterId(memberId, Pageable.unpaged());
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ Page<NoticeEntity> result = noticeRepository.findByWriterId(memberId, Pageable.unpaged())
-                    """);
+            log.info("findByWriterId Test when - ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    """);
+            log.info("findByWriterId Test then - ✔");
         }
     }
 
@@ -245,29 +180,11 @@ public class NoticeRepositoryTest {
                     .memberEntity(originalNotice.getMemberEntity())
                     .build();
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ originalNotice" +
-                    "\n\t\t  ┗ num: " + originalNotice.getNum()+
-                    "\n\t\t  ┗ title: " + originalNotice.getTitle()+
-                    "\n\t\t  ┗ content: " + originalNotice.getContent()+
-                    "\n\t\t  ┗ date: " + originalNotice.getDate()+
-                    "\n\t\t  ┗ memberEntity" +
-                    "\n\t\t\t  ┗ id: " + originalNotice.getMemberEntity().getId() +
-                    "\n\t  ┗ updateNotice" +
-                    "\n\t\t  ┗ num: " + updateNotice.getNum()+
-                    "\n\t\t  ┗ title: " + updateNotice.getTitle()+
-                    "\n\t\t  ┗ content: " + updateNotice.getContent()+
-                    "\n\t\t  ┗ date: " + updateNotice.getDate()+
-                    "\n\t\t  ┗ memberEntity" +
-                    "\n\t\t\t  ┗ id: " + updateNotice.getMemberEntity().getId() + "\n");
+            log.info("Notice Update Test given - ✔");
             // when
             NoticeEntity result = noticeRepository.save(updateNotice);
 
-            log.info("""
-
-                \twhen
-                \t  ┗ noticeRepository.save(updateNotice)
-                """);
+            log.info("Notice Update Test when - ✔");
             // then
             assertThat(result).isNotNull();
             assertThat(result.getNum()).isEqualTo(originalNotice.getNum());
@@ -275,15 +192,7 @@ public class NoticeRepositoryTest {
             assertThat(result.getContent()).isNotEqualTo(originalNotice.getContent());
             assertThat(result.getMemberEntity().getId()).isEqualTo(originalNotice.getMemberEntity().getId());
 
-            log.info("""
-
-                \tthen
-                \t  ┗ assertThat(result).isNotNull()
-                \t  ┗ assertThat(result.getNum()).isEqualTo(originalNotice.getNum())
-                \t  ┗ assertThat(result.getTitle()).isEqualTo(originalNotice.getTitle())
-                \t  ┗ assertThat(result.getContent()).isNotEqualTo(updateNotice.getContent())
-                \t  ┗ assertThat(result.getMemberEntity().getId()).isEqualTo(originalNotice.getMemberEntity().getId())
-                """);
+            log.info("Notice Update Test then - ✔");
         }
     }
 
@@ -299,24 +208,15 @@ public class NoticeRepositoryTest {
             // given
             Integer num = 1;
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ num : " + num + "\n");
+            log.info("Delete Test given - ✔");
             // when
             noticeRepository.deleteById(num);
 
-            log.info("""
-
-                \twhen
-                \t  ┗ noticeRepository.deleteById(num)
-                """);
+            log.info("Delete Test when - ✔");
             // then
             assertThat(noticeRepository.existsByNum(num)).isFalse();
 
-            log.info("""
-
-                \tthen
-                \t  ┗ assertThat(noticeRepository.existsByNum(num)).isFalse()
-                """);
+            log.info("Delete Test then - ✔");
         }
     }
 }

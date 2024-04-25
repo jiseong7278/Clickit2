@@ -18,7 +18,7 @@ public class NoticeDTO {
     private String content;
     private LocalDateTime date;
     private String img;
-    private String memberId;
+    private MemberDTO memberDTO;
 
     /**
      * <b>NoticeEntity로 변환</b>
@@ -31,6 +31,7 @@ public class NoticeDTO {
                 .content(this.content)
                 .date(this.date)
                 .img(this.img)
+                .memberEntity(this.memberDTO.toEntity())
                 .build();
     }
 }

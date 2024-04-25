@@ -1,10 +1,11 @@
 package com.project.clickit.notice;
 
+import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.NoticeDTO;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.entity.NoticeEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
-import com.project.clickit.exceptions.notice.NoticeNotFoundException;
+import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.NoticeRepository;
 import com.project.clickit.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @Slf4j
@@ -37,158 +39,136 @@ public class NoticeServiceTest {
     class IsExist{
         @Test
         @Order(1)
-        @DisplayName("isExist - True(존재)")
-        void isExist_True(){
-            log.info("NoticeService - isExist");
+        @DisplayName("isExist Test(존재)")
+        void isExistTestTrue(){
+            log.info("isExist Test(존재)");
             // given
-            log.info("\n\tgiven\n\t  ┗ noticeDTO.builder().num(1).build()\n\t  ┗ noticeRepository.existsByNum(noticeDTO.getNum())\n");
             NoticeDTO noticeDTO = NoticeDTO.builder().num(1).build();
-            given(noticeRepository.existsByNum(noticeDTO.getNum())).willReturn(true);
+            given(noticeRepository.existsByNum(anyInt())).willReturn(true);
 
+            log.info("isExist Test(존재) given - ✔");
             //when
-            log.info("\n\twhen\n\t  ┗ Boolean result = noticeService.isExist(noticeDTO.getNum())\n");
             Boolean result = noticeService.isExist(noticeDTO.getNum());
 
+            log.info("isExist Test(존재) when - ✔");
             //then
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isTrue()");
             assertThat(result).isTrue();
+
+            log.info("isExist Test(존재) then - ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("isExist - False(미존재)")
-        void isExist_False(){
-            log.info("NoticeService - isExist");
+        @DisplayName("isExist Test(미존재)")
+        void isExistTestFalse(){
+            log.info("isExist Test(미존재)");
             // given
-            log.info("\n\tgiven\n\t  ┗ noticeDTO.builder().num(1).build()\n\t  ┗ noticeRepository.existsByNum(noticeDTO.getNum())\n");
             NoticeDTO noticeDTO = NoticeDTO.builder().num(1).build();
-            given(noticeRepository.existsByNum(noticeDTO.getNum())).willReturn(false);
+            given(noticeRepository.existsByNum(anyInt())).willReturn(false);
 
+            log.info("isExist Test(미존재) | given - ✔");
             //when
-            log.info("\n\twhen\n\t  ┗ Boolean result = noticeService.isExist(noticeDTO.getNum())\n");
             Boolean result = noticeService.isExist(noticeDTO.getNum());
 
+            log.info("isExist Test(미존재) | when - ✔");
             //then
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isFalse()");
             assertThat(result).isFalse();
+
+            log.info("isExist Test(미존재) | then - ✔");
         }
     }
 
     @Nested
-    @DisplayName("createNotice")
+    @DisplayName("create Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class Create{
         @Test
         @Order(1)
-        @DisplayName("createNotice")
-        void createNotice(){
-            log.info("NoticeService - createNotice");
+        @DisplayName("createNotice Test")
+        void createNoticeTest(){
+            log.info("createNotice Test");
             // given
+            MemberDTO memberDTO = MemberDTO.builder().id("test3").build();
+
             NoticeDTO noticeDTO = NoticeDTO.builder()
                     .num(10)
                     .title("title")
                     .content("content")
-                    .memberId("test3")
+                    .memberDTO(memberDTO)
                     .build();
 
-            given(noticeRepository.existsByNum(noticeDTO.getNum())).willReturn(false);
+            given(noticeRepository.existsByNum(anyInt())).willReturn(false);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ noticeDTO" +
-                    "\n\t\t  ┗ num: "+noticeDTO.getNum()+
-                    "\n\t\t  ┗ title: \""+noticeDTO.getTitle()+"\"" +
-                    "\n\t\t  ┗ content: \""+noticeDTO.getContent()+
-                    "\n\t\t  ┗ memberId: \""+noticeDTO.getMemberId()+"\""+
-                    "\n\t  ┗ noticeRepository.existsByNum(noticeDTO.getNum()).willReturn(false)\n");
-
+            log.info("createNotice Test given - ✔");
             // when
             noticeService.createNotice(noticeDTO);
 
-            log.info("\n\twhen\n\t  ┗ noticeService.createNotice(noticeDTO)\n");
-
+            log.info("createNotice Test when - ✔");
             // then
             assertThatCode(()->noticeService.createNotice(noticeDTO)).doesNotThrowAnyException();
 
-            log.info("\n\tthen\n\t  ┗ assertThatCode(()->noticeService.createNotice(noticeDTO)).doesNotThrowAnyException()\n");
+            log.info("createNotice Test then - ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("createNotice - DuplicatedIdException")
-        void createNotice_DuplicatedIdException(){
-            log.info("NoticeService - createNotice");
-
+        @DisplayName("createNotice Test - DuplicatedIdException")
+        void createNoticeTestDuplicatedIdException(){
+            log.info("createNotice Test - DuplicatedIdException");
             // given
+            MemberDTO memberDTO = MemberDTO.builder().id("test3").build();
+
             NoticeDTO noticeDTO = NoticeDTO.builder()
                     .num(1)
                     .title("title")
                     .content("content")
-                    .memberId("test3")
+                    .memberDTO(memberDTO)
                     .build();
 
-            given(noticeRepository.existsByNum(noticeDTO.getNum())).willReturn(true);
+            given(noticeRepository.existsByNum(anyInt())).willReturn(true);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ noticeDTO" +
-                    "\n\t\t  ┗ num: "+noticeDTO.getNum()+
-                    "\n\t\t  ┗ title: \""+noticeDTO.getTitle()+"\"" +
-                    "\n\t\t  ┗ content: \""+noticeDTO.getContent()+
-                    "\n\t\t  ┗ memberId: \""+noticeDTO.getMemberId()+"\""+
-                    "\n\t  ┗ noticeRepository.existsByNum(noticeDTO.getNum()).willReturn(true)\n");
-
+            log.info("createNotice Test - DuplicatedIdException | given - ✔");
             // when
-            log.info("\n\twhen");
+            Throwable result = catchThrowable(()->noticeService.createNotice(noticeDTO));
 
+            log.info("createNotice Test - DuplicatedIdException | when - ✔");
             // then
-            assertThatCode(()->noticeService.createNotice(noticeDTO)).isInstanceOf(DuplicatedIdException.class);
+            assertThat(result).isInstanceOf(DuplicatedIdException.class);
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThatCode(()->noticeService.createNotice(noticeDTO)).isInstanceOf(DuplicatedIdException.class)
-                    """);
+            log.info("createNotice Test - DuplicatedIdException | then - ✔");
         }
     }
 
     @Nested
-    @DisplayName("getNotice")
+    @DisplayName("Read Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class Read{
         @Test
         @Order(1)
-        @DisplayName("getAll")
-        void getAll(){
-            log.info("NoticeService - getAll");
-
+        @DisplayName("getAll Test")
+        void getAllTest(){
+            log.info("getAll Test");
             // given
             Page<NoticeEntity> noticeEntityPage = Page.empty();
 
-            given(noticeRepository.findAll(Pageable.unpaged())).willReturn(noticeEntityPage);
+            given(noticeRepository.findAll(any(Pageable.class))).willReturn(noticeEntityPage);
 
-            log.info("""
-
-                    \tgiven
-                    \t  ┗ Page<NoticeEntity> noticeEntityPage = Page.empty()
-                    \t  ┗ noticeRepository.findAll(Pageable.unpaged()).willReturn(noticeEntityPage)
-                    """);
-
+            log.info("getAll Test given - ✔");
             // when
             Page<NoticeDTO> result = noticeService.getAll(Pageable.unpaged());
 
-            log.info("\n\twhen\n\t  ┗ Page<NoticeDTO> result = noticeService.getAll(Pageable.unpaged())\n");
-
+            log.info("getAll Test when - ✔");
             // then
             assertThat(result).isNotNull();
 
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isNotNull()\n");
+            log.info("getAll Test then - ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("findByNoticeNum")
-        void findByNoticeNum(){
-            log.info("NoticeService - findByNoticeNum");
-
+        @DisplayName("findByNoticeNum Test")
+        void findByNoticeNumTest(){
+            log.info("findByNoticeNum Test");
             // given
             Integer num = 1;
 
@@ -197,222 +177,163 @@ public class NoticeServiceTest {
                     .memberEntity(MemberEntity.builder().id("test3").build())
                     .build();
 
-            given(noticeRepository.findByNum(num)).willReturn(noticeEntity);
-            given(noticeService.isExist(num)).willReturn(true);
+            given(noticeRepository.findByNum(anyInt())).willReturn(noticeEntity);
+            given(noticeService.isExist(anyInt())).willReturn(true);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ Integer num = 1
-                    \t  ┗ NoticeEntity noticeEntity
-                    \t\t  ┗ num: {}
-                    \t\t  ┗ memberEntity
-                    \t\t\t  ┗ id: {}
-                    \t  ┗ noticeRepository.findByNum(num).willReturn(noticeEntity)
-                    \t  ┗ noticeService.isExist(num).willReturn(true)
-                    """, num, noticeEntity.getMemberEntity().getId());
+            log.info("findByNoticeNum Test given - ✔");
             // when
-
             NoticeDTO result = noticeService.findByNoticeNum(num);
 
-            log.info("""
-
-                    \twhen
-                    \t  ┗ NoticeDTO result = noticeService.findByNoticeNum(num)
-                    """);
+            log.info("findByNoticeNum Test when - ✔");
             // then
-
             assertThat(result).isNotNull();
 
-            log.info("""
-
-                    \tthen
-                    \t  ┗ assertThat(result).isNotNull()
-                    """);
+            log.info("findByNoticeNum Test then - ✔");
         }
 
         @Test
         @Order(3)
         @DisplayName("findByNoticeNum - NoticeNotFoundException")
-        void findByNoticeNum_NotFound(){
+        void findByNoticeNumTestNotFound(){
             log.info("NoticeService - findByNoticeNum_NotFound");
-
+            // given
             Integer num = 11;
 
-            given(noticeService.isExist(num)).willReturn(false);
+            given(noticeService.isExist(anyInt())).willReturn(false);
 
-            log.info("""
-
-                    \tgiven
-                    \t  ┗ Integer num = 11
-                    \t  ┗ noticeService.isExist(num).willReturn(false)
-                    """);
+            log.info("NoticeService - findByNoticeNum_NotFound | given - ✔");
             // when
-
             Throwable result = catchThrowable(()->noticeService.findByNoticeNum(num));
 
-            log.info("\n\twhen\n\t  ┗ Throwable result = catchThrowable(()->noticeService.findByNoticeNum(num))\n");
+            log.info("NoticeService - findByNoticeNum_NotFound | when - ✔");
             // then
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            assertThat(result).isInstanceOf(NoticeNotFoundException.class);
-
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isInstanceOf(NoticeNotFoundException.class)\n");
+            log.info("NoticeService - findByNoticeNum_NotFound | then - ✔");
         }
 
         @Test
         @Order(4)
-        @DisplayName("findNoticeByWriterId")
-        void findNoticeByWriterId(){
-            log.info("NoticeService - findNoticeByWriterId");
-
+        @DisplayName("findNoticeByWriterId Test")
+        void findNoticeByWriterIdTest(){
+            log.info("findNoticeByWriterId Test");
             // given
             String memberId = "test3";
 
             Page<NoticeEntity> noticeEntityPage = Page.empty();
-            given(noticeRepository.findByWriterId(memberId, Pageable.unpaged())).willReturn(noticeEntityPage);
+            given(noticeRepository.findByWriterId(anyString(), any(Pageable.class))).willReturn(noticeEntityPage);
 
-            log.info("""
-                    
-                    \tgiven
-                    \t  ┗ String memberId = "test3"
-                    \t  ┗ Page<NoticeEntity> noticeEntityPage = Page.empty()
-                    \t  ┗ noticeRepository.findByWriterId(memberId, Pageable.unpaged()).willReturn(noticeEntityPage)
-                    """);
+            log.info("findNoticeByWriterId Test given - ✔");
             // when
             Page<NoticeDTO> result = noticeService.findNoticeByWriterId(memberId, Pageable.unpaged());
 
-            log.info("\n\twhen\n\t  ┗ Page<NoticeDTO> result = noticeService.findNoticeByWriterId(memberId, Pageable.unpaged())\n");
+            log.info("findNoticeByWriterId Test when - ✔");
             // then
-
             assertThat(result).isNotNull();
 
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isNotNull()\n");
+            log.info("findNoticeByWriterId Test then - ✔");
         }
     }
 
     @Nested
-    @DisplayName("updateNotice")
+    @DisplayName("update Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class Update{
         @Test
         @Order(1)
-        @DisplayName("updateNotice")
+        @DisplayName("updateNotice Test")
         void updateNotice(){
-            log.info("NoticeService - updateNotice");
-
+            log.info("updateNotice Test");
             // given
-
-            MemberEntity memberEntity = MemberEntity.builder().id("test3").build();
+            MemberDTO memberDTO = MemberDTO.builder().id("test3").build();
 
             NoticeDTO noticeDTO = NoticeDTO.builder()
                     .num(1)
                     .title("title")
                     .content("content")
-                    .memberId(memberEntity.getId())
+                    .memberDTO(memberDTO)
                     .build();
 
-            given(noticeService.isExist(noticeDTO.getNum())).willReturn(true);
+            given(noticeService.isExist(anyInt())).willReturn(true);
 
-            log.info("\tgiven" +
-                    "\n\t  ┗ NoticeDTO noticeDTO" +
-                    "\n\t\t  ┗ num: "+noticeDTO.getNum()+
-                    "\n\t\t  ┗ title: \""+noticeDTO.getTitle()+
-                    "\"\n\t\t  ┗ content: \""+noticeDTO.getContent()+
-                    "\"\n\t\t  ┗ memberId: \""+noticeDTO.getMemberId()+
-                    "\"\n\t  ┗ noticeService.isExist(noticeDTO.getNum()).willReturn(true)\n");
+            log.info("updateNotice Test given - ✔");
             // when
-
             noticeService.updateNotice(noticeDTO);
 
-            log.info("\n\twhen\n\t  ┗ noticeService.updateNotice(noticeDTO)\n");
+            log.info("updateNotice Test when - ✔");
             // then
             assertThatCode(()->noticeService.updateNotice(noticeDTO)).doesNotThrowAnyException();
 
-            log.info("\n\tthen\n\t  ┗ assertThatCode(()->noticeService.updateNotice(noticeDTO)).doesNotThrowAnyException()\n");
+            log.info("updateNotice Test then - ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("updateNotice - NoticeNotFoundException")
+        @DisplayName("updateNotice Test - NoticeNotFoundException")
         void updateNotice_NotFound(){
-            log.info("NoticeService - updateNotice_NotFound");
+            log.info("NoticeService Test - NoticeNotFoundException");
 
             // given
             NoticeDTO noticeDTO = NoticeDTO.builder().num(11).build();
 
-            given(noticeService.isExist(noticeDTO.getNum())).willReturn(false);
+            given(noticeService.isExist(anyInt())).willReturn(false);
 
-            log.info("\n\tgiven" +
-                    "\n\t  ┗ NoticeDTO noticeDTO" +
-                    "\n\t\t  ┗ num: "+noticeDTO.getNum()+
-                    "\n\t  ┗ noticeService.isExist(noticeDTO.getNum()).willReturn(false)\n");
+            log.info("NoticeService Test - NoticeNotFoundException | given - ✔");
             // when
             Throwable result = catchThrowable(()->noticeService.updateNotice(noticeDTO));
 
-            log.info("\n\twhen\n\t  ┗ Throwable result = catchThrowable(()->noticeService.updateNotice(noticeDTO))\n");
+            log.info("NoticeService Test - NoticeNotFoundException | when - ✔");
             // then
-            assertThat(result).isInstanceOf(NoticeNotFoundException.class);
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isInstanceOf(NoticeNotFoundException.class)\n");
+            log.info("NoticeService Test - NoticeNotFoundException | then - ✔");
         }
     }
 
     @Nested
-    @DisplayName("deleteNotice")
+    @DisplayName("delete Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class Delete{
         @Test
         @Order(1)
-        @DisplayName("deleteNotice")
+        @DisplayName("deleteNotice Test")
         void deleteNotice(){
-            log.info("NoticeService - deleteNotice");
-
+            log.info("deleteNotice Test");
             // given
             Integer num = 1;
 
-            given(noticeService.isExist(num)).willReturn(true);
+            given(noticeService.isExist(anyInt())).willReturn(true);
 
-            log.info("""
-
-                    \tgiven
-                    \t  ┗ Integer num = 1
-                    \t  ┗ noticeService.isExist(num).willReturn(true)
-                    """);
+            log.info("deleteNotice Test given - ✔");
             // when
             noticeService.deleteNotice(num);
 
-            log.info("\n\twhen\n\t  ┗ noticeService.deleteNotice(num)\n");
+            log.info("deleteNotice Test when - ✔");
             // then
             assertThatCode(()->noticeService.deleteNotice(num)).doesNotThrowAnyException();
 
-            log.info("\n\tthen\n\t  ┗ assertThatCode(()->noticeService.deleteNotice(num)).doesNotThrowAnyException()\n");
+            log.info("deleteNotice Test then - ✔");
         }
 
         @Test
         @Order(2)
-        @DisplayName("deleteNotice - NoticeNotFoundException")
+        @DisplayName("deleteNotice Test - NoticeNotFoundException")
         void deleteNotice_NotFound(){
-            log.info("NoticeService - deleteNotice_NotFound");
-
+            log.info("NoticeService Test - deleteNotice_NotFound");
             // given
             Integer num = 11;
 
-            given(noticeService.isExist(num)).willReturn(false);
+            given(noticeService.isExist(anyInt())).willReturn(false);
 
-            log.info("""
-
-                    \tgiven
-                    \t  ┗ Integer num = 11
-                    \t  ┗ noticeService.isExist(num).willReturn(false)
-                    """);
+            log.info("NoticeService Test - deleteNotice_NotFound | given - ✔");
             // when
             Throwable result = catchThrowable(()->noticeService.deleteNotice(num));
 
-            log.info("\n\twhen\n\t  ┗ Throwable result = catchThrowable(()->noticeService.deleteNotice(num))\n");
+            log.info("NoticeService Test - deleteNotice_NotFound | when - ✔");
             // then
-            assertThat(result).isInstanceOf(NoticeNotFoundException.class);
+            assertThat(result).isInstanceOf(ObjectNotFoundException.class);
 
-            log.info("\n\tthen\n\t  ┗ assertThat(result).isInstanceOf(NoticeNotFoundException.class)\n");
+            log.info("NoticeService Test - deleteNotice_NotFound | then - ✔");
         }
     }
 

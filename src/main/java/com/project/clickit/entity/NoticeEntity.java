@@ -32,7 +32,7 @@ public class NoticeEntity {
     private String img;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "notice_writer", insertable = false, updatable = false)
+    @JoinColumn(name = "notice_member", insertable = false, updatable = false)
     private MemberEntity memberEntity;
 
     /**
@@ -46,7 +46,7 @@ public class NoticeEntity {
                 .content(this.content)
                 .date(this.date)
                 .img(this.img)
-                .memberId(this.memberEntity.getId())
+                .memberDTO(this.memberEntity.toDTO())
                 .build();
     }
 }
