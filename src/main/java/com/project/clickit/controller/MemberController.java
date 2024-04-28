@@ -19,6 +19,7 @@ import java.util.List;
 public class MemberController {
     final MemberService memberService;
 
+    // Create
     @PostMapping("${member.create}")
     public ResponseEntity<Object> create(@RequestBody MemberDTO memberDTO) {
         memberService.create(memberDTO);
@@ -31,11 +32,20 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+
+    // Read
     @GetMapping("${member.getAll}")
     @ResponseBody
     public ResponseEntity<Page<MemberDTO>> getAll(@PageableDefault(direction = Sort.Direction.ASC,
             sort = "studentNum") Pageable pageable) {
         return ResponseEntity.ok().body(memberService.getAll(pageable));
+    }
+
+    @GetMapping("${member.getAllStudent}")
+    @ResponseBody
+    public ResponseEntity<Page<MemberDTO>> getAllStudent(@PageableDefault(direction = Sort.Direction.ASC,
+            sort = "studentNum") Pageable pageable) {
+        return ResponseEntity.ok().body(memberService.getAllStudent(pageable));
     }
 
     @GetMapping("${member.findByMemberId}")
@@ -57,6 +67,8 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.findByDormitoryId(dormitoryId, pageable));
     }
 
+
+    // Update
     @PutMapping("${member.update}")
     public ResponseEntity<Object> updateMember(@RequestBody MemberDTO memberDTO) {
         memberService.update(memberDTO);
@@ -81,9 +93,17 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+
+    // Delete
     @DeleteMapping("${member.delete}")
     public ResponseEntity<Object> deleteMember(@RequestParam("id") String id) {
         memberService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("${member.deleteAllStudent}")
+    public ResponseEntity<Object> deleteAll() {
+        memberService.deleteAll();
         return ResponseEntity.ok().build();
     }
 }

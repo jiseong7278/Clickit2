@@ -3,11 +3,13 @@ package com.project.clickit.service;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
+import com.project.clickit.exceptions.common.NoPermissionException;
 import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,9 @@ import java.util.List;
 
 @Service
 public class MemberService {
+
+    @Value("${roles.student}")
+    private String TYPE_STUDENT;
 
     final MemberRepository memberRepository;
     final JwtProvider jwtProvider;
@@ -67,7 +72,14 @@ public class MemberService {
                 throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
             }
         }
-        memberRepository.saveAll(toEntityList(MemberDTOList));
+
+        List<MemberEntity> memberEntityList = toEntityList(MemberDTOList);
+
+        for (MemberEntity memberEntity : memberEntityList) {
+            memberEntity.setType(TYPE_STUDENT);
+        }
+
+        memberRepository.saveAll(memberEntityList);
     }
 
 
@@ -80,6 +92,16 @@ public class MemberService {
     @Transactional
     public Page<MemberDTO> getAll(Pageable pageable) {
         return toDTOPage(memberRepository.findAll(pageable));
+    }
+
+    /**
+     * <b>모든 학생 조회</b>
+     * @param pageable Pageable
+     * @return Page&lt;MemberDTO&gt;
+     */
+    @Transactional
+    public Page<MemberDTO> getAllStudent(Pageable pageable) {
+        return toDTOPage(memberRepository.findAllStudent(TYPE_STUDENT, pageable));
     }
 
     /**
@@ -101,7 +123,7 @@ public class MemberService {
      */
     @Transactional
     public Page<MemberDTO> findByMemberName(String name, Pageable pageable) {
-        return toDTOPage(memberRepository.findByMemberName(name, pageable));
+        return toDTOPage(memberRepository.findByMemberName(name, TYPE_STUDENT, pageable));
     }
 
     /**
@@ -177,9 +199,26 @@ public class MemberService {
      */
     @Transactional
     public void deleteById(String id) {
-        if (!isExist(id))
-            throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+        if (!isExist(id)) throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+        if (!isStudent(findByMemberId(id).getType())) throw new NoPermissionException(ErrorCode.NO_PERMISSION);
         memberRepository.deleteById(id);
+    }
+
+    /**
+     * <b>모든 회원 삭제</b>
+     */
+    @Transactional
+    public void deleteAll(){
+        memberRepository.deleteAllStudent(TYPE_STUDENT);
+    }
+
+    /**
+     * <b>회원이 학생인지 확인</b>
+     * @param type
+     * @return {@code true} if the type is student, otherwise {@code false}
+     */
+    private Boolean isStudent(String type) {
+        return type.equals(TYPE_STUDENT);
     }
 
     /**

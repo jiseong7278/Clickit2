@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -260,6 +261,29 @@ public class MemberControllerTest {
 
             log.info("findByDormitoryId Test when & then: ✔");
         }
+
+        @Test
+        @Order(6)
+        @DisplayName("getAllStudent Test")
+        void getAllStudentTest() throws Exception{
+            log.info("getAllStudent Test");
+            // given
+            int size = 10;
+            int page = 0;
+
+            given(memberService.getAllStudent(any(Pageable.class))).willReturn(Page.empty());
+
+            log.info("getAllStudent Test given: ✔");
+            // when & then
+            mvc.perform(get("/member/getAllStudent")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .characterEncoding("UTF-8")
+                            .param("size", String.valueOf(size))
+                            .param("page", String.valueOf(page)))
+                    .andExpect(status().isOk());
+
+            log.info("getAllStudent Test when & then: ✔");
+        }
     }
 
     @Nested
@@ -462,6 +486,22 @@ public class MemberControllerTest {
                     .andExpect(status().isBadRequest());
 
             log.info("deleteById Test - MemberNotFoundException | when & then: ✔");
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("deleteAllStudent Test")
+        void deleteAllStudentTest() throws Exception{
+            log.info("deleteAllStudent Test");
+            // given
+            willDoNothing().given(memberService).deleteAll();
+
+            log.info("deleteAllStudent Test given: ✔");
+            // when & then
+            mvc.perform(delete("/member/deleteAllStudent"))
+                    .andExpect(status().isOk());
+
+            log.info("deleteAllStudent Test when & then: ✔");
         }
     }
 }

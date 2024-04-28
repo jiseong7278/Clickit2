@@ -18,9 +18,13 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
     MemberEntity findById(@NonNull String id);
 
+    // find all where type is student
+    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.type = :type")
+    Page<MemberEntity> findAllStudent(@Param("type") String type, Pageable pageable);
+
     // find by member name
-    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.name like %:memberName%")
-    Page<MemberEntity> findByMemberName(@Param("memberName") String memberName, Pageable pageable);
+    @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.name like %:memberName% and m.type = :type")
+    Page<MemberEntity> findByMemberName(@Param("memberName") String memberName, @Param("type") String type, Pageable pageable);
 
     // find by dormitory id
     @Query("SELECT new MemberEntity(m.id, m.password, m.name, m.email, m.phone, m.studentNum, m.type, m.refreshToken, m.dormitoryEntity) FROM MemberEntity m where m.dormitoryEntity.id = :dormitoryId")
@@ -53,4 +57,9 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Boolean existsById(String id);
 
     void deleteById(String id);
+
+    // delete all student
+    @Modifying
+    @Query("DELETE FROM MemberEntity m WHERE m.type = :type")
+    void deleteAllStudent(@Param("type") String type);
 }

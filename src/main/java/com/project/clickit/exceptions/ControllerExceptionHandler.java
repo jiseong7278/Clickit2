@@ -2,6 +2,7 @@ package com.project.clickit.exceptions;
 
 import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.InvalidIdException;
+import com.project.clickit.exceptions.common.NoPermissionException;
 import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.exceptions.image.*;
 import com.project.clickit.exceptions.jwt.*;
@@ -42,6 +43,15 @@ public class ControllerExceptionHandler extends RuntimeException{
      */
     @ExceptionHandler(InvalidIdException.class)
     public ResponseEntity<String> handleInvalidIdException(InvalidIdException e){
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
+    }
+
+    /**
+     * 권한이 없을 경우 발생하는 예외
+     * @return 403 Forbidden
+     */
+    @ExceptionHandler(NoPermissionException.class)
+    public ResponseEntity<String> handleNoPermissionException(NoPermissionException e){
         return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(e.getErrorCode().getMessage());
     }
 

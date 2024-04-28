@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(value="${requestMapping.reservation}", produces="application/json;charset=UTF-8")
 public class ReservationController {

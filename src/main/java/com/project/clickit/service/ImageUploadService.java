@@ -9,8 +9,9 @@ import com.amazonaws.util.IOUtils;
 import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.image.S3ImageException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -24,16 +25,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
+@Service
 @RequiredArgsConstructor
-@Component
 public class ImageUploadService {
+
     private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucketName}")
     private String bucketName;
 
     public String upload(MultipartFile image){
-        if(image.isEmpty() || Objects.isNull(image.getOriginalFilename())){
+        if(Objects.isNull(image) || image.isEmpty() || Objects.isNull(image.getOriginalFilename())){
             throw new S3ImageException(ErrorCode.IMAGE_NOT_EXISTS);
         }
         return this.uploadImage(image);
@@ -72,7 +75,7 @@ public class ImageUploadService {
         byte[] bytes = IOUtils.toByteArray(is);
 
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType("image/"+extension);
+        metadata.setContentType("image/" + extension);
         metadata.setContentLength(bytes.length);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 

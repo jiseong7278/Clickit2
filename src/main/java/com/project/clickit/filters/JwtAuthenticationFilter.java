@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             httpResponse.setCharacterEncoding("UTF-8");
             httpResponse.setContentType("application/json");
             httpResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-            httpResponse.getWriter().write("인증 과정에서 오류가 발생하였습니다.\n증상이 반복될 경우 관리자에게 문의해주세요.");
+            httpResponse.getWriter().write("오류가 발생하였습니다.\n증상이 반복될 경우 관리자에게 문의해주세요.");
             httpResponse.getWriter().close();
             log.error("JwtAuthenticationFilter Exception: {}", e.getMessage());
         }

@@ -211,7 +211,7 @@ public class MemberRepositoryTest {
 
             log.info("findByMemberName Test given: ✔");
             // when
-            Page<MemberEntity> result = memberRepository.findByMemberName(name, Pageable.unpaged());
+            Page<MemberEntity> result = memberRepository.findByMemberName(name, "CLICKIT_STUDENT",Pageable.unpaged());
 
             log.info("findByMemberName Test when: ✔");
             // then

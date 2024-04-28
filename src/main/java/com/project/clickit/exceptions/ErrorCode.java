@@ -23,12 +23,13 @@ public enum ErrorCode {
     DUPLICATED_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다."),
     INVALID_ID(HttpStatus.BAD_REQUEST, "아이디가 올바르지 않습니다."),
     OBJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 객체가 존재하지 않습니다."),
+    NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
     // jwt
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않습니다."),
     INVALID_ISSUER(HttpStatus.BAD_REQUEST, "유효하지 않은 발급자입니다."),
     INVALID_SIGNATURE_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 서명입니다."),
-    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "지원하지 않는 토큰입니다."),
     ILLEGAL_TOKEN(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다."),
     UNEXPECTED_TOKEN_ERROR(HttpStatus.BAD_REQUEST, "예상치 못한 토큰입니다."),

@@ -4,6 +4,7 @@ import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
+import com.project.clickit.exceptions.common.NoPermissionException;
 import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.service.MemberService;
@@ -362,11 +363,11 @@ public class MemberServiceTest {
 
             Page<MemberEntity> memberEntityPage = Page.empty();
 
-            given(memberRepository.findByMemberName(anyString(), any(Pageable.class))).willReturn(memberEntityPage);
+            given(memberRepository.findByMemberName(anyString(), any(), any(Pageable.class))).willReturn(memberEntityPage);
 
             log.info("findByMemberName Test given: ✔");
             // when
-            Page<MemberDTO> result = memberService.findByMemberName(name, Pageable.ofSize(10));
+            Page<MemberDTO> result = memberService.findByMemberName(name, Pageable.unpaged());
 
             log.info("findByMemberName Test when: ✔");
             // then
@@ -426,6 +427,31 @@ public class MemberServiceTest {
             );
 
             log.info("findByDormitoryId Test(존재하지 않는 아이디) | then: ✔");
+        }
+
+        @Test
+        @Order(7)
+        @DisplayName("getAllByType Test")
+        void getAllByTypeTest(){
+            log.info("getAllByType Test");
+            // given
+            Page<MemberEntity> memberEntityPage = Page.empty();
+
+            given(memberRepository.findAllStudent(any(), any(Pageable.class))).willReturn(memberEntityPage);
+
+            log.info("getAllByType Test given: ✔");
+            // when
+            Page<MemberDTO> result = memberService.getAllStudent(Pageable.ofSize(10));
+
+            log.info("getAllByType Test when: ✔");
+            // then
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result).isInstanceOf(Page.class),
+                    () -> assertThatCode(() -> assertThatIterable(result).allMatch(Objects::nonNull)).doesNotThrowAnyException()
+            );
+
+            log.info("getAllByType Test then: ✔");
         }
     }
 
@@ -754,6 +780,60 @@ public class MemberServiceTest {
             );
 
             log.info("deleteById Test(존재하지 않는 아이디) | then: ✔");
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("deleteById Test(학생이 아닌 경우)")
+        void deleteByIdTestNotStudent(){
+            log.info("deleteById Test(학생이 아닌 경우)");
+            // given
+            String id = "test_member_id";
+
+            MemberEntity memberEntity = MemberEntity.builder()
+                    .id(id)
+                    .type("CLICKIT_STAFF")
+                    .build();
+
+            given(memberRepository.existsById(anyString())).willReturn(true);
+
+            given(memberRepository.findById(anyString())).willReturn(memberEntity);
+
+            log.info("deleteById Test(학생이 아닌 경우) | given: ✔");
+            // when
+            Throwable exception = catchThrowable(() -> memberService.deleteById(id));
+
+            log.info("deleteById Test(학생이 아닌 경우) | when: ✔");
+            // then
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(NoPermissionException.class),
+                    () -> then(memberRepository).should(never()).deleteById(id)
+            );
+
+            log.info("deleteById Test(학생이 아닌 경우) | then: ✔");
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("deleteAll Test")
+        void deleteAllTest(){
+            log.info("deleteAll Test");
+            // given
+
+            willDoNothing().given(memberRepository).deleteAllStudent(any());
+
+            log.info("deleteAll Test given: ✔");
+            // when
+            memberService.deleteAll();
+
+            log.info("deleteAll Test when: ✔");
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().deleteAllStudent(any()),
+                    () -> assertThatCode(() -> memberService.deleteAll()).doesNotThrowAnyException()
+            );
+
+            log.info("deleteAll Test then: ✔");
         }
     }
 }
