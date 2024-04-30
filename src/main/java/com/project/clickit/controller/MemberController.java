@@ -69,9 +69,15 @@ public class MemberController {
 
 
     // Update
-    @PutMapping("${member.update}")
-    public ResponseEntity<Object> updateMember(@RequestBody MemberDTO memberDTO) {
-        memberService.update(memberDTO);
+    @PutMapping("${member.updatePhone}")
+    public ResponseEntity<Object> updatePhone(@RequestParam("phone") String phone) {
+        memberService.updatePhone(phone);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("${member.updateEmail}")
+    public ResponseEntity<Object> updateEmail(@RequestParam("email") String email) {
+        memberService.updateEmail(email);
         return ResponseEntity.ok().build();
     }
 

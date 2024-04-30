@@ -290,26 +290,6 @@ public class MemberControllerTest {
     @DisplayName("Update Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class UpdateTest{
-        @Test
-        @Order(1)
-        @DisplayName("updateMember Test")
-        void updateMemberTest() throws Exception{
-            log.info("updateMember Test");
-            // given
-            MemberDTO memberDTO = mock(MemberDTO.class);
-
-            willDoNothing().given(memberService).update(any(MemberDTO.class));
-
-            log.info("updateMember Test given: ✔");
-            // when & then
-            mvc.perform(put("/member/update")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding("UTF-8")
-                    .content(objectMapper.writeValueAsString(memberDTO)))
-                    .andExpect(status().isOk());
-
-            log.info("updateMember Test when & then: ✔");
-        }
 
         @Test
         @Order(2)

@@ -136,17 +136,25 @@ public class MemberService {
 
     // ========== Update ========== //
     /**
-     * <b>학생이 본인 정보 업데이트</b>
-     * @param memberDTO MemberDTO
+     * <b>전화번호 업데이트</b>
+     * @param phone String
      */
     @Transactional
-    public void update(MemberDTO memberDTO){
+    public void updatePhone(String phone) {
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
         if (!isExist(memberId)) throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
-        MemberEntity memberEntity = memberDTO.toEntity();
-        memberEntity.setId(memberId);
-        memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
-        memberRepository.save(memberEntity);
+        memberRepository.updatePhoneById(memberId, phone);
+    }
+
+    /**
+     * <b>이메일 업데이트</b>
+     * @param email String
+     */
+    @Transactional
+    public void updateEmail(String email) {
+        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!isExist(memberId)) throw new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+        memberRepository.updateEmailById(memberId, email);
     }
 
     /**
