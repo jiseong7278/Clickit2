@@ -14,8 +14,14 @@ public class ImageUploadController {
 
     private final ImageUploadService imageUploadService;
 
-    @PostMapping("/upload")
+    @PostMapping("${imageUpload.upload}")
     public ResponseEntity<String> upload(@RequestPart(value = "image") MultipartFile image) {
         return ResponseEntity.ok().body(imageUploadService.upload(image));
+    }
+
+    @GetMapping("${imageUpload.delete}")
+    public ResponseEntity<Void> delete(@RequestParam String imageUrl) {
+        imageUploadService.deleteImageFromS3(imageUrl);
+        return ResponseEntity.ok().build();
     }
 }

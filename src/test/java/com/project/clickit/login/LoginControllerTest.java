@@ -133,7 +133,7 @@ public class LoginControllerTest {
             TokenDTO tokenDTO = mock(TokenDTO.class);
 
             given(loginService.isExist(anyString())).willReturn(false);
-            given(loginService.signUp(any(MemberDTO.class), anyString())).willReturn(tokenDTO);
+            given(loginService.signUp(any(MemberDTO.class))).willReturn(tokenDTO);
 
             log.info("signUp Test - ok | given: ✔");
             // when
@@ -155,7 +155,7 @@ public class LoginControllerTest {
             MemberDTO memberDTO = mock(MemberDTO.class);
 
             given(loginService.isExist(anyString())).willReturn(true);
-            given(loginService.signUp(any(MemberDTO.class), anyString())).willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID));
+            given(loginService.signUp(any(MemberDTO.class))).willThrow(new DuplicatedIdException(ErrorCode.DUPLICATED_ID));
 
             log.info("signUp Test - badRequest | given: ✔");
             // when

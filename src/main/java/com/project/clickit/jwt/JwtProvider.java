@@ -2,6 +2,7 @@ package com.project.clickit.jwt;
 
 import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.jwt.*;
+import com.project.clickit.service.MemberDetailService;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -34,10 +34,10 @@ public class JwtProvider{
     private static final String TOKEN_SUBJECT_REFRESH = "refresh";
     private static final String AUTHORITIES_KEY = "auth";
 
-    private final UserDetailsService userDetailsService;
+    private final MemberDetailService memberDetailService;
 
-    public JwtProvider(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public JwtProvider(MemberDetailService memberDetailService) {
+        this.memberDetailService = memberDetailService;
     }
 
     @PostConstruct
@@ -98,7 +98,7 @@ public class JwtProvider{
      * @return Authentication
      */
     public Authentication getAuthentication(String token){
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getMemberId(token));
+        UserDetails userDetails = memberDetailService.loadUserByUsername(getMemberId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

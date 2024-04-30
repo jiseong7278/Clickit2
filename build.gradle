@@ -36,10 +36,10 @@ dependencies {
 	implementation 'javax.mail:javax.mail-api:1.6.2'
 	implementation 'com.sun.mail:javax.mail:1.6.2'
 
-	// aws s3
+	// aws
+	// s3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:3.0.3'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.638'
-//	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.261'
 
 	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 

@@ -1,5 +1,6 @@
 package com.project.clickit.service;
 
+import com.project.clickit.domain.Type;
 import com.project.clickit.dto.LoginDTO;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
@@ -13,9 +14,7 @@ import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.util.EmailUtil;
 import com.project.clickit.util.SMSUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +28,6 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-@Slf4j
 @Service
 public class LoginService {
     private final MemberRepository memberRepository;
@@ -45,9 +43,6 @@ public class LoginService {
     private final SMSUtil smsUtil;
 
     private final EmailUtil emailUtil;
-
-    @Value("${roles.student}")
-    private String TYPE_STUDENT;
 
     @Autowired
     public LoginService(MemberRepository memberRepository, JwtProvider jwtProvider, RedisService redisService, SMSUtil smsUtil, EmailUtil emailUtil){
@@ -71,11 +66,10 @@ public class LoginService {
     /**
      * <b>회원가입</b>
      * @param memberDTO MemberDTO
-     * @param role String
      * @return TokenDTO
      */
     @Transactional
-    public TokenDTO signUp(MemberDTO memberDTO, String role){ // 매개변수에 Type 추가 and accessToken, refreshToken에서 Collections.singletonList에 Type(매개변수)로 변경
+    public TokenDTO signUp(MemberDTO memberDTO){ // 매개변수에 Type 추가 and accessToken, refreshToken에서 Collections.singletonList에 Type(매개변수)로 변경
         ReentrantLock lock = lockMap.computeIfAbsent(memberDTO.getId(), key -> new ReentrantLock());
 
         if(!lock.tryLock()){
@@ -87,22 +81,10 @@ public class LoginService {
                 throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
             }else{
                 MemberEntity memberEntity = memberDTO.toEntity();
-                memberEntity.setType(role);
+                if(memberEntity.getType() == null) memberEntity.setType(Type.STUDENT.getName());
                 memberEntity.setPassword(passwordEncoder.encode(memberEntity.getPassword()));
 
-                String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(role));
-                String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(role));
-
-                memberEntity.setRefreshToken(refreshToken);
-
-                memberRepository.save(memberEntity);
-
-                return TokenDTO.builder()
-                        .id(memberEntity.getId())
-                        .password(memberEntity.getPassword())
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build();
+                return createTokenDTO(memberEntity);
             }
         }finally {
             lock.unlock();
@@ -122,6 +104,16 @@ public class LoginService {
 
         if (!passwordEncoder.matches(loginDTO.getPassword(), memberEntity.getPassword())) throw new SignInFailedException(ErrorCode.SIGN_IN_FAILED);
 
+        return createTokenDTO(memberEntity);
+    }
+
+    /**
+     * <b>토큰 생성</b>
+     * @param memberEntity MemberEntity
+     * @return TokenDTO
+     */
+    @Transactional
+    public TokenDTO createTokenDTO(MemberEntity memberEntity){
         String accessToken = jwtProvider.createAccessToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
         String refreshToken = jwtProvider.createRefreshToken(memberEntity.getId(), Collections.singletonList(memberEntity.getType()));
 

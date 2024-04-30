@@ -1,5 +1,6 @@
 package com.project.clickit.service;
 
+import com.project.clickit.domain.Type;
 import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.exceptions.ErrorCode;
 import com.project.clickit.exceptions.common.DuplicatedIdException;
@@ -9,7 +10,6 @@ import com.project.clickit.repository.MemberRepository;
 import com.project.clickit.jwt.JwtProvider;
 import com.project.clickit.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +23,6 @@ import java.util.List;
 
 @Service
 public class MemberService {
-
-    @Value("${roles.student}")
-    private String TYPE_STUDENT;
 
     final MemberRepository memberRepository;
     final JwtProvider jwtProvider;
@@ -76,7 +73,7 @@ public class MemberService {
         List<MemberEntity> memberEntityList = toEntityList(MemberDTOList);
 
         for (MemberEntity memberEntity : memberEntityList) {
-            memberEntity.setType(TYPE_STUDENT);
+            memberEntity.setType(Type.STUDENT.getName());
         }
 
         memberRepository.saveAll(memberEntityList);
@@ -101,7 +98,7 @@ public class MemberService {
      */
     @Transactional
     public Page<MemberDTO> getAllStudent(Pageable pageable) {
-        return toDTOPage(memberRepository.findAllStudent(TYPE_STUDENT, pageable));
+        return toDTOPage(memberRepository.findAllStudent(Type.STUDENT.getName(), pageable));
     }
 
     /**
@@ -123,7 +120,7 @@ public class MemberService {
      */
     @Transactional
     public Page<MemberDTO> findByMemberName(String name, Pageable pageable) {
-        return toDTOPage(memberRepository.findByMemberName(name, TYPE_STUDENT, pageable));
+        return toDTOPage(memberRepository.findByMemberName(name, Type.STUDENT.getName(), pageable));
     }
 
     /**
@@ -209,16 +206,16 @@ public class MemberService {
      */
     @Transactional
     public void deleteAll(){
-        memberRepository.deleteAllStudent(TYPE_STUDENT);
+        memberRepository.deleteAllStudent(Type.STUDENT.getName());
     }
 
     /**
      * <b>회원이 학생인지 확인</b>
-     * @param type
+     * @param type String
      * @return {@code true} if the type is student, otherwise {@code false}
      */
     private Boolean isStudent(String type) {
-        return type.equals(TYPE_STUDENT);
+        return type.equals(Type.STUDENT.getName());
     }
 
     /**

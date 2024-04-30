@@ -6,7 +6,6 @@ import com.project.clickit.dto.MemberDTO;
 import com.project.clickit.dto.TokenDTO;
 import com.project.clickit.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "${requestMapping.login}", produces="application/json;charset=UTF-8")
 public class LoginController {
     private final LoginService loginService;
-
-    @Value("${roles.dev}")
-    private String TYPE_DEV;
-
-    @Value("${roles.staff}")
-    private String TYPE_STAFF;
-
-    @Value("${roles.student}")
-    private String TYPE_STUDENT;
 
     @Autowired
     public LoginController(LoginService loginService){
@@ -40,7 +30,7 @@ public class LoginController {
 
     @PostMapping("${login.signUp}")
     public ResponseEntity<TokenDTO> signUp(@RequestBody MemberDTO memberDTO){
-        return ResponseEntity.ok().body(loginService.signUp(memberDTO, TYPE_STUDENT));
+        return ResponseEntity.ok().body(loginService.signUp(memberDTO));
     }
 
     @PostMapping("${login.signIn}")

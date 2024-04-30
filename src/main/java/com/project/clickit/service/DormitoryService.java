@@ -7,7 +7,6 @@ import com.project.clickit.exceptions.common.DuplicatedIdException;
 import com.project.clickit.exceptions.common.ObjectNotFoundException;
 import com.project.clickit.repository.DormitoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DormitoryService {
-
-    @Value("${roles.dev}")
-    private String TYPE_DEV;
 
     private final DormitoryRepository dormitoryRepository;
 

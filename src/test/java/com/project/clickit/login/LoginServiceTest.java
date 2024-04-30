@@ -151,7 +151,7 @@ public class LoginServiceTest {
 
             log.info("signUp Test given: ✔");
             // when
-            TokenDTO result = loginService.signUp(memberDTO, TYPE_STUDENT);
+            TokenDTO result = loginService.signUp(memberDTO);
 
             log.info("signUp Test when: ✔");
             // then
@@ -177,7 +177,7 @@ public class LoginServiceTest {
 
             log.info("signUp Test(중복된 아이디) given: ✔");
             // when
-            Throwable result = catchThrowable(() -> loginService.signUp(memberDTO, TYPE_STUDENT));
+            Throwable result = catchThrowable(() -> loginService.signUp(memberDTO));
 
             log.info("signUp Test(중복된 아이디) when: ✔");
             // then

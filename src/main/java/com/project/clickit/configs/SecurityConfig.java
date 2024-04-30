@@ -1,11 +1,11 @@
 package com.project.clickit.configs;
 
+import com.project.clickit.domain.Type;
 import com.project.clickit.exceptions.security.CustomAccessDeniedHandler;
 import com.project.clickit.filters.JwtAuthenticationFilter;
 import com.project.clickit.jwt.JwtProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,22 +25,16 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig implements WebMvcConfigurer {
 
-    @Value("${roles.dev}")
-    private String TYPE_DEV;
-
-    @Value("${roles.staff}")
-    private String TYPE_STAFF;
-
-    @Value("${roles.student}")
-    private String TYPE_STUDENT;
-
     private final JwtProvider jwtProvider;
 
-    private final String[] dev_only = {""};
+    private final String[] auth_minimum_staff =
+            {"/member/**", "/dormitory/**", "/facility/**", "/seat/**", "/notice/**", "/reservation/**"};
 
-    private final String[] staff_allowed =
-            {"member/create", "member/update", "member/delete",
-            "dormitory/create", "dormitory/update", "dormitory/delete"};
+    private final String[] authenticated = {"/member/findByMemberId", "/member/update", "/member/updatePassword",
+            "/member/updateRefreshToken", "/dormitory/getAll", "/dormitory/findById", "/facility/getAll",
+            "/facility/findById", "/facility/findByName", "/facility/findByDormitoryId", "/seat/findById", "/seat/findByFacilityId",
+            "/notice/getAll", "/notice/findByNoticeNum", "/notice/findByWriterId", "/reservation/create", "/reservation/findByMemberId",
+            "/reservation/findMyReservation", "/reservation/findMyReservationToday", "/reservation/updateStatus"};
 
     @Autowired
     public SecurityConfig(JwtProvider jwtProvider) {
@@ -54,8 +48,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                         authorizeHttpRequests
                                 .requestMatchers("/swagger-ui.html#/**").permitAll()
                                 .requestMatchers("/login/**").permitAll()
-                                .requestMatchers("/member/**").authenticated()
-                                .requestMatchers("/dormitory/getAll").hasAnyRole(TYPE_DEV, TYPE_STAFF)
+                                .requestMatchers(authenticated).authenticated()
+                                .requestMatchers(auth_minimum_staff).hasAnyAuthority("ROLE_"+ Type.STAFF.getName(), "ROLE_"+Type.DEV.getName())
                                 .anyRequest().authenticated())
                 .sessionManagement((sessionManager) -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors((cors)-> cors.configurationSource(
