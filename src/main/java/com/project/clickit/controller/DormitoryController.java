@@ -3,6 +3,7 @@ package com.project.clickit.controller;
 import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.service.DormitoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -22,7 +23,7 @@ public class DormitoryController {
     }
 
     @GetMapping("${dormitory.duplicateCheck}")
-    public ResponseEntity<Object> duplicationCheck(@RequestParam("id") String id){
+    public ResponseEntity<String> duplicationCheck(@RequestParam("id") String id){
         if(dormitoryService.isExist(id))
             return ResponseEntity.badRequest().body("이미 존재하는 기숙사입니다.");
         else
@@ -30,36 +31,36 @@ public class DormitoryController {
     }
 
     @PostMapping("${dormitory.create}")
-    public ResponseEntity<Object> createDormitory(@RequestBody DormitoryDTO dormitoryDTO){
+    public ResponseEntity<String> createDormitory(@RequestBody DormitoryDTO dormitoryDTO){
         dormitoryService.createDormitory(dormitoryDTO);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("${dormitory.getAll}")
-    public ResponseEntity<Object> getAll(@PageableDefault(direction = Sort.Direction.DESC,
+    public ResponseEntity<Page<DormitoryDTO>> getAll(@PageableDefault(direction = Sort.Direction.DESC,
             sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(dormitoryService.getAll(pageable));
     }
 
     @GetMapping("${dormitory.findById}")
-    public ResponseEntity<Object> findById(@RequestParam("id") String id){
+    public ResponseEntity<DormitoryDTO> findById(@RequestParam("id") String id){
         return ResponseEntity.ok().body(dormitoryService.findById(id));
     }
 
     @GetMapping("${dormitory.findByName}")
-    public ResponseEntity<Object> findByName(@RequestParam("name") String name, @PageableDefault(direction = Sort.Direction.DESC,
+    public ResponseEntity<Page<DormitoryDTO>> findByName(@RequestParam("name") String name, @PageableDefault(direction = Sort.Direction.DESC,
             sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(dormitoryService.findByName(name, pageable));
     }
 
     @PutMapping("${dormitory.update}")
-    public ResponseEntity<Object> updateDormitoryName(@RequestBody DormitoryDTO dormitoryDTO){
+    public ResponseEntity<String> updateDormitoryName(@RequestBody DormitoryDTO dormitoryDTO){
         dormitoryService.updateDormitory(dormitoryDTO);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("${dormitory.delete}")
-    public ResponseEntity<Object> deleteById(@RequestParam("id") String id){
+    public ResponseEntity<String> deleteById(@RequestParam("id") String id){
         dormitoryService.deleteById(id);
         return ResponseEntity.ok().build();
     }

@@ -459,7 +459,59 @@ public class MemberServiceTest {
     @DisplayName("Update Test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class UpdateTest{
+        @Test
+        @Order(1)
+        @DisplayName("updatePhone Test")
+        void updatePhoneTest(){
+            log.info("updatePhone Test");
+            // given
+            SecurityContext securityContext = new SecurityContextImpl();
+            securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"));
+            SecurityContextHolder.setContext(securityContext);
+            String phone = "010-1234-5678";
 
+            given(memberRepository.existsById(anyString())).willReturn(true);
+
+            log.info("updatePhone Test given: ✔");
+            // when
+            memberService.updatePhone(phone);
+
+            log.info("updatePhone Test when: ✔");
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().updatePhoneById(anyString(), anyString()),
+                    () -> assertThatCode(() -> memberService.updatePhone(phone)).doesNotThrowAnyException()
+            );
+
+            log.info("updatePhone Test then: ✔");
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("updatePhone Test(존재하지 않는 아이디)")
+        void updatePhoneTestWithNotExistedId(){
+            log.info("updatePhone Test(존재하지 않는 아이디)");
+            // given
+            SecurityContext securityContext = new SecurityContextImpl();
+            securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"));
+            SecurityContextHolder.setContext(securityContext);
+            String phone = "010-1234-5678";
+
+            given(memberRepository.existsById(anyString())).willReturn(false);
+
+            log.info("updatePhone Test(존재하지 않는 아이디) | given: ✔");
+            // when
+            Throwable exception = catchThrowable(() -> memberService.updatePhone(phone));
+
+            log.info("updatePhone Test(존재하지 않는 아이디) | when: ✔");
+            // then
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(ObjectNotFoundException.class),
+                    () -> then(memberRepository).shouldHaveNoMoreInteractions()
+            );
+
+            log.info("updatePhone Test(존재하지 않는 아이디) | then: ✔");
+        }
 
         @Test
         @Order(3)
@@ -645,6 +697,60 @@ public class MemberServiceTest {
             );
 
             log.info("updateRefreshToken Test(존재하지 않는 아이디) | then: ✔");
+        }
+
+        @Test
+        @Order(9)
+        @DisplayName("updateEmail Test")
+        void updateEmailTest() {
+            log.info("updateEmail Test");
+            // given
+            SecurityContext securityContext = new SecurityContextImpl();
+            securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"));
+            SecurityContextHolder.setContext(securityContext);
+            String email = "testEmail";
+
+            given(memberRepository.existsById(anyString())).willReturn(true);
+
+            log.info("updateEmail Test given: ✔");
+            // when
+            memberService.updateEmail(email);
+
+            log.info("updateEmail Test when: ✔");
+            // then
+            assertAll(
+                    () -> then(memberRepository).should().updateEmailById(anyString(), anyString()),
+                    () -> assertThatCode(() -> memberService.updateEmail(email)).doesNotThrowAnyException()
+            );
+
+            log.info("updateEmail Test then: ✔");
+        }
+
+        @Test
+        @Order(10)
+        @DisplayName("updateEmail Test(존재하지 않는 아이디)")
+        void updateEmailTestWithNotExistedId() {
+            log.info("updateEmail Test(존재하지 않는 아이디)");
+            // given
+            SecurityContext securityContext = new SecurityContextImpl();
+            securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("id", "password"));
+            SecurityContextHolder.setContext(securityContext);
+            String email = "testEmail";
+
+            given(memberRepository.existsById(anyString())).willReturn(false);
+
+            log.info("updateEmail Test(존재하지 않는 아이디) | given: ✔");
+            // when
+            Throwable exception = catchThrowable(() -> memberService.updateEmail(email));
+
+            log.info("updateEmail Test(존재하지 않는 아이디) | when: ✔");
+            // then
+            assertAll(
+                    () -> assertThat(exception).isInstanceOf(ObjectNotFoundException.class),
+                    () -> then(memberRepository).shouldHaveNoMoreInteractions()
+            );
+
+            log.info("updateEmail Test(존재하지 않는 아이디) | then: ✔");
         }
     }
 

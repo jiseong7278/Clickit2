@@ -292,7 +292,49 @@ public class MemberControllerTest {
     class UpdateTest{
 
         @Test
+        @Order(1)
+        @DisplayName("updatePhone Test")
+        void updatePhoneTest() throws Exception{
+            log.info("updatePhone Test");
+            // given
+            String phone = "010-1234-5678";
+
+            willDoNothing().given(memberService).updatePhone(anyString());
+
+            log.info("updatePhone Test given: ✔");
+            // when & then
+            mvc.perform(put("/member/updatePhone")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("phone", phone))
+                    .andExpect(status().isOk());
+
+            log.info("updatePhone Test when & then: ✔");
+        }
+
+        @Test
         @Order(2)
+        @DisplayName("updatePhone Test - MemberNotFoundException")
+        void updatePhoneTestMemberNotFoundException() throws Exception{
+            log.info("updatePhone Test - MemberNotFoundException");
+            // given
+            String phone = "010-1234-5678";
+
+            willThrow(new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND)).given(memberService).updatePhone(anyString());
+
+            log.info("updatePhone Test - MemberNotFoundException | given: ✔");
+            // when & then
+            mvc.perform(put("/member/updatePhone")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("UTF-8")
+                    .param("phone", phone))
+                    .andExpect(status().isBadRequest());
+
+            log.info("updatePhone Test - MemberNotFoundException | when & then: ✔");
+        }
+
+        @Test
+        @Order(3)
         @DisplayName("updatePassword Test")
         void updatePasswordTest() throws Exception{
             log.info("updatePassword Test");
@@ -313,7 +355,7 @@ public class MemberControllerTest {
         }
 
         @Test
-        @Order(3)
+        @Order(4)
         @DisplayName("updatePassword Test - MemberNotFoundException")
         void updatePasswordTestMemberNotFoundException() throws Exception{
             log.info("updatePassword Test - MemberNotFoundException");
@@ -334,7 +376,7 @@ public class MemberControllerTest {
         }
 
         @Test
-        @Order(4)
+        @Order(5)
         @DisplayName("updateMemberForStaff Test")
         void updateMemberForStaffTest() throws Exception{
             log.info("updateMemberForStaff Test");
@@ -355,7 +397,7 @@ public class MemberControllerTest {
         }
 
         @Test
-        @Order(5)
+        @Order(6)
         @DisplayName("updateMemberForStaff Test - MemberNotFoundException")
         void updateMemberForStaffTestMemberNotFoundException() throws Exception{
             log.info("updateMemberForStaff Test - MemberNotFoundException");
@@ -376,7 +418,7 @@ public class MemberControllerTest {
         }
 
         @Test
-        @Order(6)
+        @Order(7)
         @DisplayName("updateRefreshToken Test")
         void updateRefreshTokenTest() throws Exception {
             log.info("updateRefreshToken Test");
@@ -399,7 +441,7 @@ public class MemberControllerTest {
         }
 
         @Test
-        @Order(7)
+        @Order(8)
         @DisplayName("updateRefreshToken Test - MemberNotFoundException")
         void updateRefreshTokenTestMemberNotFoundException() throws Exception {
             log.info("updateRefreshToken Test - MemberNotFoundException");
@@ -419,6 +461,48 @@ public class MemberControllerTest {
                     .andExpect(status().isBadRequest());
 
             log.info("updateRefreshToken Test - MemberNotFoundException | when & then: ✔");
+        }
+
+        @Test
+        @Order(9)
+        @DisplayName("updateEmail Test")
+        void updateEmailTest() throws Exception {
+            log.info("updateEmail Test");
+            // given
+            String email = "testEmail";
+
+            willDoNothing().given(memberService).updateEmail(anyString());
+
+            log.info("updateEmail Test given: ✔");
+            // when & then
+            mvc.perform(put("/member/updateEmail")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .characterEncoding("UTF-8")
+                            .param("email", email))
+                    .andExpect(status().isOk());
+
+            log.info("updateEmail Test when & then: ✔");
+        }
+
+        @Test
+        @Order(10)
+        @DisplayName("updateEmail Test - MemberNotFoundException")
+        void updateEmailTestMemberNotFoundException() throws Exception {
+            log.info("updateEmail Test - MemberNotFoundException");
+            // given
+            String email = "testEmail";
+
+            willThrow(new ObjectNotFoundException(ErrorCode.MEMBER_NOT_FOUND)).given(memberService).updateEmail(anyString());
+
+            log.info("updateEmail Test - MemberNotFoundException | given: ✔");
+            // when & then
+            mvc.perform(put("/member/updateEmail")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .characterEncoding("UTF-8")
+                            .param("email", email))
+                    .andExpect(status().isBadRequest());
+
+            log.info("updateEmail Test - MemberNotFoundException | when & then: ✔");
         }
     }
 

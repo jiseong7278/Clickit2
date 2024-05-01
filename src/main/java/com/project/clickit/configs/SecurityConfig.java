@@ -30,7 +30,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     private final String[] auth_minimum_staff =
             {"/member/**", "/dormitory/**", "/facility/**", "/seat/**", "/notice/**", "/reservation/**"};
 
-    private final String[] authenticated = {"/member/findByMemberId", "/member/update", "/member/updatePassword",
+    private final String[] authenticated = {"/member/findByMemberId", "/member/updatePhone", "/member/updateEmail",  "/member/updatePassword",
             "/member/updateRefreshToken", "/dormitory/getAll", "/dormitory/findById", "/facility/getAll",
             "/facility/findById", "/facility/findByName", "/facility/findByDormitoryId", "/seat/findById", "/seat/findByFacilityId",
             "/notice/getAll", "/notice/findByNoticeNum", "/notice/findByWriterId", "/reservation/create", "/reservation/findByMemberId",
