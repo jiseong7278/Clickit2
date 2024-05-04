@@ -160,7 +160,7 @@ public class SeatService {
      * @param seatEntityPage Page
      * @return Page&lt;SeatDTO&gt;
      */
-    public Page<SeatDTO> toDTOPage(Page<SeatEntity> seatEntityPage) {
+    private Page<SeatDTO> toDTOPage(Page<SeatEntity> seatEntityPage) {
         return seatEntityPage.map(SeatEntity::toDTO);
     }
 }

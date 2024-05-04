@@ -105,18 +105,18 @@ public class ReservationService {
         reservationRepository.deleteByNum(num);
     }
 
-    public Page<ReservationDTO> toDTOPage(Page<ReservationEntity> reservationEntityPage){
+    private Page<ReservationDTO> toDTOPage(Page<ReservationEntity> reservationEntityPage){
         return reservationEntityPage.map(ReservationEntity::toDTO);
     }
 
-    public Boolean hasReservation(Page<ReservationEntity> reservationEntity, Integer num){
+    private Boolean hasReservation(Page<ReservationEntity> reservationEntity, Integer num){
         for(ReservationEntity re : reservationEntity){
             if(re.getNum().equals(num)) return true;
         }
         return false;
     }
 
-    public Boolean isDuplicatedReservation(Page<ReservationEntity> reservationEntities){
+    private Boolean isDuplicatedReservation(Page<ReservationEntity> reservationEntities){
         for (ReservationEntity re : reservationEntities.getContent()) {
             if(re.getStatus().equals("예약"))
                 return true;

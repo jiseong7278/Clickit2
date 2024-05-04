@@ -105,7 +105,7 @@ public class NoticeService {
      * @param noticeEntityPage Page&lt;NoticeEntity&gt;
      * @return Page&lt;NoticeDTO&gt;
      */
-    public Page<NoticeDTO> toDTOPage(Page<NoticeEntity> noticeEntityPage) {
+    private Page<NoticeDTO> toDTOPage(Page<NoticeEntity> noticeEntityPage) {
         return noticeEntityPage.map(NoticeEntity::toDTO);
     }
 }

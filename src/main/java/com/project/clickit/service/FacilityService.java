@@ -138,7 +138,7 @@ public class FacilityService {
      * @param facilityEntityPage Page
      * @return Page&lt;FacilityDTO&gt;
      */
-    public Page<FacilityDTO> toDTOPage(Page<FacilityEntity> facilityEntityPage) {
+    private Page<FacilityDTO> toDTOPage(Page<FacilityEntity> facilityEntityPage) {
         return facilityEntityPage.map(FacilityEntity::toDTO);
     }
 }
