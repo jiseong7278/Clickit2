@@ -24,7 +24,7 @@ public class ReservationController {
     }
 
     @PostMapping("${reservation.create}")
-    public ResponseEntity<Object> create(@RequestBody ReservationDTO reservationDTO){
+    public ResponseEntity<String> create(@RequestBody ReservationDTO reservationDTO){
         reservationService.create(reservationDTO);
         return ResponseEntity.ok().build();
     }
@@ -60,13 +60,13 @@ public class ReservationController {
     }
 
     @PutMapping("${reservation.update}")
-    public ResponseEntity<Object> update(@RequestBody ReservationDTO reservationDTO){
+    public ResponseEntity<String> update(@RequestBody ReservationDTO reservationDTO){
         reservationService.update(reservationDTO);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("${reservation.updateStatus}")
-    public ResponseEntity<Object> updateStatus(@RequestBody List<ReservationDTO> reservationDTOList){
+    public ResponseEntity<String> updateStatus(@RequestBody List<ReservationDTO> reservationDTOList){
         for (ReservationDTO reservationDTO : reservationDTOList) {
             reservationService.updateStatus(reservationDTO.getNum(), reservationDTO.getStatus());
         }
@@ -74,7 +74,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("${reservation.delete}")
-    public ResponseEntity<Object> delete(@RequestParam("num") Integer num){
+    public ResponseEntity<String> delete(@RequestParam("num") Integer num){
         reservationService.delete(num);
         return ResponseEntity.ok().build();
     }
