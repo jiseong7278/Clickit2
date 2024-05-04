@@ -1,7 +1,7 @@
 package com.project.clickit.integration;
 
-import com.project.clickit.dto.DormitoryDTO;
 import com.project.clickit.dto.LoginDTO;
+import com.project.clickit.dto.NoticeDTO;
 import com.project.clickit.dto.TokenDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,15 +13,14 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DormitoryTest {
-
+public class NoticeTest {
     @LocalServerPort
     private int port;
 
@@ -44,20 +43,21 @@ public class DormitoryTest {
     }
 
     @Test
-    @DisplayName("create Dormitory")
-    public void create() {
-        DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
-                .id("test2")
-                .name("테스트 기숙사")
+    @DisplayName("Create")
+    public void create(){
+        NoticeDTO noticeDTO = NoticeDTO.builder()
+                .title("통합 테스트 생성3")
+                .content("생성 기능 동작 테스트3")
+                .date(LocalDateTime.now())
+                .memberId("clickit_dev")
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<DormitoryDTO> entity = new HttpEntity<>(dormitoryDTO, headers);
+        HttpEntity<NoticeDTO> entity = new HttpEntity<>(noticeDTO, headers);
 
-
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/dormitory/create", HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:" + port + "/notice/create", entity, String.class);
 
         log.info("create response: {}", response.getBody());
 
@@ -65,14 +65,14 @@ public class DormitoryTest {
     }
 
     @Test
-    @DisplayName("getAll Dormitory")
-    public void getAll() {
+    @DisplayName("getAll Test")
+    public void getAll(){
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<DormitoryDTO> entity = new HttpEntity<>(headers);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/dormitory/getAll?page=" + page + "&size=" + size, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/notice/getAll?page=" + page + "&size=" + size, HttpMethod.GET, entity, String.class);
 
         log.info("getAll response: {}", response.getBody());
 
@@ -80,71 +80,73 @@ public class DormitoryTest {
     }
 
     @Test
-    @DisplayName("findById")
-    public void findById(){
-        String id = "test1";
+    @DisplayName("findByNoticeNum Test")
+    public void findByNoticeNum(){
+        int num = 11;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<DormitoryDTO> response = restTemplate.exchange("http://localhost:" + port + "/dormitory/findById?id=" + id, HttpMethod.GET, entity, DormitoryDTO.class);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/notice/findByNoticeNum?num=" + num, HttpMethod.GET, entity, String.class);
 
-        log.info("findById response: {}", response.getBody());
+        log.info("findByNoticeNum response: {}", response.getBody());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertEquals(Objects.requireNonNull(response.getBody()).getId(), id);
     }
 
     @Test
-    @DisplayName("findByName")
-    public void findByName(){
-        String name = "테스트";
+    @DisplayName("findByWriterId Test")
+    public void findByWriterId() {
+        String id = "clickit_dev";
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/dormitory/findByName?name=" + name + "&page=" + page + "&size=" + size, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/notice/findByWriterId?writerId=" + id + "&page=" + page + "&size=" + size, HttpMethod.GET, entity, String.class);
 
-        log.info("findByName response: {}", response.getBody());
+        log.info("findByWriterId response: {}", response.getBody());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @DisplayName("updateDormitory")
-    public void updateDormitory(){
-        DormitoryDTO dormitoryDTO = DormitoryDTO.builder()
-                .id("test1")
-                .name("업데이트 테스트")
+    @DisplayName("update Test")
+    public void update(){
+        NoticeDTO noticeDTO = NoticeDTO.builder()
+                .num(11)
+                .title("통합 테스트 수정")
+                .content("수정 기능 동작 테스트")
+                .date(LocalDateTime.now())
+                .memberId("clickit_dev")
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<DormitoryDTO> entity = new HttpEntity<>(dormitoryDTO, headers);
+        HttpEntity<NoticeDTO> entity = new HttpEntity<>(noticeDTO, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/dormitory/update", HttpMethod.PUT, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/notice/update", HttpMethod.PUT, entity, String.class);
 
-        log.info("updateDormitory response: {}", response.getBody());
+        log.info("update response: {}", response.getBody());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @DisplayName("delete")
-    public void delete(){
-        String id = "test2";
+    @DisplayName("delete Test")
+    public void delete() {
+        int num = 12;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/dormitory/delete?id=" + id, HttpMethod.DELETE, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/notice/delete?num=" + num, HttpMethod.DELETE, entity, String.class);
 
         log.info("delete response: {}", response.getBody());
 

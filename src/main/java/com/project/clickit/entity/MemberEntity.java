@@ -37,8 +37,8 @@ public class MemberEntity {
     @Column(name = "member_refresh_token")
     private String refreshToken; // 리프레시 토큰
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "member_dormitory", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_dormitory")
     private DormitoryEntity dormitoryEntity;
 
     public MemberEntity(String password, String refreshToken) {
@@ -71,7 +71,7 @@ public class MemberEntity {
                 .studentNum(this.studentNum)
                 .type(this.type)
                 .refreshToken(this.refreshToken)
-                .dormitoryDTO(this.dormitoryEntity.toDTO())
+                .dormitoryId(this.dormitoryEntity.getId())
                 .build();
     }
 }

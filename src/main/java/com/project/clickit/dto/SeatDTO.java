@@ -15,14 +15,14 @@ public class SeatDTO {
     private String name;
     private Integer time;
     private Boolean isEmpty;
-    private FacilityDTO facilityDTO;
+    private String facilityId;
 
     /**
      * <b>SeatEntity로 변환</b>
      * @return SeatEntity
      */
     public SeatEntity toEntity() {
-        if (this.facilityDTO == null) {
+        if (this.facilityId == null) {
             return SeatEntity.builder()
                     .id(this.id)
                     .name(this.name)
@@ -35,7 +35,7 @@ public class SeatDTO {
                 .name(this.name)
                 .time(this.time)
                 .isEmpty(this.isEmpty)
-                .facilityEntity(this.facilityDTO.toEntity())
+                .facilityEntity(FacilityDTO.builder().id(facilityId).build().toEntity())
                 .build();
     }
 }

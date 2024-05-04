@@ -31,19 +31,19 @@ public class FacilityController {
     }
 
     @PostMapping("${facility.create}")
-    public ResponseEntity<Object> createFacility(@RequestBody FacilityDTO facilityDTO){
+    public ResponseEntity<String> createFacility(@RequestBody FacilityDTO facilityDTO){
         facilityService.createFacility(facilityDTO);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("${facility.getAll}")
-    public ResponseEntity<Object> getAll(@PageableDefault(direction = Sort.Direction.ASC,
+    public ResponseEntity<Page<FacilityDTO>> getAll(@PageableDefault(direction = Sort.Direction.ASC,
     sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(facilityService.getAll(pageable));
     }
 
     @GetMapping("${facility.findById}")
-    public ResponseEntity<Object> findById(@RequestParam("id") String id){
+    public ResponseEntity<FacilityDTO> findById(@RequestParam("id") String id){
         return ResponseEntity.ok().body(facilityService.findById(id));
     }
 
@@ -54,19 +54,25 @@ public class FacilityController {
     }
 
     @GetMapping("${facility.findByDormitoryId}")
-    public ResponseEntity<Object> findByDormitoryId(@RequestParam("dormitoryId") String dormitoryId,
+    public ResponseEntity<Page<FacilityDTO>> findByDormitoryId(@RequestParam("dormitoryId") String dormitoryId,
                                                     @PageableDefault(direction = Sort.Direction.ASC, sort = "name") Pageable pageable){
         return ResponseEntity.ok().body(facilityService.findByDormitoryId(dormitoryId, pageable));
     }
 
     @PutMapping("${facility.update}")
-    public ResponseEntity<Object> updateFacilityName(@RequestBody FacilityDTO facilityDTO){
+    public ResponseEntity<String> updateFacility(@RequestBody FacilityDTO facilityDTO){
         facilityService.updateFacility(facilityDTO);
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("${facility.updateFacilityId}")
+    public ResponseEntity<String> updateFacilityId(@RequestParam("id") String id, @RequestParam("newId") String newId){
+        facilityService.updateFacilityId(id, newId);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("${facility.delete}")
-    public ResponseEntity<Object> deleteFacility(@RequestParam("id") String id){
+    public ResponseEntity<String> deleteFacility(@RequestParam("id") String id){
         facilityService.deleteById(id);
         return ResponseEntity.ok().build();
     }

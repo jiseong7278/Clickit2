@@ -25,8 +25,8 @@ public class SeatEntity {
     @Column(name = "seat_empty")
     private Boolean isEmpty;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "facility_seat", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "facility_seat")
     private FacilityEntity facilityEntity;
 
     /**
@@ -47,7 +47,7 @@ public class SeatEntity {
                 .name(this.name)
                 .time(this.time)
                 .isEmpty(this.isEmpty)
-                .facilityDTO(this.facilityEntity.toDTO())
+                .facilityId(this.facilityEntity.getId())
                 .build();
     }
 }

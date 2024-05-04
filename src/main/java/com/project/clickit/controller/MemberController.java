@@ -21,13 +21,13 @@ public class MemberController {
 
     // Create
     @PostMapping("${member.create}")
-    public ResponseEntity<Object> create(@RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<String> create(@RequestBody MemberDTO memberDTO) {
         memberService.create(memberDTO);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("${member.createList}")
-    public ResponseEntity<Object> createList(@RequestBody List<MemberDTO> MemberDTOList) {
+    public ResponseEntity<String> createList(@RequestBody List<MemberDTO> MemberDTOList) {
         memberService.createList(MemberDTOList);
         return ResponseEntity.ok().build();
     }
@@ -70,31 +70,31 @@ public class MemberController {
 
     // Update
     @PutMapping("${member.updatePhone}")
-    public ResponseEntity<Object> updatePhone(@RequestParam("phone") String phone) {
+    public ResponseEntity<String> updatePhone(@RequestParam("phone") String phone) {
         memberService.updatePhone(phone);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("${member.updateEmail}")
-    public ResponseEntity<Object> updateEmail(@RequestParam("email") String email) {
+    public ResponseEntity<String> updateEmail(@RequestParam("email") String email) {
         memberService.updateEmail(email);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("${member.updatePassword}")
-    public ResponseEntity<Object> updatePassword(@RequestParam("password") String password) {
+    public ResponseEntity<String> updatePassword(@RequestParam("password") String password) {
         memberService.updatePassword(password);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("${member.updateMemberForStaff}")
-    public ResponseEntity<Object> updateMemberForStaff(@RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<String> updateMemberForStaff(@RequestBody MemberDTO memberDTO) {
         memberService.updateMemberForStaff(memberDTO);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("${member.updateRefreshToken}")
-    public ResponseEntity<Object> updateRefreshToken(@RequestParam("id") String id, @RequestParam("refreshToken") String refreshToken) {
+    public ResponseEntity<String> updateRefreshToken(@RequestParam("id") String id, @RequestParam("refreshToken") String refreshToken) {
         memberService.updateRefreshToken(id, refreshToken);
         return ResponseEntity.ok().build();
     }

@@ -19,14 +19,14 @@ public class FacilityDTO {
     private Integer capacity;
     private String img;
     private String terms;
-    private DormitoryDTO dormitoryDTO;
+    private String dormitoryId;
 
     /**
      * <b>FacilityEntity로 변환</b>
      * @return FacilityEntity
      */
     public FacilityEntity toEntity() {
-        if (this.dormitoryDTO == null) {
+        if (this.dormitoryId == null) {
             return FacilityEntity.builder()
                     .id(this.id)
                     .name(this.name)
@@ -47,7 +47,7 @@ public class FacilityDTO {
                 .capacity(this.capacity)
                 .img(this.img)
                 .terms(this.terms)
-                .dormitoryEntity(this.dormitoryDTO.toEntity())
+                .dormitoryEntity(DormitoryDTO.builder().id(dormitoryId).build().toEntity())
                 .build();
     }
 }

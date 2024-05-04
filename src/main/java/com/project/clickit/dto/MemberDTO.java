@@ -19,14 +19,15 @@ public class MemberDTO {
     private String studentNum;
     private String type;
     private String refreshToken;
-    private DormitoryDTO dormitoryDTO;
+//    private DormitoryDTO dormitoryDTO;
+    private String dormitoryId;
 
     /**
      * <b>MemberEntity로 변환</b>
      * @return MemberEntity
      */
     public MemberEntity toEntity(){
-        if (this.dormitoryDTO == null)
+        if (this.dormitoryId == null)
             return MemberEntity.builder()
                     .id(this.id)
                     .password(this.password)
@@ -46,7 +47,7 @@ public class MemberDTO {
                 .studentNum(this.studentNum)
                 .type(this.type)
                 .refreshToken(this.refreshToken)
-                .dormitoryEntity(this.dormitoryDTO.toEntity())
+                .dormitoryEntity(DormitoryDTO.builder().id(this.dormitoryId).build().toEntity())
                 .build();
     }
 }

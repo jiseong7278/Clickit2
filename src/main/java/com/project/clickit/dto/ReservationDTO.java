@@ -1,8 +1,6 @@
 package com.project.clickit.dto;
 
-import com.project.clickit.entity.MemberEntity;
 import com.project.clickit.entity.ReservationEntity;
-import com.project.clickit.entity.SeatEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,12 +26,8 @@ public class ReservationDTO {
     public ReservationEntity toEntity() {
         return ReservationEntity.builder()
                 .num(this.num)
-                .seatEntity(SeatEntity.builder()
-                        .id(this.seatId)
-                        .build())
-                .memberEntity(MemberEntity.builder()
-                        .id(this.memberId)
-                        .build())
+                .seatEntity(SeatDTO.builder().id(seatId).build().toEntity())
+                .memberEntity(MemberDTO.builder().id(memberId).build().toEntity())
                 .timestamp(this.timestamp)
                 .status(this.status)
                 .build();

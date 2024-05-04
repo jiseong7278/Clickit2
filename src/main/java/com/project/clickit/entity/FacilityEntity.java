@@ -37,8 +37,8 @@ public class FacilityEntity {
     @Column(name = "facility_terms")
     private String terms;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "facility_dormitory", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "facility_dormitory", updatable = false)
     private DormitoryEntity dormitoryEntity;
 
     /**
@@ -67,7 +67,7 @@ public class FacilityEntity {
                 .capacity(this.capacity)
                 .img(this.img)
                 .terms(this.terms)
-                .dormitoryDTO(this.dormitoryEntity.toDTO())
+                .dormitoryId(this.dormitoryEntity.getId())
                 .build();
     }
 }

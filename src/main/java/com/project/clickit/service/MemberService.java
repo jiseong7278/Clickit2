@@ -172,7 +172,8 @@ public class MemberService {
                 memberDTO.getPhone(),
                 memberDTO.getStudentNum(),
                 memberDTO.getType(),
-                memberDTO.getDormitoryDTO().getId());
+//                memberDTO.getDormitoryDTO().getId());
+                memberDTO.getDormitoryId());
     }
 
     /**

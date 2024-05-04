@@ -113,6 +113,9 @@ public class FacilityService {
         if(!isExist(id)){
             throw new ObjectNotFoundException(ErrorCode.FACILITY_NOT_FOUND);
         }
+        if (isExist(newId)) {
+            throw new DuplicatedIdException(ErrorCode.DUPLICATED_ID);
+        }
         facilityRepository.updateFacilityId(id, newId);
     }
 
