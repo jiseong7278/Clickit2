@@ -12,7 +12,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
 @Configuration
-@EnableRedisRepositories
+@EnableRedisRepositories(basePackages = "com.project.clickit.repository")
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
